@@ -6,8 +6,10 @@ using namespace System;
 
 namespace boofbridge {
 
-	public ref class Class1
+	public ref class BoofBridge
 	{
-		// TODO: Add your methods for this class here.
+	public:
+		BoofBridge() { }
+		void setup();
 	};
 }

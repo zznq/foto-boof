@@ -17,8 +17,12 @@ namespace boof {
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
+        protected boofbridge.BoofBridge _bridge;
         public MainWindow() {
             InitializeComponent();
+
+            _bridge = new boofbridge.BoofBridge();
+            //_bridge.setup();
         }
     }
 }
