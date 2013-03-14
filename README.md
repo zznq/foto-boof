@@ -1,0 +1,4 @@
+foto-boof
+=========
+
+Kinect Photobooth
