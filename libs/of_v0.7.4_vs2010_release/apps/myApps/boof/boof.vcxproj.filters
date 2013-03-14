@@ -1,9 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="src\testApp.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\main.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -49,6 +46,12 @@
     <ClCompile Include="..\..\..\addons\ofxKinect\src\ofxKinect.cpp">
       <Filter>addons\ofxKinect\src</Filter>
     </ClCompile>
+    <ClCompile Include="src\boof.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="view.cpp">
+      <Filter>src\views</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -84,11 +87,11 @@
     <Filter Include="addons\ofxUI\src">
       <UniqueIdentifier>{a00c2d23-6c11-bc86-3993-2cf0e345f895}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\views">
+      <UniqueIdentifier>{82644186-0ec5-42ba-b2d4-588dd4e4f39f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\testApp.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="src\testApp.h">
       <Filter>src</Filter>
     </ClInclude>
@@ -268,6 +271,12 @@
     </ClInclude>
     <ClInclude Include="..\..\..\addons\ofxUI\src\ofxUIWidgetWithLabel.h">
       <Filter>addons\ofxUI\src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\boof.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="view.h">
+      <Filter>src\views</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
