@@ -4,3 +4,4 @@
 *.user
 obj
 bin
+ipch
