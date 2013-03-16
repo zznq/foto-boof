@@ -1,0 +1,193 @@
+﻿Build started 3/16/2013 4:41:04 PM.
+     1>Project "C:\Users\jesse\Documents\Programming\foto-boof\libs\of_v0.7.4_vs2010_release\apps\myApps\boof\boof.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "obj\Debug\boof.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I..\..\..\libs\openFrameworks /I..\..\..\libs\openFrameworks\graphics /I..\..\..\libs\openFrameworks\app /I..\..\..\libs\openFrameworks\sound /I..\..\..\libs\openFrameworks\utils /I..\..\..\libs\openFrameworks\communication /I..\..\..\libs\openFrameworks\video /I..\..\..\libs\openFrameworks\types /I..\..\..\libs\openFrameworks\math /I..\..\..\libs\openFrameworks\3d /I..\..\..\libs\openFrameworks\gl /I..\..\..\libs\openFrameworks\events /I..\..\..\libs\glut\include /I..\..\..\libs\rtAudio\include /I..\..\..\libs\quicktime\include /I..\..\..\libs\freetype\include /I..\..\..\libs\freetype\include\freetype2 /I..\..\..\libs\freeImage\include /I..\..\..\libs\fmodex\include /I..\..\..\libs\videoInput\include /I..\..\..\libs\glew\include\ /I..\..\..\libs\glu\include /I..\..\..\libs\tess2\include /I..\..\..\libs\cairo\include\cairo /I..\..\..\libs\poco\include /I..\..\..\addons /Isrc /I..\..\..\addons\ofxOpenCv\libs /I..\..\..\addons\ofxOpenCv\src /I..\..\..\addons\ofxOpenCv\libs\opencv /I..\..\..\addons\ofxOpenCv\libs\opencv\include /I..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv /I..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2 /I..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\calib3d /I..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\contrib /I..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\core /I..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\features2d /I..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\flann /I..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\gpu /I..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\highgui /I..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\imgproc /I..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\legacy /I..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\ml /I..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\objdetect /I..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\ts /I..\..\..\addons\ofxOpenCv\libs\opencv\include\opencv2\video /I..\..\..\addons\ofxOpenCv\libs\opencv\lib /I..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs2010 /I..\..\..\addons\ofxXmlSettings\libs /I..\..\..\addons\ofxXmlSettings\src /I..\..\..\addons\ofxKinect\libs /I..\..\..\addons\ofxKinect\src /I..\..\..\addons\ofxKinect\libs\libfreenect /I..\..\..\addons\ofxKinect\libs\libfreenect\lib /I..\..\..\addons\ofxKinect\libs\libfreenect\lib\vs2010 /I..\..\..\addons\ofxKinect\libs\libusb /I"..\..\..\addons\ofxKinect\libs\libusb\osx\include\libusb-1.0" /I..\..\..\addons\ofxKinect\libs\libusb\win /I..\..\..\addons\ofxKinect\libs\libusb\win\inf /I"..\..\..\addons\ofxKinect\libs\libusb\win\inf\xbox nui audio" /I"..\..\..\addons\ofxKinect\libs\libusb\win\inf\xbox nui audio\amd64" /I"..\..\..\addons\ofxKinect\libs\libusb\win\inf\xbox nui audio\ia64" /I"..\..\..\addons\ofxKinect\libs\libusb\win\inf\xbox nui audio\license" /I"..\..\..\addons\ofxKinect\libs\libusb\win\inf\xbox nui audio\license\libusb-win32" /I"..\..\..\addons\ofxKinect\libs\libusb\win\inf\xbox nui audio\x86" /I"..\..\..\addons\ofxKinect\libs\libusb\win\inf\xbox nui camera" /I"..\..\..\addons\ofxKinect\libs\libusb\win\inf\xbox nui camera\amd64" /I"..\..\..\addons\ofxKinect\libs\libusb\win\inf\xbox nui camera\ia64" /I"..\..\..\addons\ofxKinect\libs\libusb\win\inf\xbox nui camera\license" /I"..\..\..\addons\ofxKinect\libs\libusb\win\inf\xbox nui camera\license\libusb-win32" /I"..\..\..\addons\ofxKinect\libs\libusb\win\inf\xbox nui camera\x86" /I"..\..\..\addons\ofxKinect\libs\libusb\win\inf\xbox nui motor" /I"..\..\..\addons\ofxKinect\libs\libusb\win\inf\xbox nui motor\amd64" /I"..\..\..\addons\ofxKinect\libs\libusb\win\inf\xbox nui motor\ia64" /I"..\..\..\addons\ofxKinect\libs\libusb\win\inf\xbox nui motor\license" /I"..\..\..\addons\ofxKinect\libs\libusb\win\inf\xbox nui motor\license\libusb-win32" /I"..\..\..\addons\ofxKinect\libs\libusb\win\inf\xbox nui motor\x86" /I..\..\..\addons\ofxUI\libs /I..\..\..\addons\ofxUI\src /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D POCO_STATIC /D CAIRO_WIN32_STATIC_BUILD /D DISABLE_SOME_FLOATING_POINT /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"obj\Debug\\" /Fd"obj\Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt src\KinectController.cpp src\boof.cpp
+         boof.cpp
+         KinectController.cpp
+         Generating Code...
+       ManifestResourceCompile:
+         All outputs are up-to-date.
+       Link:
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"bin\boof_debug.exe" /INCREMENTAL /NOLOGO /LIBPATH:..\..\..\libs\glut\lib\vs2010 /LIBPATH:..\..\..\libs\rtAudio\lib\vs2010 /LIBPATH:..\..\..\libs\FreeImage\lib\vs2010 /LIBPATH:..\..\..\libs\freetype\lib\vs2010 /LIBPATH:..\..\..\libs\quicktime\lib\vs2010 /LIBPATH:..\..\..\libs\fmodex\lib\vs2010 /LIBPATH:..\..\..\libs\videoInput\lib\vs2010 /LIBPATH:..\..\..\libs\cairo\lib\vs2010 /LIBPATH:..\..\..\libs\glew\lib\vs2010 /LIBPATH:..\..\..\libs\glu\lib\vs2010 /LIBPATH:..\..\..\libs\Poco\lib\vs2010 /LIBPATH:..\..\..\libs\tess2\lib\vs2010 /LIBPATH:..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs2010 /LIBPATH:..\..\..\addons\ofxKinect\libs\libfreenect\lib\vs2010 "cairo-static.lib" "pixman-1.lib" msimg32.lib OpenGL32.lib GLu32.lib kernel32.lib setupapi.lib Vfw32.lib comctl32.lib glut32.lib rtAudioD.lib videoInput.lib libfreetype.lib FreeImage.lib qtmlClient.lib dsound.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib glew32s.lib fmodex_vc.lib glu32.lib PocoFoundationmdd.lib PocoNetmdd.lib PocoUtilmdd.lib PocoXMLmdd.lib Ws2_32.lib tess2.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib opencv_calib3d231d.lib opencv_contrib231d.lib opencv_core231d.lib opencv_features2d231d.lib opencv_flann231d.lib opencv_gpu231d.lib opencv_haartraining_engined.lib opencv_highgui231d.lib opencv_imgproc231d.lib opencv_legacy231d.lib opencv_ml231d.lib opencv_objdetect231d.lib opencv_video231d.lib zlibd.lib freenect.lib /NODEFAULTLIB:PocoFoundationd.lib /NODEFAULTLIB:atlthunk.lib /NODEFAULTLIB:LIBC.lib /NODEFAULTLIB:LIBCMT /MANIFEST /ManifestFile:"obj\Debug\boof_debug.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\jesse\Documents\Programming\foto-boof\libs\of_v0.7.4_vs2010_release\apps\myApps\boof\bin\boof_debug_debugInfo.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE:NO /IMPLIB:"bin\boof_debug.lib" /MACHINE:X86 obj\Debug\boof_debug.exe.embed.manifest.res
+         obj\Debug\KinectController.obj
+         obj\Debug\view.obj
+         obj\Debug\main.obj
+         obj\Debug\boof.obj
+         obj\Debug\ofxCvColorImage.obj
+         obj\Debug\ofxCvContourFinder.obj
+         obj\Debug\ofxCvFloatImage.obj
+         obj\Debug\ofxCvGrayscaleImage.obj
+         obj\Debug\ofxCvHaarFinder.obj
+         obj\Debug\ofxCvImage.obj
+         obj\Debug\ofxCvShortImage.obj
+         obj\Debug\ofxXmlSettings.obj
+         obj\Debug\tinyxml.obj
+         obj\Debug\tinyxmlerror.obj
+         obj\Debug\tinyxmlparser.obj
+         obj\Debug\ofxKinect.obj
+         "C:\Users\jesse\Documents\Programming\foto-boof\libs\of_v0.7.4_vs2010_release\libs\openFrameworksCompiled\lib\vs2010\openframeworksLibDebug.lib"
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /out:"obj\Debug\boof_debug.exe.embed.manifest" /manifest obj\Debug\boof_debug.exe.intermediate.manifest
+         All outputs are up-to-date.
+       LinkEmbedManifest:
+         All outputs are up-to-date.
+         boof.vcxproj -> C:\Users\jesse\Documents\Programming\foto-boof\libs\of_v0.7.4_vs2010_release\apps\myApps\boof\bin\boof_debug.exe
+       PostBuildEvent:
+         Description: adding DLLs and creating data folder
+         xcopy /e /i /y "C:\Users\jesse\Documents\Programming\foto-boof\libs\of_v0.7.4_vs2010_release\apps\myApps\boof\..\..\..\export\vs2010\*.dll" "C:\Users\jesse\Documents\Programming\foto-boof\libs\of_v0.7.4_vs2010_release\apps\myApps\boof\bin"
+         :VCEnd
+         C:\Users\jesse\Documents\Programming\foto-boof\libs\of_v0.7.4_vs2010_release\apps\myApps\boof\..\..\..\export\vs2010\Assimp32.dll
+         C:\Users\jesse\Documents\Programming\foto-boof\libs\of_v0.7.4_vs2010_release\apps\myApps\boof\..\..\..\export\vs2010\fmodex.dll
+         C:\Users\jesse\Documents\Programming\foto-boof\libs\of_v0.7.4_vs2010_release\apps\myApps\boof\..\..\..\export\vs2010\fmodexL.dll
+         C:\Users\jesse\Documents\Programming\foto-boof\libs\of_v0.7.4_vs2010_release\apps\myApps\boof\..\..\..\export\vs2010\FreeImage.dll
+         C:\Users\jesse\Documents\Programming\foto-boof\libs\of_v0.7.4_vs2010_release\apps\myApps\boof\..\..\..\export\vs2010\FreeType-6.dll
+         C:\Users\jesse\Documents\Programming\foto-boof\libs\of_v0.7.4_vs2010_release\apps\myApps\boof\..\..\..\export\vs2010\glut32.dll
+         C:\Users\jesse\Documents\Programming\foto-boof\libs\of_v0.7.4_vs2010_release\apps\myApps\boof\..\..\..\export\vs2010\Zlib.dll
+         7 File(s) copied
+       FinalizeBuildStatus:
+         Deleting file "obj\Debug\boof.unsuccessfulbuild".
+         Touching "obj\Debug\boof.lastbuildstate".
+     1>Done Building Project "C:\Users\jesse\Documents\Programming\foto-boof\libs\of_v0.7.4_vs2010_release\apps\myApps\boof\boof.vcxproj" (build target(s)).
+
+Project Performance Summary:
+        2 ms  C:\Users\jesse\Documents\Programming\foto-boof\libs\of_v0.7.4_vs2010_release\libs\openFrameworksCompiled\project\vs2010\openframeworksLib.vcxproj   4 calls
+                  0 ms  GetTargetPath                              1 calls
+                  1 ms  GetNativeManifest                          1 calls
+                  1 ms  GetResolvedLinkLibs                        1 calls
+                  0 ms  GetCopyToOutputDirectoryItems              1 calls
+     3987 ms  C:\Users\jesse\Documents\Programming\foto-boof\libs\of_v0.7.4_vs2010_release\apps\myApps\boof\boof.vcxproj   1 calls
+               3987 ms  build                                      1 calls
+
+Target Performance Summary:
+        0 ms  SetBuildDefaultEnvironmentVariables        1 calls
+        0 ms  ExpandSDKReferences                        1 calls
+        0 ms  BuildCompileTraverse                       1 calls
+        0 ms  MakeDirsForCl                              1 calls
+        0 ms  AfterBuildGenerateSources                  1 calls
+        0 ms  ComputeManifestGeneratedLinkerInputs       1 calls
+        0 ms  ResolveReferences                          1 calls
+        0 ms  SelectClCompile                            1 calls
+        0 ms  GetCopyToOutputDirectoryXamlAppDefs        1 calls
+        0 ms  _RemoveNameMetadataFromProjectReferenceItems   1 calls
+        0 ms  MakeDirsForManifest                        1 calls
+        0 ms  _Manifest                                  1 calls
+        0 ms  _PrepareForBuild                           1 calls
+        0 ms  _Midl                                      1 calls
+        0 ms  SelectCustomBuild                          1 calls
+        0 ms  _ClCompile                                 1 calls
+        0 ms  _CheckForCompileOutputs                    1 calls
+        0 ms  GetReferenceAssemblyPaths                  1 calls
+        0 ms  CreateCustomManifestResourceNames          1 calls
+        0 ms  _GenerateXMLData                           1 calls
+        0 ms  GetTargetPath                              1 calls
+        0 ms  _SelectedFiles                             1 calls
+        0 ms  AfterBuild                                 1 calls
+        0 ms  CopyFilesToOutputDirectory                 1 calls
+        0 ms  _XdcMake                                   1 calls
+        0 ms  ComputeCLInputPDBName                      1 calls
+        0 ms  BuildGenerateSources                       1 calls
+        0 ms  _DetermineManagedStateFromCL               1 calls
+        0 ms  GetFrameworkPaths                          1 calls
+        0 ms  _Xsd                                       1 calls
+        0 ms  _DetermineManagedStateForLink              1 calls
+        0 ms  ComputeCustomBuildOutput                   1 calls
+        0 ms  ComputeReferenceLinkInputs                 1 calls
+        0 ms  MakeDirsForBscMake                         1 calls
+        0 ms  CreateSatelliteAssemblies                  1 calls
+        0 ms  ComputeResolveLinkObj                      1 calls
+        0 ms  MakeDirsForResourceCompile                 1 calls
+        0 ms  BuildLink                                  1 calls
+        0 ms  _ResourceCompile                           1 calls
+        0 ms  ComputeLinkInputsFromProject               1 calls
+        0 ms  _Link                                      1 calls
+        0 ms  BuildLinkTraverse                          1 calls
+        0 ms  ComputeRCOutputs                           1 calls
+        0 ms  _GenerateSatelliteAssemblyInputs           1 calls
+        0 ms  GetInstalledSDKLocations                   1 calls
+        0 ms  FinalizeBuildStatus                        1 calls
+        0 ms  AfterBuildCompileEvent                     1 calls
+        0 ms  ComputeMIDLGeneratedCompileInputs          1 calls
+        0 ms  BeforeClCompile                            1 calls
+        0 ms  _ALink                                     1 calls
+        0 ms  AfterLink                                  1 calls
+        0 ms  PrepareResourceNames                       1 calls
+        0 ms  AfterBuildGenerateSourcesEvent             1 calls
+        0 ms  ComputeManifestInputsTargets               1 calls
+        0 ms  ComputeCLOutputs                           1 calls
+        0 ms  AfterResolveReferences                     1 calls
+        0 ms  BuildCompile                               1 calls
+        0 ms  BeforeResolveReferences                    1 calls
+        0 ms  _SplitProjectReferencesByFileExistence     1 calls
+        0 ms  PreBuildEvent                              1 calls
+        0 ms  MakeDirsForMidl                            1 calls
+        0 ms  _BscMake                                   1 calls
+        0 ms  ResolveSDKReferences                       1 calls
+        0 ms  _Appverifier                               1 calls
+        0 ms  RegisterOutput                             1 calls
+        0 ms  DoLinkOutputFilesMatch                     1 calls
+        0 ms  _GenerateWebServiceProxy                   1 calls
+        0 ms  ComputeRCGeneratedLinkInputs               1 calls
+        0 ms  AssignTargetPaths                          1 calls
+        0 ms  BeforeResourceCompile                      1 calls
+        0 ms  _CheckForInvalidConfigurationAndPlatform   1 calls
+        0 ms  _CopySourceItemsToOutputDirectory          1 calls
+        0 ms  AfterMidl                                  1 calls
+        0 ms  PreLinkEvent                               1 calls
+        0 ms  _Deploy                                    1 calls
+        0 ms  MakeDirsForLink                            1 calls
+        0 ms  BeforeBuildGenerateSources                 1 calls
+        0 ms  PrepareForBuild                            1 calls
+        0 ms  ResolvedXDCMake                            1 calls
+        0 ms  PlatformPrepareForBuild                    1 calls
+        0 ms  MakeDirsForXdcMake                         1 calls
+        0 ms  BeforeLink                                 1 calls
+        0 ms  AfterClCompile                             1 calls
+        0 ms  ComputeCLCompileGeneratedSbrFiles          1 calls
+        1 ms  GetNativeManifest                          1 calls
+        1 ms  SplitResourcesByCulture                    1 calls
+        1 ms  Build                                      1 calls
+        1 ms  AfterResourceCompile                       1 calls
+        1 ms  ResolveAssemblyReferences                  1 calls
+        1 ms  BuildGenerateSourcesTraverse               1 calls
+        1 ms  ComputeLinkImportLibraryOutputsForClean    1 calls
+        1 ms  ComputeCLGeneratedLinkInputs               1 calls
+        1 ms  InitializeBuildStatus                      1 calls
+        1 ms  ComputeReferenceCLInput                    1 calls
+        1 ms  GetResolvedLinkLibs                        1 calls
+        1 ms  ComputeCLCompileGeneratedXDCFiles          1 calls
+        1 ms  AssignProjectConfiguration                 1 calls
+        1 ms  ManifestResourceCompile                    1 calls
+        4 ms  GetCopyToOutputDirectoryItems              1 calls
+        7 ms  ResolvedLinkLib                            1 calls
+        9 ms  LinkEmbedManifest                          1 calls
+       11 ms  ResolveProjectReferences                   1 calls
+       28 ms  Manifest                                   1 calls
+       37 ms  PostBuildEvent                             1 calls
+      276 ms  Link                                       1 calls
+     3596 ms  ClCompile                                  1 calls
+
+Task Performance Summary:
+        0 ms  AssignTargetPath                           6 calls
+        0 ms  AssignCulture                              1 calls
+        0 ms  Delete                                     1 calls
+        0 ms  Message                                    4 calls
+        0 ms  Touch                                      2 calls
+        0 ms  SetEnv                                     4 calls
+        0 ms  MakeDir                                   10 calls
+        0 ms  ResolveNonMSBuildProjectOutput             1 calls
+        0 ms  ReadLinesFromFile                          1 calls
+        1 ms  ResolveAssemblyReference                   1 calls
+        1 ms  AssignProjectConfiguration                 1 calls
+        2 ms  RC                                         2 calls
+        2 ms  WriteLinesToFile                           3 calls
+       22 ms  MSBuild                                    4 calls
+       27 ms  Mt                                         1 calls
+       37 ms  Exec                                       1 calls
+      283 ms  Link                                       2 calls
+     3593 ms  CL                                         1 calls
+
+Build succeeded.
+
+Time Elapsed 00:00:03.98
