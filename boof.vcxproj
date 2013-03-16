@@ -99,7 +99,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\KinectController.cpp" />
-    <ClCompile Include="view.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\boof.cpp" />
     <ClCompile Include="..\..\..\addons\ofxOpenCv\src\ofxCvColorImage.cpp" />
@@ -178,7 +177,6 @@
     <ClInclude Include="..\..\..\addons\ofxUI\src\ofxUIWidgetWithLabel.h" />
     <ClInclude Include="src\KinectController.h" />
     <ClInclude Include="src\PixelEffect.h" />
-    <ClInclude Include="view.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\libs\openFrameworksCompiled\project\vs2010\openframeworksLib.vcxproj">
