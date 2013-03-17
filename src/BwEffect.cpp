@@ -2,8 +2,12 @@
 
 #include "BwEffect.h"
 
+//I am not sure how to use the CaptureStream_RGB enum without this include but I know this will result in this file
+// being included way too much.
+#include "KinectController.h"
+
 BwEffect::BwEffect()
-: PixelEffect("bw_effect")
+: PixelEffect("bw_effect", CaptureStream_RGB)
 {
 
 }

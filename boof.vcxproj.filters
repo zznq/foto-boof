@@ -52,6 +52,9 @@
     <ClCompile Include="src\BwEffect.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\View.cpp">
+      <Filter>src\views</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -86,6 +89,9 @@
     </Filter>
     <Filter Include="addons\ofxUI\src">
       <UniqueIdentifier>{a00c2d23-6c11-bc86-3993-2cf0e345f895}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\views">
+      <UniqueIdentifier>{97918e25-4462-4678-80b4-540f6cfdd1ee}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -277,6 +283,12 @@
     </ClInclude>
     <ClInclude Include="src\BwEffect.h">
       <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\View.h">
+      <Filter>src\views</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BwView.h">
+      <Filter>src\views</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

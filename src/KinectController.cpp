@@ -3,11 +3,12 @@
 #include "KinectController.h"
 #include "PixelEffect.h"
 
-KinectController::KinectController()
-:m_kinectInterface(new ofxKinect()) 
-{
+KinectController::KinectController(bool infrared, bool video, bool texture) : m_kinectInterface(new ofxKinect) {
+	
+	m_captureStream = CaptureStream_RGB;
+
 	// initialize the kinect interface
-	m_kinectInterface->init(false, true, false);
+	m_kinectInterface->init(infrared, video, texture);
 
 	// open a connection to the first one found
 	m_kinectInterface->open();
@@ -37,6 +38,10 @@ void KinectController::removeEffect(const std::string& effectName)
 	}
 }
 
+void KinectController::clearEffects() {
+	m_effects.clear();
+}
+
 void KinectController::setup() 
 {
 	// NOTE: Must wait to do it here because when the constructor is run
@@ -54,22 +59,38 @@ void KinectController::update()
 void KinectController::applyEffects() 
 {
 	// store reference locally
-	ofPixels& pixels = m_kinectInterface->getPixelsRef();
+	ofPixels& pixels = this->getPixelsRef();
 
 	// apply each effect to the pixels data from the kinect
 	// NOTE: this will modify the pixel data in place, not copy
 	for (PixelEffects::iterator iter = m_effects.begin(); iter != m_effects.end(); ++iter) {
-		(*iter)->apply(pixels);
+		if((*iter)->m_captureStreamType == this->m_captureStream) {
+			(*iter)->apply(pixels);
+		}
 	}
 }
 
 void KinectController::draw() 
 {
-	m_texture.loadData(m_kinectInterface->getPixelsRef());
+	m_texture.loadData(this->getPixelsRef());
 	m_texture.draw(0, 0, m_kinectInterface->getWidth(), m_kinectInterface->getHeight());
 }
 
 bool KinectController::isConnected() const 
 {
 	return m_kinectInterface ? m_kinectInterface->isConnected() : false;
+}
+
+ofPixels & KinectController::getPixelsRef() {
+	switch(m_captureStream) {
+	case CaptureStream_RGB:
+		return m_kinectInterface->getPixelsRef();
+		break;
+	case CaptureStream_BW:
+		return m_kinectInterface->getPixelsRef(); // ?
+		break;
+	case CaptureStream_DEPTH:
+		return m_kinectInterface->getDepthPixelsRef();
+		break;
+	}
 }

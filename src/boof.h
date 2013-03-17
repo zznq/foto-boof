@@ -5,14 +5,14 @@
 // forward declarations
 class ofAppBaseWindow;
 class KinectController;
-class PixelEffect;
+class View;
 
 class Boof : public ofBaseApp {
 public:
 	// convenience typedefs
 	typedef ofPtr<ofAppBaseWindow> WindowPtr;
 	typedef ofPtr<KinectController> KinectControllerPtr;
-	typedef ofPtr<PixelEffect> PixelEffectPtr;
+	typedef std::vector<View*> Views;
 public:
 	Boof();
 	~Boof();
@@ -33,10 +33,16 @@ public:
 	void gotMessage(ofMessage msg);
 	
 	WindowPtr getWindow() const;
-
 private:
 	WindowPtr m_window;
 	KinectControllerPtr m_kinectController;
-	PixelEffectPtr m_bwEffect;
-	bool m_bwEffectEnabled;
+	Views m_views;
+
+	unsigned long long m_lastElapsedTime;
+	float m_viewUpdateInterval;
+	int m_viewIndex;
+
+	void addView(View* view);
+	View* getCurrentView();
+	void nextView();
 };
