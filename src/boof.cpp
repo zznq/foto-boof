@@ -2,9 +2,12 @@
 
 #include "boof.h"
 #include "KinectController.h"
+#include "PixelEffect.h"
+#include "BwEffect.h"
 
 Boof::Boof()
-: m_window(new ofAppGlutWindow()), m_kinectController(new KinectController()) 
+: m_window(new ofAppGlutWindow()), m_kinectController(new KinectController()), 
+m_bwEffect(new BwEffect()), m_bwEffectEnabled(false)
 {
 
 }
@@ -36,11 +39,28 @@ void Boof::exit() {
 //--------------------------------------------------------------
 void Boof::draw(){
 	m_kinectController->draw();
+
+	
+	// set color to black for text
+	ofSetColor(0, 0, 0);
+
+	// draw a string for the effect options
+	ofDrawBitmapString("Press 1 to toggle Black and White effect", 20, 620);
+
+	// reset color to white
+	ofSetColor(255, 255, 255);
 }
 
 //--------------------------------------------------------------
 void Boof::keyPressed(int key){
-
+	switch (key) {
+		case '1': 
+		{
+			m_bwEffectEnabled ? m_kinectController->removeEffect(m_bwEffect->getName()) : m_kinectController->addEffect(m_bwEffect);
+			m_bwEffectEnabled = !m_bwEffectEnabled;
+			break;
+		}
+	}
 }
 
 //--------------------------------------------------------------

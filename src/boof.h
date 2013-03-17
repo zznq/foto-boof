@@ -5,13 +5,14 @@
 // forward declarations
 class ofAppBaseWindow;
 class KinectController;
+class PixelEffect;
 
 class Boof : public ofBaseApp {
 public:
 	// convenience typedefs
 	typedef ofPtr<ofAppBaseWindow> WindowPtr;
 	typedef ofPtr<KinectController> KinectControllerPtr;
-
+	typedef ofPtr<PixelEffect> PixelEffectPtr;
 public:
 	Boof();
 	~Boof();
@@ -36,4 +37,6 @@ public:
 private:
 	WindowPtr m_window;
 	KinectControllerPtr m_kinectController;
+	PixelEffectPtr m_bwEffect;
+	bool m_bwEffectEnabled;
 };

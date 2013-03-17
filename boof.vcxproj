@@ -102,6 +102,7 @@ xcopy /e /i /y "$(ProjectDir)..\..\..\addons\ofxKinect\libs\libfreenect\lib\vs20
     <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\BwEffect.cpp" />
     <ClCompile Include="src\KinectController.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\boof.cpp" />
@@ -179,6 +180,7 @@ xcopy /e /i /y "$(ProjectDir)..\..\..\addons\ofxKinect\libs\libfreenect\lib\vs20
     <ClInclude Include="..\..\..\addons\ofxUI\src\ofxUIWaveform.h" />
     <ClInclude Include="..\..\..\addons\ofxUI\src\ofxUIWidget.h" />
     <ClInclude Include="..\..\..\addons\ofxUI\src\ofxUIWidgetWithLabel.h" />
+    <ClInclude Include="src\BwEffect.h" />
     <ClInclude Include="src\KinectController.h" />
     <ClInclude Include="src\PixelEffect.h" />
   </ItemGroup>

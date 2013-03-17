@@ -1,3 +1,6 @@
+#ifndef KINECT_CONTROLLER_H
+#define KINECT_CONTROLLER_H
+
 #include <vector>
 
 #include "ofTypes.h"
@@ -29,3 +32,5 @@ private:
 	KinectInterfacePtr m_kinectInterface;
 	ofTexture m_texture;
 };
+
+#endif

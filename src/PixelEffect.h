@@ -1,3 +1,6 @@
+#ifndef PIXEL_EFFECT_H
+#define PIXEL_EFFECT_H
+
 #include "ofPixels.h"
 
 // serves as a base class for all effects
@@ -11,3 +14,5 @@ public:
 private:
 	std::string m_name;
 };
+
+#endif
