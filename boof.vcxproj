@@ -103,6 +103,7 @@ xcopy /e /i /y "$(ProjectDir)..\..\..\addons\ofxKinect\libs\libfreenect\lib\vs20
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\BwEffect.cpp" />
+    <ClCompile Include="src\BwShaderEffect.cpp" />
     <ClCompile Include="src\KinectController.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\boof.cpp" />
@@ -119,6 +120,7 @@ xcopy /e /i /y "$(ProjectDir)..\..\..\addons\ofxKinect\libs\libfreenect\lib\vs20
     <ClCompile Include="..\..\..\addons\ofxXmlSettings\libs\tinyxmlparser.cpp" />
     <ClCompile Include="..\..\..\addons\ofxKinect\src\ofxKinect.cpp" />
     <ClCompile Include="src\View.cpp" />
+    <ClCompile Include="src\VisualEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\boof.h" />
@@ -182,9 +184,11 @@ xcopy /e /i /y "$(ProjectDir)..\..\..\addons\ofxKinect\libs\libfreenect\lib\vs20
     <ClInclude Include="..\..\..\addons\ofxUI\src\ofxUIWidget.h" />
     <ClInclude Include="..\..\..\addons\ofxUI\src\ofxUIWidgetWithLabel.h" />
     <ClInclude Include="src\BwEffect.h" />
+    <ClInclude Include="src\BwShaderEffect.h" />
     <ClInclude Include="src\BwView.h" />
     <ClInclude Include="src\KinectController.h" />
-    <ClInclude Include="src\PixelEffect.h" />
+    <ClInclude Include="src\KinectData.h" />
+    <ClInclude Include="src\VisualEffect.h" />
     <ClInclude Include="src\View.h" />
   </ItemGroup>
   <ItemGroup>

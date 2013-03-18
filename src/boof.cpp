@@ -5,10 +5,12 @@
 #include "View.h"
 #include "BwView.h"
 
-Boof::Boof()
-: m_window(new ofAppGlutWindow()), m_kinectController(new KinectController())
+Boof::Boof(int windowWidth, int windowHeight)
+: m_windowWidth(windowWidth), m_windowHeight(windowHeight), m_window(new ofAppGlutWindow()), 
+m_kinectController(new KinectController())
 {
-
+	// setup opengl context and window
+	ofSetupOpenGL(m_window, windowWidth, windowHeight, OF_WINDOW);
 }
 
 Boof::~Boof() {
@@ -26,15 +28,12 @@ void Boof::setup(){
 	// of the controller properly
 	m_kinectController->setup();
 
-	m_views = Views();
 	//Set up new Views here
-	View* firstView = new View(m_kinectController);
+	ViewPtr firstView(new View(m_kinectController, m_kinectController->getDataWidth(), m_kinectController->getDataHeight()));
 	addView(firstView);
 
-	BwView* secondView = new BwView(m_kinectController);
+	ofPtr<BwView> secondView(new BwView(m_kinectController, m_kinectController->getDataWidth(), m_kinectController->getDataHeight()));
 	addView(secondView);
-
-	firstView->start();
 
 	m_viewUpdateInterval = 0;
 	m_viewIndex = 0;
@@ -46,11 +45,14 @@ void Boof::update() {
 	unsigned long long elapsedTime = ofGetElapsedTimeMillis();
 	m_viewUpdateInterval += (elapsedTime - m_lastElapsedTime);
 
+
+	// update the kinect controller here, before any views are updated
+	m_kinectController->update();
+
 	if(m_viewUpdateInterval > this->getCurrentView()->getViewInterval()) {
 		this->nextView();
 	}
 
-	//m_kinectController->update();
 	this->getCurrentView()->update();
 
 	m_lastElapsedTime = elapsedTime;
@@ -62,7 +64,6 @@ void Boof::exit() {
 
 //--------------------------------------------------------------
 void Boof::draw() {
-	//m_kinectController->draw();
 	this->getCurrentView()->draw();
 
 	// set color to black for text
@@ -114,7 +115,8 @@ void Boof::mouseReleased(int x, int y, int button){
 
 //--------------------------------------------------------------
 void Boof::windowResized(int w, int h){
-
+	m_windowWidth = w;
+	m_windowHeight = h;
 }
 
 //--------------------------------------------------------------
@@ -131,19 +133,21 @@ Boof::WindowPtr Boof::getWindow() const {
 	return m_window;
 }
 
-void Boof::addView(View* view) {
+void Boof::addView(const ViewPtr& view) {
 	m_views.push_back(view);
 }
 
-View* Boof::getCurrentView() {
-	return m_views.at(m_viewIndex);
+Boof::ViewPtr Boof::getCurrentView() {
+	if (m_viewIndex < m_views.size() && m_viewIndex >= 0) {
+		return m_views[m_viewIndex];
+	}
+
+	return ViewPtr();
 }
 
 void Boof::nextView() {
 	m_viewUpdateInterval = 0;
-	if(m_viewIndex < m_views.size() -1) {
+	if (m_viewIndex < m_views.size()-1) {
 		m_viewIndex++;
-
-		this->getCurrentView()->start();
 	}
 }

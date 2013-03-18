@@ -4,15 +4,12 @@
 #include "View.h"
 #include "KinectController.h"
 #include "BwEffect.h"
+#include "BwShaderEffect.h"
 
 class BwView : public View {
 public:
-	BwView(KinectControllerPtr kinectController) : View(kinectController) {
-	}
-
-	void start() {
-		m_kinectController->clearEffects();
-		m_kinectController->addEffect(KinectController::PixelEffectPtr(new BwEffect()));
+	BwView(KinectControllerPtr kinectController, int width, int height) : View(kinectController, width, height) {
+		addEffect(View::VisualEffectPtr(new BwEffect()));
 	}
 };
 

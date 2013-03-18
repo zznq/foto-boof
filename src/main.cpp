@@ -3,10 +3,8 @@
 #include "boof.h"
 
 int main() {
+	// create foto-boof applicatoin
 	ofPtr<Boof> boofApp(new Boof());
-
-	// setup opengl context and window
-	ofSetupOpenGL(boofApp->getWindow(), 1024, 768, OF_WINDOW);
 
 	// run the app
 	ofRunApp(boofApp);

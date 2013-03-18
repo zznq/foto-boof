@@ -1,14 +1,14 @@
 #ifndef BW_EFFECT_H
 #define BW_EFFECT_H
 
-#include "PixelEffect.h"
+#include "VisualEffect.h"
 
 // converts to black & white
-class BwEffect: public PixelEffect {
+class BwEffect: public VisualEffect {
 public:
 	BwEffect();
 
-	virtual void apply(ofPixels& pixels);
+	virtual void draw();
 };
 
 #endif

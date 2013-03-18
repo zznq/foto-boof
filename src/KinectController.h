@@ -6,42 +6,30 @@
 #include "ofTypes.h"
 #include "ofTexture.h"
 
-class ofxKinect;
-class PixelEffect;
+#include "KinectData.h"
 
-enum KinectCaptureStream { 
-	CaptureStream_RGB,
-	CaptureStream_BW,
-	CaptureStream_DEPTH
-};
+class ofxKinect;
+class VisualEffect;
 
 class KinectController {
 public:
 	// convenience typedefs
-	typedef ofPtr<PixelEffect> PixelEffectPtr;
-	typedef std::vector<PixelEffectPtr> PixelEffects;
 	typedef ofPtr<ofxKinect> KinectInterfacePtr;
 public:
 	KinectController(bool infrared = false, bool video = true, bool texture = false);
 	~KinectController();
-
-	void addEffect(const PixelEffectPtr& effect);
-	void removeEffect(const std::string& effectName);
-	void clearEffects();
-	void applyEffects();
 
 	void setup();
 	void update();
 	void draw();
 	bool isConnected() const;
 
-	ofPixels & getPixelsRef();
+	KinectData getKinectData();
+	float getDataWidth() const;
+	float getDataHeight() const;
 
-	PixelEffects m_effects;
+private:
 	KinectInterfacePtr m_kinectInterface;
-	ofTexture m_texture;
-
-	KinectCaptureStream m_captureStream;
 };
 
 #endif

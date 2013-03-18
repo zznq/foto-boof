@@ -12,9 +12,10 @@ public:
 	// convenience typedefs
 	typedef ofPtr<ofAppBaseWindow> WindowPtr;
 	typedef ofPtr<KinectController> KinectControllerPtr;
-	typedef std::vector<View*> Views;
+	typedef ofPtr<View> ViewPtr;
+	typedef std::vector<ViewPtr > Views;
 public:
-	Boof();
+	Boof(int windowWidth = 1024, int windowHeight = 768);
 	~Boof();
 
 	void setup();
@@ -34,6 +35,8 @@ public:
 	
 	WindowPtr getWindow() const;
 private:
+	int m_windowWidth;
+	int m_windowHeight;
 	WindowPtr m_window;
 	KinectControllerPtr m_kinectController;
 	Views m_views;
@@ -42,7 +45,7 @@ private:
 	float m_viewUpdateInterval;
 	int m_viewIndex;
 
-	void addView(View* view);
-	View* getCurrentView();
+	void addView(const ViewPtr& view);
+	ViewPtr getCurrentView();
 	void nextView();
 };

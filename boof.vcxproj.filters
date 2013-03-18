@@ -49,11 +49,17 @@
     <ClCompile Include="src\KinectController.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\BwEffect.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\View.cpp">
       <Filter>src\views</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BwEffect.cpp">
+      <Filter>src\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BwShaderEffect.cpp">
+      <Filter>src\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\VisualEffect.cpp">
+      <Filter>src\Effects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -92,6 +98,9 @@
     </Filter>
     <Filter Include="src\views">
       <UniqueIdentifier>{97918e25-4462-4678-80b4-540f6cfdd1ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Effects">
+      <UniqueIdentifier>{cc7d12df-2503-44ab-b4ef-5526afe37343}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -278,17 +287,23 @@
     <ClInclude Include="src\KinectController.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\PixelEffect.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BwEffect.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="src\View.h">
       <Filter>src\views</Filter>
     </ClInclude>
     <ClInclude Include="src\BwView.h">
       <Filter>src\views</Filter>
+    </ClInclude>
+    <ClInclude Include="src\VisualEffect.h">
+      <Filter>src\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BwEffect.h">
+      <Filter>src\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BwShaderEffect.h">
+      <Filter>src\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\KinectData.h">
+      <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
