@@ -4,7 +4,6 @@
 #include "View.h"
 #include "KinectController.h"
 #include "BwEffect.h"
-#include "BwShaderEffect.h"
 
 class BwView : public View {
 public:

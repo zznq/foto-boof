@@ -4,9 +4,14 @@
 //
 // invert like a color negative
 
+uniform sampler2DRect texture;
+
 void main()
 {
-   // invert color components
-   gl_FragColor.rgb = 1.0 - gl_Color.rgb;
-   gl_FragColor.a = 1.0;
+	// get color from texture coordinate
+	vec4 color = texture2DRect(texture, gl_TexCoord[0].st);
+
+	// invert color components
+	gl_FragColor.rgb = 1.0 - color.rgb;
+	gl_FragColor.a = color.a;
 }

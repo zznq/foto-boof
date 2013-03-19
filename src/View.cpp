@@ -28,7 +28,7 @@ void View::draw() {
 	}
 
 	m_texture.loadData(getKinectData().m_videoStream);
-	m_texture.draw(0, 0, m_width, m_height);
+	m_texture.draw(0, 0);
 
 	for (iter = m_effects.begin(); iter != m_effects.end(); ++iter) {
 		(*iter)->postDraw();

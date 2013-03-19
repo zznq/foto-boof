@@ -55,11 +55,14 @@
     <ClCompile Include="src\BwEffect.cpp">
       <Filter>src\Effects</Filter>
     </ClCompile>
-    <ClCompile Include="src\BwShaderEffect.cpp">
-      <Filter>src\Effects</Filter>
-    </ClCompile>
     <ClCompile Include="src\VisualEffect.cpp">
       <Filter>src\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ShaderEffect.cpp">
+      <Filter>src\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ViewFactory.cpp">
+      <Filter>src\views</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -299,11 +302,20 @@
     <ClInclude Include="src\BwEffect.h">
       <Filter>src\Effects</Filter>
     </ClInclude>
-    <ClInclude Include="src\BwShaderEffect.h">
-      <Filter>src\Effects</Filter>
-    </ClInclude>
     <ClInclude Include="src\KinectData.h">
       <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BwShaderView.h">
+      <Filter>src\views</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ColorInvertShaderView.h">
+      <Filter>src\views</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ShaderEffect.h">
+      <Filter>src\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ViewFactory.h">
+      <Filter>src\views</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

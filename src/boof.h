@@ -2,6 +2,8 @@
 
 #include "ofMain.h"
 
+#include "ViewFactory.h"
+
 // forward declarations
 class ofAppBaseWindow;
 class KinectController;
@@ -12,7 +14,6 @@ public:
 	// convenience typedefs
 	typedef ofPtr<ofAppBaseWindow> WindowPtr;
 	typedef ofPtr<KinectController> KinectControllerPtr;
-	typedef ofPtr<View> ViewPtr;
 	typedef std::vector<ViewPtr > Views;
 public:
 	Boof(int windowWidth = 1024, int windowHeight = 768);

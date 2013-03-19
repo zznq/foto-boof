@@ -4,6 +4,7 @@
 #include "KinectController.h"
 #include "View.h"
 #include "BwView.h"
+#include "BwShaderView.h"
 
 Boof::Boof(int windowWidth, int windowHeight)
 : m_windowWidth(windowWidth), m_windowHeight(windowHeight), m_window(new ofAppGlutWindow()), 
@@ -28,12 +29,16 @@ void Boof::setup(){
 	// of the controller properly
 	m_kinectController->setup();
 
+	// add all view types
+	for (int i=0; i < ViewType::Max; ++i) {
+		addView(CreateView(static_cast<ViewType::Enum>(i), m_kinectController, m_kinectController->getDataWidth(), m_kinectController->getDataHeight()));
+	}
 	//Set up new Views here
-	ViewPtr firstView(new View(m_kinectController, m_kinectController->getDataWidth(), m_kinectController->getDataHeight()));
-	addView(firstView);
+	//ViewPtr firstView(new View(m_kinectController, m_kinectController->getDataWidth(), m_kinectController->getDataHeight()));
+	//addView(firstView);
 
-	ofPtr<BwView> secondView(new BwView(m_kinectController, m_kinectController->getDataWidth(), m_kinectController->getDataHeight()));
-	addView(secondView);
+	//ViewPtr secondView(new BwShaderView(m_kinectController, m_kinectController->getDataWidth(), m_kinectController->getDataHeight()));
+	//addView(secondView);
 
 	m_viewUpdateInterval = 0;
 	m_viewIndex = 0;
@@ -137,7 +142,7 @@ void Boof::addView(const ViewPtr& view) {
 	m_views.push_back(view);
 }
 
-Boof::ViewPtr Boof::getCurrentView() {
+ViewPtr Boof::getCurrentView() {
 	if (m_viewIndex < m_views.size() && m_viewIndex >= 0) {
 		return m_views[m_viewIndex];
 	}

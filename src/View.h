@@ -7,10 +7,10 @@
 #include "KinectData.h"
 
 class KinectController;
+typedef ofPtr<KinectController> KinectControllerPtr;
 
 class View {
 public:
-	typedef ofPtr<KinectController> KinectControllerPtr;
 	typedef ofPtr<VisualEffect> VisualEffectPtr;
 	typedef std::vector<VisualEffectPtr> VisualEffects;
 private:
