@@ -23,6 +23,7 @@ public:
 	void update();
 	void draw();
 	bool isConnected() const;
+	bool isFrameNew() const;
 
 	KinectData getKinectData();
 	float getDataWidth() const;

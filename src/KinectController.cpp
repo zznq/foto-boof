@@ -40,6 +40,11 @@ bool KinectController::isConnected() const
 	return m_kinectInterface ? m_kinectInterface->isConnected() : false;
 }
 
+bool KinectController::isFrameNew() const
+{
+	return m_kinectInterface ? m_kinectInterface->isFrameNew() : false;
+}
+
 KinectData KinectController::getKinectData() {
 	return KinectData(m_kinectInterface->getPixelsRef(), m_kinectInterface->getDepthPixelsRef());
 }

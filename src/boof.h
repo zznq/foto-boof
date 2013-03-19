@@ -1,19 +1,22 @@
 #pragma once
 
 #include "ofMain.h"
+#include "View.h"
+#include "BwView.h"
+#include "ViewDelegate.h"
 
 // forward declarations
 class ofAppBaseWindow;
 class KinectController;
-class View;
 
-class Boof : public ofBaseApp {
+class Boof : public ofBaseApp, public ViewDelegate {
 public:
 	// convenience typedefs
 	typedef ofPtr<ofAppBaseWindow> WindowPtr;
 	typedef ofPtr<KinectController> KinectControllerPtr;
 	typedef ofPtr<View> ViewPtr;
 	typedef std::vector<ViewPtr > Views;
+	typedef Views::iterator ViewsIterator;
 public:
 	Boof(int windowWidth = 1024, int windowHeight = 768);
 	~Boof();
@@ -33,6 +36,11 @@ public:
 	void dragEvent(ofDragInfo dragInfo);
 	void gotMessage(ofMessage msg);
 	
+	// ViewDelegate Overrides
+	virtual void viewStart();
+	virtual void viewComplete();
+	virtual void viewCountdownStarted();
+
 	WindowPtr getWindow() const;
 private:
 	int m_windowWidth;
@@ -40,12 +48,12 @@ private:
 	WindowPtr m_window;
 	KinectControllerPtr m_kinectController;
 	Views m_views;
+	ViewsIterator m_viewsIterator;
 
-	unsigned long long m_lastElapsedTime;
-	float m_viewUpdateInterval;
+	View::CanvasPtr m_canvas;
+
 	int m_viewIndex;
 
 	void addView(const ViewPtr& view);
 	ViewPtr getCurrentView();
-	void nextView();
 };

@@ -1,9 +1,10 @@
 #include "ofAppGlutWindow.h"
 
+#include "ofxUI.h"
+
 #include "boof.h"
+#include "Timer.h"
 #include "KinectController.h"
-#include "View.h"
-#include "BwView.h"
 
 Boof::Boof(int windowWidth, int windowHeight)
 : m_windowWidth(windowWidth), m_windowHeight(windowHeight), m_window(new ofAppGlutWindow()), 
@@ -20,42 +21,41 @@ Boof::~Boof() {
 //--------------------------------------------------------------
 void Boof::setup(){
 
-	// target 60 frames/second, this
+	// target 30 frames/second, this
 	// must be called after window is created
-	ofSetFrameRate(60);
+	ofSetFrameRate(30);
 
 	// need to call this here to initialize the internals
 	// of the controller properly
 	m_kinectController->setup();
 
+	m_canvas = View::CanvasPtr(new ofxUICanvas());
+
 	//Set up new Views here
-	ViewPtr firstView(new View(m_kinectController, m_kinectController->getDataWidth(), m_kinectController->getDataHeight()));
+	ViewPtr firstView(new View(m_kinectController, m_kinectController->getDataWidth(), m_kinectController->getDataHeight(), m_canvas));
 	addView(firstView);
 
-	ofPtr<BwView> secondView(new BwView(m_kinectController, m_kinectController->getDataWidth(), m_kinectController->getDataHeight()));
+	firstView->setViewDelegate(View::ViewDelegatePtr(this));
+	firstView->setup();
+
+	ofPtr<BwView> secondView(new BwView(m_kinectController, m_kinectController->getDataWidth(), m_kinectController->getDataHeight(), m_canvas));
 	addView(secondView);
 
-	m_viewUpdateInterval = 0;
+	secondView->setViewDelegate(View::ViewDelegatePtr(this));
+
 	m_viewIndex = 0;
-	m_lastElapsedTime = 0;
+
+	Timer::Initialize(true, false);
+
+	m_viewsIterator = m_views.begin();
 }
 
 //--------------------------------------------------------------
 void Boof::update() {
-	unsigned long long elapsedTime = ofGetElapsedTimeMillis();
-	m_viewUpdateInterval += (elapsedTime - m_lastElapsedTime);
-
-
 	// update the kinect controller here, before any views are updated
 	m_kinectController->update();
 
-	if(m_viewUpdateInterval > this->getCurrentView()->getViewInterval()) {
-		this->nextView();
-	}
-
-	this->getCurrentView()->update();
-
-	m_lastElapsedTime = elapsedTime;
+	this->getCurrentView()->update(Timer::TimerUpdate());
 }
 
 void Boof::exit() {
@@ -77,15 +77,8 @@ void Boof::draw() {
 }
 
 //--------------------------------------------------------------
-void Boof::keyPressed(int key){
-	switch (key) {
-		case '1': 
-		{
-			//m_bwEffectEnabled ? m_kinectController->removeEffect(m_bwEffect->getName()) : m_kinectController->addEffect(m_bwEffect);
-			//m_bwEffectEnabled = !m_bwEffectEnabled;
-			break;
-		}
-	}
+void Boof::keyPressed(int key)
+{
 }
 
 //--------------------------------------------------------------
@@ -138,16 +131,28 @@ void Boof::addView(const ViewPtr& view) {
 }
 
 Boof::ViewPtr Boof::getCurrentView() {
-	if (m_viewIndex < m_views.size() && m_viewIndex >= 0) {
-		return m_views[m_viewIndex];
-	}
-
-	return ViewPtr();
+	return (* m_viewsIterator);
 }
 
-void Boof::nextView() {
-	m_viewUpdateInterval = 0;
-	if (m_viewIndex < m_views.size()-1) {
-		m_viewIndex++;
+void Boof::viewStart()
+{
+
+}
+
+void Boof::viewComplete()
+{
+	this->getCurrentView()->close();
+
+	m_viewsIterator++;
+
+	if(m_viewsIterator == m_views.end()) {
+		m_viewsIterator = m_views.begin();
 	}
+
+	this->getCurrentView()->setup();
+}
+
+void Boof::viewCountdownStarted() 
+{
+
 }

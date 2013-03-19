@@ -119,6 +119,7 @@ xcopy /e /i /y "$(ProjectDir)..\..\..\addons\ofxKinect\libs\libfreenect\lib\vs20
     <ClCompile Include="..\..\..\addons\ofxXmlSettings\libs\tinyxmlerror.cpp" />
     <ClCompile Include="..\..\..\addons\ofxXmlSettings\libs\tinyxmlparser.cpp" />
     <ClCompile Include="..\..\..\addons\ofxKinect\src\ofxKinect.cpp" />
+    <ClCompile Include="src\Timer.cpp" />
     <ClCompile Include="src\View.cpp" />
     <ClCompile Include="src\VisualEffect.cpp" />
   </ItemGroup>
@@ -188,6 +189,8 @@ xcopy /e /i /y "$(ProjectDir)..\..\..\addons\ofxKinect\libs\libfreenect\lib\vs20
     <ClInclude Include="src\BwView.h" />
     <ClInclude Include="src\KinectController.h" />
     <ClInclude Include="src\KinectData.h" />
+    <ClInclude Include="src\Timer.h" />
+    <ClInclude Include="src\ViewDelegate.h" />
     <ClInclude Include="src\VisualEffect.h" />
     <ClInclude Include="src\View.h" />
   </ItemGroup>

@@ -1,3 +1,4 @@
+#include "ofMain.h"
 #include "ofColor.h"
 
 #include "BwEffect.h"
@@ -7,7 +8,9 @@
 BwEffect::BwEffect()
 : VisualEffect("bw_effect")
 {
+	ofxUISlider* slider = new ofxUISlider("BGR", 0.0f, 255.0f, 50.0f, 50.0f, 50.0f);
 
+	m_widgets.push_back(slider);
 }
 
 void BwEffect::draw() {
@@ -22,4 +25,15 @@ void BwEffect::draw() {
 			}
 		}
 	}
+}
+
+void BwEffect::guiEvent(ofxUIEventArgs &e)
+{
+	string name = e.widget->getName(); 
+	int kind = e.widget->getKind(); 
+
+	if(name == "BGR")
+	{
+		std::cout << name << " " << kind << endl;	
+	}  
 }

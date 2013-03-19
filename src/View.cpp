@@ -1,21 +1,51 @@
 #include "View.h"
 #include "KinectController.h"
+#include "ViewDelegate.h"
 
-View::View(KinectControllerPtr kinectController, int width, int height) 
-: m_kinectController(kinectController),  m_width(width), m_height(height), m_timeInterval(5000) 
+View::View(KinectControllerPtr kinectController, int width, int height, CanvasPtr canvas) 
+: m_kinectController(kinectController),  m_width(width), m_height(height), m_canvas(canvas), m_timeInterval(5000), m_runningTime(0)
 {
 	m_texture.allocate(m_kinectController->getDataWidth(), m_kinectController->getDataHeight(), GL_RGB);
 }
 
-View::~View() {
+View::~View()
+{
 	m_texture.clear();
 }
 
-void View::update() {
-
+void View::setup()
+{
+	VisualEffects::iterator iter;
+	for (iter = m_effects.begin(); iter != m_effects.end(); ++iter) {
+		(*iter)->addUI(m_canvas);
+	}
 }
 
-void View::draw() {
+void View::close()
+{
+	VisualEffects::iterator iter;
+	for (iter = m_effects.begin(); iter != m_effects.end(); ++iter) {
+		(*iter)->removeUI(m_canvas);
+	}
+}
+
+void View::update(float delta)
+{
+	m_runningTime += delta;
+
+	if(m_runningTime > this->getViewInterval()) {
+		// Tell Delegate to update 
+		this->viewComplete();
+	}
+}
+
+void View::draw()
+{
+	if(!m_kinectController->isFrameNew())
+	{
+		return;
+	}
+
 	VisualEffects::iterator iter;
 	for (iter = m_effects.begin(); iter != m_effects.end(); ++iter) {
 		(*iter)->preDraw();
@@ -41,24 +71,60 @@ void View::addEffect(const VisualEffectPtr& effect)
 	m_effects.push_back(effect);
 }
 
-void View::clearEffects() {
+void View::clearEffects() 
+{
 	m_effects.clear();
 }
 
 void View::removeEffect(const std::string& effectName)
 {
-	for (VisualEffects::iterator iter = m_effects.begin(); iter != m_effects.end(); ++iter) {
-		if ((*iter)->getName() == effectName) {
+	for (VisualEffects::iterator iter = m_effects.begin(); iter != m_effects.end(); ++iter)
+	{
+		if ((*iter)->getName() == effectName)
+		{
 			m_effects.erase(iter);
 			break;
 		}
 	}
 }
 
-int View::getViewInterval() {
+int View::getViewInterval()
+{
 	return m_timeInterval;
 }
 
-KinectData View::getKinectData() const {
+KinectData View::getKinectData() const
+{
 	return m_kinectController->getKinectData();
+}
+
+void View::setViewDelegate(View::ViewDelegatePtr delegate) 
+{
+	m_delegate = delegate;
+}
+
+void View::viewComplete()
+{
+	m_runningTime = 0;
+
+	if(this->m_delegate)
+	{
+		this->m_delegate->viewComplete();
+	}
+}
+
+void View::viewStart()
+{
+	if(this->m_delegate)
+	{
+		this->m_delegate->viewStart();
+	}
+}
+
+void View::viewCountdownStarted()
+{
+	if(this->m_delegate)
+	{
+		this->m_delegate->viewCountdownStarted();
+	}
 }

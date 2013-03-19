@@ -9,6 +9,8 @@ public:
 	BwEffect();
 
 	virtual void draw();
+
+	virtual void guiEvent(ofxUIEventArgs &e);
 };
 
 #endif
