@@ -12,10 +12,10 @@
 
 class VisualEffect;
 class KinectController;
+typedef ofPtr<KinectController> KinectControllerPtr;
 
 class View {
 public:
-	typedef ofPtr<KinectController> KinectControllerPtr;
 	typedef ofPtr<VisualEffect> VisualEffectPtr;
 	typedef std::vector<VisualEffectPtr> VisualEffects;
 	typedef ofPtr<ViewDelegate> ViewDelegatePtr;
@@ -30,11 +30,11 @@ private:
 
 	float m_runningTime;
 
-	CanvasPtr m_canvas;
 protected:
+	CanvasPtr m_canvas;
 	KinectControllerPtr m_kinectController;
 public:
-	View(KinectControllerPtr kinectController, int width, int height, CanvasPtr canvas);
+	View(KinectControllerPtr kinectController, int width, int height);
 	virtual ~View();
 
 	virtual void setup();
@@ -47,6 +47,7 @@ public:
 	void clearEffects();
 	int getViewInterval();
 	KinectData getKinectData() const;
+	CanvasPtr getCanvas() const;
 
 	void setViewDelegate(ViewDelegatePtr delegate);
 	

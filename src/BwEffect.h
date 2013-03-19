@@ -7,8 +7,11 @@
 class BwEffect: public VisualEffect {
 public:
 	BwEffect();
+	~BwEffect();
 
 	virtual void draw();
+
+	virtual void addUI(CanvasPtr canvas);
 
 	virtual void guiEvent(ofxUIEventArgs &e);
 };

@@ -3,7 +3,10 @@
 #include "ofMain.h"
 #include "View.h"
 #include "BwView.h"
+#include "BwShaderView.h"
 #include "ViewDelegate.h"
+
+#include "ViewFactory.h"
 
 // forward declarations
 class ofAppBaseWindow;
@@ -49,8 +52,6 @@ private:
 	KinectControllerPtr m_kinectController;
 	Views m_views;
 	ViewsIterator m_viewsIterator;
-
-	View::CanvasPtr m_canvas;
 
 	int m_viewIndex;
 

@@ -2,9 +2,10 @@
 #include "KinectController.h"
 #include "ViewDelegate.h"
 
-View::View(KinectControllerPtr kinectController, int width, int height, CanvasPtr canvas) 
-: m_kinectController(kinectController),  m_width(width), m_height(height), m_canvas(canvas), m_timeInterval(5000), m_runningTime(0)
+View::View(KinectControllerPtr kinectController, int width, int height) 
+: m_kinectController(kinectController),  m_width(width), m_height(height), m_timeInterval(5000), m_runningTime(0)
 {
+	m_canvas = View::CanvasPtr(new ofxUICanvas());
 	m_texture.allocate(m_kinectController->getDataWidth(), m_kinectController->getDataHeight(), GL_RGB);
 }
 
@@ -15,18 +16,12 @@ View::~View()
 
 void View::setup()
 {
-	VisualEffects::iterator iter;
-	for (iter = m_effects.begin(); iter != m_effects.end(); ++iter) {
-		(*iter)->addUI(m_canvas);
-	}
+	m_canvas->setVisible(true);
 }
 
 void View::close()
 {
-	VisualEffects::iterator iter;
-	for (iter = m_effects.begin(); iter != m_effects.end(); ++iter) {
-		(*iter)->removeUI(m_canvas);
-	}
+	m_canvas->setVisible(false);
 }
 
 void View::update(float delta)
@@ -58,7 +53,7 @@ void View::draw()
 	}
 
 	m_texture.loadData(getKinectData().m_videoStream);
-	m_texture.draw(0, 0, m_width, m_height);
+	m_texture.draw(0, 0);
 
 	for (iter = m_effects.begin(); iter != m_effects.end(); ++iter) {
 		(*iter)->postDraw();
@@ -96,6 +91,11 @@ int View::getViewInterval()
 KinectData View::getKinectData() const
 {
 	return m_kinectController->getKinectData();
+}
+
+View::CanvasPtr View::getCanvas() const
+{
+	return m_canvas;
 }
 
 void View::setViewDelegate(View::ViewDelegatePtr delegate) 

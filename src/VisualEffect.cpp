@@ -11,6 +11,12 @@ VisualEffect::~VisualEffect()
 
 }
 
+void VisualEffect::addUI(CanvasPtr canvas) {
+}
+
+void VisualEffect::removeUI(CanvasPtr canvas) {
+}
+
 const std::string& VisualEffect::getName() 
 { 
 	return m_name; 
@@ -18,26 +24,9 @@ const std::string& VisualEffect::getName()
 
 void VisualEffect::setParent(View* parent) 
 { 
-	m_parent = parent; 
-}
+	m_parent = parent;
 
-
-void VisualEffect::addUI(CanvasPtr canvas)
-{
-	Widgets::iterator iter;
-	for (iter = m_widgets.begin(); iter != m_widgets.end(); ++iter) {
-		canvas->addWidgetDown(*iter);
-	}
-
-	//ofAddListener(canvas->newGUIEvent,this,&VisualEffect::guiEvent);
-}
-
-void VisualEffect::removeUI(CanvasPtr canvas)
-{
-	Widgets::iterator iter;
-	for (iter = m_widgets.begin(); iter != m_widgets.end(); ++iter) {
-		canvas->removeWidget(*iter);
-	}
+	addUI(m_parent->getCanvas());
 }
 
 void VisualEffect::preDraw() 

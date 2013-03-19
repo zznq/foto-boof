@@ -31,6 +31,7 @@ public:
 
 protected:
 	Widgets m_widgets;
+	ofEvent<ofxUIEventArgs>* m_event;
 
 	std::string m_name;
 	View* m_parent;

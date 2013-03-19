@@ -6,6 +6,8 @@
 #include "Timer.h"
 #include "KinectController.h"
 
+ViewPtr CreateView(const ViewType::Enum& type, const KinectControllerPtr& kinectController, int width, int height);
+
 Boof::Boof(int windowWidth, int windowHeight)
 : m_windowWidth(windowWidth), m_windowHeight(windowHeight), m_window(new ofAppGlutWindow()), 
 m_kinectController(new KinectController())
@@ -29,20 +31,17 @@ void Boof::setup(){
 	// of the controller properly
 	m_kinectController->setup();
 
-	m_canvas = View::CanvasPtr(new ofxUICanvas());
-
-	//Set up new Views here
-	ViewPtr firstView(new View(m_kinectController, m_kinectController->getDataWidth(), m_kinectController->getDataHeight(), m_canvas));
-	addView(firstView);
-
-	firstView->setViewDelegate(View::ViewDelegatePtr(this));
-	firstView->setup();
-
-	ofPtr<BwView> secondView(new BwView(m_kinectController, m_kinectController->getDataWidth(), m_kinectController->getDataHeight(), m_canvas));
-	addView(secondView);
-
-	secondView->setViewDelegate(View::ViewDelegatePtr(this));
-
+	// add all view types
+	for (int i=0; i < ViewType::Max; ++i) {
+		ViewPtr view = CreateView(static_cast<ViewType::Enum>(i), m_kinectController, m_kinectController->getDataWidth(), m_kinectController->getDataHeight());
+		view->setViewDelegate(View::ViewDelegatePtr(this));
+		if(i ==0) {
+			view->setup();
+		}
+		
+		addView(view);
+	}
+	
 	m_viewIndex = 0;
 
 	Timer::Initialize(true, false);
@@ -136,7 +135,6 @@ Boof::ViewPtr Boof::getCurrentView() {
 
 void Boof::viewStart()
 {
-
 }
 
 void Boof::viewComplete()
