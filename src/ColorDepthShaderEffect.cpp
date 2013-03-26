@@ -8,7 +8,8 @@ ColorDepthShaderEffect::ColorDepthShaderEffect(const std::string effectName,
 								const std::string& geometryShader)
 											   : ShaderEffect(effectName, vertexShader, fragmentShader, geometryShader)
 {
-	m_lookup = std::vector<ofPixels>(256);
+	m_lookup = ofPixels();
+	m_lookup.allocate(256, 1, OF_IMAGE_COLOR_ALPHA);
 
 	m_saturationValue = 255;
 	m_brightnessValue = 255;
@@ -26,11 +27,9 @@ ColorDepthShaderEffect::~ColorDepthShaderEffect()
 void ColorDepthShaderEffect::buildLookUpTable() {
 	for(int i = 0; i < 256; i++) {
 		ofColor c;
-		ofPixels p;
+		
 		c.setHsb(i, m_saturationValue, m_brightnessValue);
-		p.setColor(i, 0, c);
-			
-		m_lookup.push_back(p);
+		m_lookup.setColor(i, 0, c);
 	}
 }
 
@@ -38,10 +37,9 @@ void ColorDepthShaderEffect::preDraw()
 {
 	ShaderEffect::preDraw();
 
-	m_lookupTexture.loadData(m_lookup[0]);
-	m_shader->setUniformTexture("color_lookup", m_lookupTexture, 2);
-
+	m_lookupTexture.loadData(m_lookup);
 	m_lookupTexture.draw(0, 0);
+	m_shader->setUniformTexture("color_lookup", m_lookupTexture, 5);
 }
 
 void ColorDepthShaderEffect::postDraw() 

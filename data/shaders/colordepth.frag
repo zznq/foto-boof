@@ -1,45 +1,25 @@
 #version 120
 
 // colorinvert.fs
-//
 // invert like a color negative
 
 uniform sampler2DRect texture;
-//uniform sampler2DRect color_lookup;
-
-// Change this to a look up table!
-vec3 hsv2rgb(vec3 hsv)
-{
-    float h = hsv.x * 6.; /* H in 0°=0 ... 1=360° */
-    float s = hsv.y;
-    float v = hsv.z;
-    float c = v * s;
-
-    vec2 cx = vec2(v*s, c * ( 1 - abs(mod(h, 2.)-1.) ));
-
-    vec3 rgb = vec3(0., 0., 0.);
-    if( h < 1. ) {
-        rgb.rg = cx;
-    } else if( h < 2. ) {
-        rgb.gr = cx;
-    } else if( h < 3. ) {
-        rgb.gb = cx;
-    } else if( h < 4. ) {
-        rgb.bg = cx;
-    } else if( h < 5. ) {
-        rgb.br = cx;
-    } else {
-        rgb.rb = cx;
-    }
-    return rgb + vec3(v-cx.y);
-}
+uniform sampler2DRect color_lookup;
 
 void main()
 {
-	// get color from texture coordinate
-	vec4 color = texture2DRect(texture, gl_TexCoord[0].st);
-	//vec4 clu = texture2DRect(color_lookup, gl_TextCoord[color.r].st);
-
+	//gl_TexCoord[0] = the current pixel location that this shader is processing
+	float greyness = texture2DRect(texture, gl_TexCoord[0].st).r;
+	
+	//If you bind an integer texture type to a float sampler, it will generally get rescaled to be in the range [-1.0...1.0]
+	ivec2 pos = ivec2(int(greyness * 255), 0);
+	vec4 clu = texture2DRect(color_lookup, pos);	
+	
+	// Make extremes white
+	if(greyness * 255 == 0) {
+		clu = vec4(255.0,255.0,255.0,255.0);
+	}
+	
 	// invert color components
-	gl_FragColor.rgb = hsv2rgb(vec3(color.r, 255, 255));
+	gl_FragColor.rgb = clu.rgb;
 }

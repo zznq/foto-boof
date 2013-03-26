@@ -10,7 +10,7 @@ class KinectData;
 // converts to black & white using a shader
 class ColorDepthShaderEffect : public ShaderEffect {
 private:
-	std::vector<ofPixels> m_lookup;
+	ofPixels m_lookup;
 	ofTexture m_lookupTexture;
 public:
 	ColorDepthShaderEffect(const std::string effectName,
