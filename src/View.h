@@ -30,11 +30,15 @@ private:
 
 	float m_runningTime;
 
+	bool m_useDepth;
+
 protected:
 	CanvasPtr m_canvas;
 	KinectControllerPtr m_kinectController;
 public:
 	View(KinectControllerPtr kinectController, int width, int height);
+	View(KinectControllerPtr kinectController, int width, int height, bool useDepth);
+
 	virtual ~View();
 
 	virtual void setup();
@@ -46,7 +50,8 @@ public:
 	void removeEffect(const std::string& effectName);
 	void clearEffects();
 	int getViewInterval();
-	KinectData getKinectData() const;
+	
+	ofPixels getKinectStream() const;
 	CanvasPtr getCanvas() const;
 
 	void setViewDelegate(ViewDelegatePtr delegate);

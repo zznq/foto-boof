@@ -5,12 +5,13 @@
 
 struct KinectData {
 public:
-	KinectData(ofPixels& videoStream, ofPixels& depthStream)
-	: m_videoStream(videoStream), m_depthStream(depthStream)
+	KinectData(ofPixels& videoStream, ofPixels& depthStream, ofFloatPixels& depthValues)
+		: m_videoStream(videoStream), m_depthStream(depthStream), m_depthValues(depthValues)
 	{
 
 	}
 
+	ofFloatPixels& m_depthValues;
 	ofPixels& m_videoStream;
 	ofPixels& m_depthStream;
 };

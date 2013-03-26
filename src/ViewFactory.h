@@ -15,6 +15,7 @@ struct ViewType {
 		BwView,
 		BwShaderView,
 		ColorInverShaderView,
+		ColorDepthShaderView,
 
 		// add any new view types above here
 		Max,

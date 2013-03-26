@@ -9,6 +9,13 @@ View::View(KinectControllerPtr kinectController, int width, int height)
 	m_texture.allocate(m_kinectController->getDataWidth(), m_kinectController->getDataHeight(), GL_RGB);
 }
 
+View::View(KinectControllerPtr kinectController, int width, int height, bool useDepth) 
+	: m_kinectController(kinectController),  m_width(width), m_height(height), m_timeInterval(5000), m_runningTime(0), m_useDepth(useDepth)
+{
+	m_canvas = View::CanvasPtr(new ofxUICanvas());
+	m_texture.allocate(m_kinectController->getDataWidth(), m_kinectController->getDataHeight(), GL_RGB);
+}
+
 View::~View()
 {
 	m_texture.clear();
@@ -52,7 +59,7 @@ void View::draw()
 		(*iter)->draw();
 	}
 
-	m_texture.loadData(getKinectData().m_videoStream);
+	m_texture.loadData(getKinectStream());
 	m_texture.draw(0, 0);
 
 	for (iter = m_effects.begin(); iter != m_effects.end(); ++iter) {
@@ -88,9 +95,13 @@ int View::getViewInterval()
 	return m_timeInterval;
 }
 
-KinectData View::getKinectData() const
+ofPixels View::getKinectStream() const
 {
-	return m_kinectController->getKinectData();
+	if(m_useDepth) {
+		return m_kinectController->getKinectData().m_depthStream;
+	} else {
+		return m_kinectController->getKinectData().m_videoStream;
+	}
 }
 
 View::CanvasPtr View::getCanvas() const

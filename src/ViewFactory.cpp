@@ -5,6 +5,7 @@
 #include "BwView.h"
 #include "BwShaderView.h"
 #include "ColorInvertShaderView.h"
+#include "ColorDepthShaderView.h"
 
 ViewPtr CreateView(const ViewType::Enum& type, const KinectControllerPtr& kinectController, int width, int height) {
 	ViewPtr ptr;
@@ -20,6 +21,9 @@ ViewPtr CreateView(const ViewType::Enum& type, const KinectControllerPtr& kinect
 			break;
 		case ViewType::ColorInverShaderView:
 			ptr.reset(new ColorInvertShaderView(kinectController, width, height));
+			break;
+		case ViewType::ColorDepthShaderView:
+			ptr.reset(new ColorDepthShaderView(kinectController, width, height));
 			break;
 		default:
 			ptr.reset(new View(kinectController, width, height));

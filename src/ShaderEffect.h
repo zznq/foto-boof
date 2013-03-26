@@ -19,7 +19,7 @@ public:
 	virtual void preDraw();
 	virtual void postDraw();
 
-private:
+protected:
 	ofPtr<ofShader> m_shader;
 };
 

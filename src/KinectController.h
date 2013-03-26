@@ -25,10 +25,13 @@ public:
 	bool isConnected() const;
 	bool isFrameNew() const;
 
+	KinectInterfacePtr getKinect();
+
 	KinectData getKinectData();
 	float getDataWidth() const;
 	float getDataHeight() const;
 
+	void setDepthClipping(float nearClip, float farClip);
 private:
 	KinectInterfacePtr m_kinectInterface;
 };

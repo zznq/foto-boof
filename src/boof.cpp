@@ -32,15 +32,16 @@ void Boof::setup(){
 	m_kinectController->setup();
 
 	// add all view types
-	for (int i=0; i < ViewType::Max; ++i) {
-		ViewPtr view = CreateView(static_cast<ViewType::Enum>(i), m_kinectController, m_kinectController->getDataWidth(), m_kinectController->getDataHeight());
+	//for (int i=0; i < ViewType::Max; ++i) {
+		//ViewPtr view = CreateView(static_cast<ViewType::Enum>(i), m_kinectController, m_kinectController->getDataWidth(), m_kinectController->getDataHeight());
+	ViewPtr view = CreateView(ViewType::ColorDepthShaderView, m_kinectController, m_kinectController->getDataWidth(), m_kinectController->getDataHeight());
 		view->setViewDelegate(View::ViewDelegatePtr(this));
-		if(i ==0) {
+		//if(i ==0) {
 			view->setup();
-		}
+		//}
 		
 		addView(view);
-	}
+	//}
 	
 	m_viewIndex = 0;
 
@@ -61,18 +62,9 @@ void Boof::exit() {
 	m_kinectController.reset();
 }
 
-//--------------------------------------------------------------
+//-------------------------------------------------------------
 void Boof::draw() {
 	this->getCurrentView()->draw();
-
-	// set color to black for text
-	ofSetColor(0, 0, 0);
-
-	// draw a string for the effect options
-	ofDrawBitmapString("Press 1 to toggle Black and White effect", 20, 620);
-
-	// reset color to white
-	ofSetColor(255, 255, 255);
 }
 
 //--------------------------------------------------------------

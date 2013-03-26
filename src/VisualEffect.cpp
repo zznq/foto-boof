@@ -27,6 +27,8 @@ void VisualEffect::setParent(View* parent)
 	m_parent = parent;
 
 	addUI(m_parent->getCanvas());
+
+	m_parent->getCanvas()->autoSizeToFitWidgets();
 }
 
 void VisualEffect::preDraw() 

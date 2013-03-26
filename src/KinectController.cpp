@@ -45,8 +45,12 @@ bool KinectController::isFrameNew() const
 	return m_kinectInterface ? m_kinectInterface->isFrameNew() : false;
 }
 
+KinectController::KinectInterfacePtr KinectController::getKinect() {
+	return m_kinectInterface;
+}
+
 KinectData KinectController::getKinectData() {
-	return KinectData(m_kinectInterface->getPixelsRef(), m_kinectInterface->getDepthPixelsRef());
+	return KinectData(m_kinectInterface->getPixelsRef(), m_kinectInterface->getDepthPixelsRef(), m_kinectInterface->getDistancePixelsRef());
 }
 
 float KinectController::getDataWidth() const {
@@ -57,3 +61,6 @@ float KinectController::getDataHeight() const {
 	return m_kinectInterface->getHeight();
 }
 
+void KinectController::setDepthClipping(float nearClip, float farClip) {
+	return m_kinectInterface->setDepthClipping(nearClip, farClip);
+}

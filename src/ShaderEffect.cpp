@@ -15,7 +15,6 @@ ShaderEffect::ShaderEffect(const std::string effectName,
 
 ShaderEffect::~ShaderEffect()
 {
-
 }
 
 void ShaderEffect::preDraw() 
