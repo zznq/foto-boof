@@ -53,6 +53,7 @@ public:
 	
 	ofPixels getKinectStream() const;
 	CanvasPtr getCanvas() const;
+	void setKinectDepthClipping(float nearClip, float farClip) const;
 
 	void setViewDelegate(ViewDelegatePtr delegate);
 	

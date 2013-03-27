@@ -11,8 +11,12 @@ ColorDepthShaderEffect::ColorDepthShaderEffect(const std::string effectName,
 	m_lookup = ofPixels();
 	m_lookup.allocate(256, 1, OF_IMAGE_COLOR_ALPHA);
 
+	m_lookupStepSize = 50;
 	m_saturationValue = 255;
 	m_brightnessValue = 255;
+
+	m_nearClip = 500;
+	m_farClip = 4000;
 
 	buildLookUpTable();
 
@@ -25,10 +29,12 @@ ColorDepthShaderEffect::~ColorDepthShaderEffect()
 }
 
 void ColorDepthShaderEffect::buildLookUpTable() {
+	ofColor c;
 	for(int i = 0; i < 256; i++) {
-		ofColor c;
-		
-		c.setHsb(i, m_saturationValue, m_brightnessValue);
+		if((i % m_lookupStepSize) == 0) {
+			c.setHsb(i, m_saturationValue, m_brightnessValue);
+		}
+
 		m_lookup.setColor(i, 0, c);
 	}
 }
@@ -61,9 +67,35 @@ void ColorDepthShaderEffect::addUI(CanvasPtr canvas)
 	canvas->addWidgetDown(slider2);
 	m_widgets.push_back(slider2);
 
+	ofxUISpacer* spacer2 = new ofxUISpacer(100, 2);
+	canvas->addWidgetDown(spacer2);
+	m_widgets.push_back(spacer2);
+
+	ofxUISlider* slider3 = new ofxUISlider("Step Size", 1.0f, 100.0f, m_lookupStepSize, 100.0f, 25.0f);
+	canvas->addWidgetDown(slider3);
+	m_widgets.push_back(slider3);
+
+	ofxUISpacer* spacer3 = new ofxUISpacer(100, 2);
+	canvas->addWidgetDown(spacer3);
+	m_widgets.push_back(spacer3);
+
+	ofxUISlider* slider4 = new ofxUISlider("Near Clip", 0.0f, 500.0f, m_nearClip, 100.0f, 25.0f);
+	canvas->addWidgetDown(slider4);
+	m_widgets.push_back(slider4);
+
+	ofxUISpacer* spacer4 = new ofxUISpacer(100, 2);
+	canvas->addWidgetDown(spacer4);
+	m_widgets.push_back(spacer4);
+
+	ofxUISlider* slider5 = new ofxUISlider("Far Clip", 501.0f, 4000.0f, m_farClip, 100.0f, 25.0f);
+	canvas->addWidgetDown(slider5);
+	m_widgets.push_back(slider5);
+
 	m_event = &canvas->newGUIEvent;
 	
 	ofAddListener(*m_event,this,&ColorDepthShaderEffect::guiEvent);
+
+	canvas->loadSettings("GUI/ColorDepthSettings.xml");
 }
 
 void ColorDepthShaderEffect::guiEvent(ofxUIEventArgs &e)
@@ -95,7 +127,39 @@ void ColorDepthShaderEffect::guiEvent(ofxUIEventArgs &e)
 		}
 	}
 
+	if(name == "Step Size") {
+		ofxUISlider *slider = (ofxUISlider *) e.widget;
+		if(m_lookupStepSize != slider->getScaledValue()) {
+			m_lookupStepSize = (int) slider->getScaledValue();
+			std::cout << name << " " << kind << ": " << m_lookupStepSize << endl;
+
+			isDirty = true;
+		}
+	}
+	
+	if(name == "Near Clip") {
+		ofxUISlider *slider = (ofxUISlider *) e.widget;
+		if(m_nearClip != slider->getScaledValue()) {
+			m_nearClip = slider->getScaledValue();
+			std::cout << name << " " << kind << ": " << m_nearClip << endl;
+
+			m_parent->setKinectDepthClipping(m_nearClip, m_farClip);
+		}
+	}
+	
+	if(name == "Far Clip") {
+		ofxUISlider *slider = (ofxUISlider *) e.widget;
+		if(m_farClip != slider->getScaledValue()) {
+			m_farClip = slider->getScaledValue();
+			std::cout << name << " " << kind << ": " << m_farClip << endl;
+
+			m_parent->setKinectDepthClipping(m_nearClip, m_farClip);
+		}
+	}
+
 	if(isDirty) {
 		buildLookUpTable();
 	}
+
+	m_parent->getCanvas()->saveSettings("GUI/ColorDepthSettings.xml");
 }

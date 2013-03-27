@@ -13,6 +13,8 @@ View::View(KinectControllerPtr kinectController, int width, int height, bool use
 	: m_kinectController(kinectController),  m_width(width), m_height(height), m_timeInterval(5000), m_runningTime(0), m_useDepth(useDepth)
 {
 	m_canvas = View::CanvasPtr(new ofxUICanvas());
+	m_canvas->setColorBack(ofColor(87.0f, 87.0F, 87.0F, 197.0f));
+
 	m_texture.allocate(m_kinectController->getDataWidth(), m_kinectController->getDataHeight(), GL_RGB);
 }
 
@@ -102,6 +104,11 @@ ofPixels View::getKinectStream() const
 	} else {
 		return m_kinectController->getKinectData().m_videoStream;
 	}
+}
+
+void View::setKinectDepthClipping(float nearClip, float farClip) const
+{
+	m_kinectController->setDepthClipping(nearClip, farClip);
 }
 
 View::CanvasPtr View::getCanvas() const
