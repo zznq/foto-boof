@@ -16,7 +16,7 @@ void main()
 	vec4 clu = texture2DRect(color_lookup, pos);	
 	
 	// Make extremes white
-	if(greyness * 255 == 0) {
+	if(pos.x == 0) {
 		clu = vec4(255.0,255.0,255.0,255.0);
 	}
 	

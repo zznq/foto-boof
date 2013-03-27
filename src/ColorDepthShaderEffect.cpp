@@ -45,7 +45,6 @@ void ColorDepthShaderEffect::preDraw()
 	ShaderEffect::preDraw();
 
 	m_lookupTexture.loadData(m_lookup);
-	m_lookupTexture.draw(0, 0);
 	m_shader->setUniformTexture("color_lookup", m_lookupTexture, 5);
 }
 
