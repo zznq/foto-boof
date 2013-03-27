@@ -31,6 +31,7 @@ private:
 	float m_saturationValue;
 	float m_brightnessValue;
 	int m_lookupStepSize;
+	int m_lookupOffset;
 
 	float m_nearClip;
 	float m_farClip;

@@ -11,12 +11,13 @@ ColorDepthShaderEffect::ColorDepthShaderEffect(const std::string effectName,
 	m_lookup = ofPixels();
 	m_lookup.allocate(256, 1, OF_IMAGE_COLOR_ALPHA);
 
+	m_lookupOffset = 0;
 	m_lookupStepSize = 50;
-	m_saturationValue = 255;
-	m_brightnessValue = 255;
+	m_saturationValue = 255.0f;
+	m_brightnessValue = 255.0f;
 
-	m_nearClip = 500;
-	m_farClip = 4000;
+	m_nearClip = 500.0f;
+	m_farClip = 4000.0f;
 
 	buildLookUpTable();
 
@@ -32,7 +33,7 @@ void ColorDepthShaderEffect::buildLookUpTable() {
 	ofColor c;
 	for(int i = 0; i < 256; i++) {
 		if((i % m_lookupStepSize) == 0) {
-			c.setHsb(i, m_saturationValue, m_brightnessValue);
+			c.setHsb((i + m_lookupOffset) % 255, m_saturationValue, m_brightnessValue);
 		}
 
 		m_lookup.setColor(i, 0, c);
@@ -75,6 +76,14 @@ void ColorDepthShaderEffect::addUI(CanvasPtr canvas)
 	canvas->addWidgetDown(slider3);
 	m_widgets.push_back(slider3);
 
+	ofxUISpacer* spacer5 = new ofxUISpacer(100, 2);
+	canvas->addWidgetDown(spacer5);
+	m_widgets.push_back(spacer5);
+
+	ofxUISlider* slider6 = new ofxUISlider("Offset", 0.0f, 255.0f, m_lookupOffset, 100.0f, 25.0f);
+	canvas->addWidgetDown(slider6);
+	m_widgets.push_back(slider6);
+
 	ofxUISpacer* spacer3 = new ofxUISpacer(100, 2);
 	canvas->addWidgetDown(spacer3);
 	m_widgets.push_back(spacer3);
@@ -87,7 +96,7 @@ void ColorDepthShaderEffect::addUI(CanvasPtr canvas)
 	canvas->addWidgetDown(spacer4);
 	m_widgets.push_back(spacer4);
 
-	ofxUISlider* slider5 = new ofxUISlider("Far Clip", 501.0f, 4000.0f, m_farClip, 100.0f, 25.0f);
+	ofxUISlider* slider5 = new ofxUISlider("Far Clip", 501.0f, 8000.0f, m_farClip, 100.0f, 25.0f);
 	canvas->addWidgetDown(slider5);
 	m_widgets.push_back(slider5);
 
@@ -132,6 +141,16 @@ void ColorDepthShaderEffect::guiEvent(ofxUIEventArgs &e)
 		if(m_lookupStepSize != slider->getScaledValue()) {
 			m_lookupStepSize = (int) slider->getScaledValue();
 			std::cout << name << " " << kind << ": " << m_lookupStepSize << endl;
+
+			isDirty = true;
+		}
+	}
+
+	if(name == "Offset") {
+		ofxUISlider *slider = (ofxUISlider *) e.widget;
+		if(m_lookupOffset != slider->getScaledValue()) {
+			m_lookupOffset = (int) slider->getScaledValue();
+			std::cout << name << " " << kind << ": " << m_lookupOffset << endl;
 
 			isDirty = true;
 		}
