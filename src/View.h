@@ -35,6 +35,24 @@ private:
 protected:
 	CanvasPtr m_canvas;
 	KinectControllerPtr m_kinectController;
+
+protected:
+	// can be overridden if the view needs to do
+	// something different in its draw routine
+	virtual void doViewDraw();
+
+	// can be overridden if the view needs to do
+	// something different when the effects preDraw is called
+	virtual void doEffectsPreDraw();
+
+	// can be overridden if the view needs to do
+	// something different when the effects draw is called
+	virtual void doEffectsDraw();
+
+	// can be overridden if the view needs to do
+	// something different when the effects postDraw is called
+	virtual void doEffectsPostDraw();
+
 public:
 	View(KinectControllerPtr kinectController, int width, int height);
 	View(KinectControllerPtr kinectController, int width, int height, bool useDepth);
@@ -49,9 +67,12 @@ public:
 	void addEffect(const VisualEffectPtr& effect);
 	void removeEffect(const std::string& effectName);
 	void clearEffects();
+	int getWidth() const;
+	int getHeight() const;
 	int getViewInterval();
 	
-	ofPixels getKinectStream() const;
+	const KinectControllerPtr& getKinectController() const;
+	KinectData getKinectData() const;
 	CanvasPtr getCanvas() const;
 	void setKinectDepthClipping(float nearClip, float farClip) const;
 

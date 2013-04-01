@@ -4,7 +4,9 @@
 #include "VisualEffect.h"
 
 KinectController::KinectController(bool infrared, bool video, bool texture) 
-: m_kinectInterface(new ofxKinect())
+: m_newFrame(false),
+  m_kinectInterface(new ofxKinect()), 
+  m_kinectData(m_kinectInterface->getPixelsRef(), m_kinectInterface->getDepthPixelsRef(), m_kinectInterface->getDistancePixelsRef())
 {
 	// initialize the kinect interface
 	m_kinectInterface->init(infrared, video, texture);
@@ -33,6 +35,16 @@ void KinectController::setup()
 void KinectController::update() 
 {
 	m_kinectInterface->update();
+
+	// store whether the frame is new here since calling isFrameNew() on the ofxKinect object
+	// causes it to reset its state meaning we cannot check it more than once per update. :(
+	m_newFrame = m_kinectInterface->isFrameNew();
+
+	if (isFrameNew())
+	{
+		// update local copy of kinect data on a new frame
+		m_kinectData = KinectData(m_kinectInterface->getPixelsRef(), m_kinectInterface->getDepthPixelsRef(), m_kinectInterface->getDistancePixelsRef());
+	}
 }
 
 bool KinectController::isConnected() const 
@@ -42,15 +54,16 @@ bool KinectController::isConnected() const
 
 bool KinectController::isFrameNew() const
 {
-	return m_kinectInterface ? m_kinectInterface->isFrameNew() : false;
+	return m_newFrame;
 }
 
-KinectController::KinectInterfacePtr KinectController::getKinect() {
+const KinectController::KinectInterfacePtr& KinectController::getKinect() const
+{
 	return m_kinectInterface;
 }
 
 KinectData KinectController::getKinectData() {
-	return KinectData(m_kinectInterface->getPixelsRef(), m_kinectInterface->getDepthPixelsRef(), m_kinectInterface->getDistancePixelsRef());
+	return m_kinectData;
 }
 
 float KinectController::getDataWidth() const {

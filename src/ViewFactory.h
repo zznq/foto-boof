@@ -14,8 +14,9 @@ struct ViewType {
 		Normal = 0,
 		BwView,
 		BwShaderView,
-		ColorInverShaderView,
+		ColorInvertShaderView,
 		ColorDepthShaderView,
+		MeshView,
 
 		// add any new view types above here
 		Max,

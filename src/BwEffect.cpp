@@ -24,7 +24,7 @@ void BwEffect::draw()
 	{
 		float grayScale = 0.f;
 
-		ofPixels& pixels = m_parent->getKinectStream();
+		ofPixels& pixels = m_parent->getKinectData().m_videoStream;
 		for (int i=0; i < pixels.getWidth(); ++i)
 		{
 			for (int j=0; j < pixels.getHeight(); ++j)

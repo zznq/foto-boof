@@ -70,6 +70,12 @@
     <ClCompile Include="src\ColorDepthShaderEffect.cpp">
       <Filter>src\Effects</Filter>
     </ClCompile>
+    <ClCompile Include="src\MeshEffect.cpp">
+      <Filter>src\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MeshView.cpp">
+      <Filter>src\views</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -334,6 +340,12 @@
     </ClInclude>
     <ClInclude Include="src\ColorDepthShaderEffect.h">
       <Filter>src\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MeshEffect.h">
+      <Filter>src\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MeshView.h">
+      <Filter>src\views</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -52,21 +52,44 @@ void View::draw()
 		return;
 	}
 
-	VisualEffects::iterator iter;
-	for (iter = m_effects.begin(); iter != m_effects.end(); ++iter) {
+	// effects pre-draw
+	doEffectsPreDraw();
+
+	// effects draw
+	doEffectsDraw();
+
+	// view draw
+	doViewDraw();
+
+	// effects post-draw
+	doEffectsPostDraw();
+}
+
+void View::doViewDraw() 
+{
+	m_texture.loadData(m_useDepth ? getKinectData().m_depthStream : getKinectData().m_videoStream);
+	m_texture.draw(0, 0);
+}
+
+void View::doEffectsPreDraw() 
+{
+	for (VisualEffects::iterator iter = m_effects.begin(); iter != m_effects.end(); ++iter) {
 		(*iter)->preDraw();
 	}
+}
 
+void View::doEffectsDraw() 
+{
 	// apply each effect to the kinect data
 	// NOTE: this will modify the data in place, not copy
-	for (iter = m_effects.begin(); iter != m_effects.end(); ++iter) {
+	for (VisualEffects::iterator iter = m_effects.begin(); iter != m_effects.end(); ++iter) {
 		(*iter)->draw();
 	}
+}
 
-	m_texture.loadData(getKinectStream());
-	m_texture.draw(0, 0);
-
-	for (iter = m_effects.begin(); iter != m_effects.end(); ++iter) {
+void View::doEffectsPostDraw() 
+{
+	for (VisualEffects::iterator iter = m_effects.begin(); iter != m_effects.end(); ++iter) {
 		(*iter)->postDraw();
 	}
 }
@@ -94,18 +117,27 @@ void View::removeEffect(const std::string& effectName)
 	}
 }
 
+int View::getWidth() const {
+	return m_width;
+}
+
+int View::getHeight() const {
+	return m_height;
+}
+
 int View::getViewInterval()
 {
 	return m_timeInterval;
 }
 
-ofPixels View::getKinectStream() const
+const KinectControllerPtr& View::getKinectController() const
 {
-	if(m_useDepth) {
-		return m_kinectController->getKinectData().m_depthStream;
-	} else {
-		return m_kinectController->getKinectData().m_videoStream;
-	}
+	return m_kinectController;
+}
+
+KinectData View::getKinectData() const
+{
+	return m_kinectController->getKinectData();
 }
 
 void View::setKinectDepthClipping(float nearClip, float farClip) const

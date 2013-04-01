@@ -11,10 +11,10 @@ class KinectData;
 // converts to black & white using a shader
 class ShaderEffect: public VisualEffect {
 public:
-	ShaderEffect::ShaderEffect(const std::string effectName, 
-								const std::string& vertexShader="", 
-								const std::string& fragmentShader="", 
-								const std::string& geometryShader="");
+	ShaderEffect(const std::string effectName, 
+		const std::string& vertexShader="", 
+		const std::string& fragmentShader="", 
+		const std::string& geometryShader="");
 	virtual ~ShaderEffect();
 	virtual void preDraw();
 	virtual void postDraw();
