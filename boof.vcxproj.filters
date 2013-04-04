@@ -76,6 +76,15 @@
     <ClCompile Include="src\MeshView.cpp">
       <Filter>src\views</Filter>
     </ClCompile>
+    <ClCompile Include="src\NormalMapEffect.cpp">
+      <Filter>src\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FatSuitEffect.cpp">
+      <Filter>src\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FatSuitView.cpp">
+      <Filter>src\views</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -346,6 +355,18 @@
     </ClInclude>
     <ClInclude Include="src\MeshView.h">
       <Filter>src\views</Filter>
+    </ClInclude>
+    <ClInclude Include="src\NormalMapEffect.h">
+      <Filter>src\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\NormalMapView.h">
+      <Filter>src\views</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FatSuitView.h">
+      <Filter>src\views</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FatSuitEffect.h">
+      <Filter>src\Effects</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

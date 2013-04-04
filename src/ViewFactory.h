@@ -17,6 +17,8 @@ struct ViewType {
 		ColorInvertShaderView,
 		ColorDepthShaderView,
 		MeshView,
+		NormalMapView,
+		FatSuitView,
 
 		// add any new view types above here
 		Max,

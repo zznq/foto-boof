@@ -104,8 +104,11 @@ xcopy /e /i /y "$(ProjectDir)..\..\..\addons\ofxKinect\libs\libfreenect\lib\vs20
   <ItemGroup>
     <ClCompile Include="src\BwEffect.cpp" />
     <ClCompile Include="src\ColorDepthShaderEffect.cpp" />
+    <ClCompile Include="src\FatSuitEffect.cpp" />
+    <ClCompile Include="src\FatSuitView.cpp" />
     <ClCompile Include="src\MeshEffect.cpp" />
     <ClCompile Include="src\MeshView.cpp" />
+    <ClCompile Include="src\NormalMapEffect.cpp" />
     <ClCompile Include="src\ViewFactory.cpp" />
     <ClCompile Include="src\ShaderEffect.cpp" />
     <ClCompile Include="src\KinectController.cpp" />
@@ -191,8 +194,12 @@ xcopy /e /i /y "$(ProjectDir)..\..\..\addons\ofxKinect\libs\libfreenect\lib\vs20
     <ClInclude Include="src\BwEffect.h" />
     <ClInclude Include="src\ColorDepthShaderEffect.h" />
     <ClInclude Include="src\ColorDepthShaderView.h" />
+    <ClInclude Include="src\FatSuitEffect.h" />
+    <ClInclude Include="src\FatSuitView.h" />
     <ClInclude Include="src\MeshEffect.h" />
     <ClInclude Include="src\MeshView.h" />
+    <ClInclude Include="src\NormalMapEffect.h" />
+    <ClInclude Include="src\NormalMapView.h" />
     <ClInclude Include="src\ViewFactory.h" />
     <ClInclude Include="src\ShaderEffect.h" />
     <ClInclude Include="src\BwShaderView.h" />

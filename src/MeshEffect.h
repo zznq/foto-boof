@@ -3,14 +3,14 @@
 
 #include "ofTypes.h"
 
-#include "ShaderEffect.h"
+#include "VisualEffect.h"
 
 class ofShader;
 class KinectData;
 class ofVboMesh;
 
 // converts to black & white using a shader
-class MeshEffect: public ShaderEffect {
+class MeshEffect: public VisualEffect {
 public:
 	MeshEffect(int width, int height);
 	virtual ~MeshEffect();

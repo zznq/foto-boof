@@ -26,3 +26,8 @@ void ShaderEffect::postDraw()
 {
 	m_shader->end();
 }
+
+ofPtr<ofShader>& ShaderEffect::getShader()
+{
+	return m_shader;
+}

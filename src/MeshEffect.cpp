@@ -5,7 +5,8 @@
 #include "KinectController.h"
 
 MeshEffect::MeshEffect(int width, int height)
-: ShaderEffect("mesh_effect"), m_meshDirty(false), m_width(width), m_height(height), m_numRows(100), m_numCols(100),
+: VisualEffect("mesh_effect"), 
+m_meshDirty(false), m_width(width), m_height(height), m_numRows(100), m_numCols(100),
 m_thresholdZ(1000), m_mesh(new ofVboMesh())
 {
 	m_mesh->setMode(OF_PRIMITIVE_TRIANGLE_STRIP);

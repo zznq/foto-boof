@@ -19,6 +19,8 @@ public:
 	virtual void preDraw();
 	virtual void postDraw();
 
+	ofPtr<ofShader>& getShader();
+
 protected:
 	ofPtr<ofShader> m_shader;
 };

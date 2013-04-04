@@ -20,7 +20,8 @@ public:
 	typedef std::vector<VisualEffectPtr> VisualEffects;
 	typedef ofPtr<ViewDelegate> ViewDelegatePtr;
 	typedef ofPtr<ofxUICanvas> CanvasPtr;
-private:
+
+protected:
 	int m_width;
 	int m_height;
 	int m_timeInterval; // Interval in milliseconds
@@ -32,7 +33,6 @@ private:
 
 	bool m_useDepth;
 
-protected:
 	CanvasPtr m_canvas;
 	KinectControllerPtr m_kinectController;
 
@@ -54,8 +54,7 @@ protected:
 	virtual void doEffectsPostDraw();
 
 public:
-	View(KinectControllerPtr kinectController, int width, int height);
-	View(KinectControllerPtr kinectController, int width, int height, bool useDepth);
+	View(KinectControllerPtr kinectController, int width, int height, bool useDepth=false);
 
 	virtual ~View();
 

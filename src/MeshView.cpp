@@ -11,6 +11,7 @@ void MeshView::doViewDraw()
 	// do nothing here
 }
 
+
 void MeshView::doEffectsDraw()
 {
 	m_easyCam.begin();
