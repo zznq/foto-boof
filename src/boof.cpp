@@ -5,12 +5,11 @@
 #include "boof.h"
 #include "Timer.h"
 #include "KinectController.h"
-
-ViewPtr CreateView(const ViewType::Enum& type, const KinectControllerPtr& kinectController, int width, int height);
+#include "ViewController.h"
 
 Boof::Boof(int windowWidth, int windowHeight)
 : m_windowWidth(windowWidth), m_windowHeight(windowHeight), m_window(new ofAppGlutWindow()), 
-m_kinectController(new KinectController())
+m_kinectController(new KinectController()), m_viewController(new ViewController())
 {
 	// setup opengl context and window
 	ofSetupOpenGL(m_window, windowWidth, windowHeight, OF_WINDOW);
@@ -31,23 +30,9 @@ void Boof::setup(){
 	// of the controller properly
 	m_kinectController->setup();
 
-	// add all view types
-	//for (int i=0; i < ViewType::Max; ++i) {
-		//ViewPtr view = CreateView(static_cast<ViewType::Enum>(i), m_kinectController, m_kinectController->getDataWidth(), m_kinectController->getDataHeight());
-	ViewPtr view = CreateView(ViewType::FatSuitView, m_kinectController, m_kinectController->getDataWidth(), m_kinectController->getDataHeight());
-		view->setViewDelegate(View::ViewDelegatePtr(this));
-		//if(i ==0) {
-			view->setup();
-		//}
-		
-		addView(view);
-	//}
-	
-	m_viewIndex = 0;
+	m_viewController->setup(m_kinectController);
 
 	Timer::Initialize(true, false);
-
-	m_viewsIterator = m_views.begin();
 }
 
 //--------------------------------------------------------------
@@ -55,16 +40,16 @@ void Boof::update() {
 	// update the kinect controller here, before any views are updated
 	m_kinectController->update();
 
-	this->getCurrentView()->update(Timer::TimerUpdate());
-}
-
-void Boof::exit() {
-	m_kinectController.reset();
+	m_viewController->update(Timer::TimerUpdate());
 }
 
 //-------------------------------------------------------------
 void Boof::draw() {
-	this->getCurrentView()->draw();
+	m_viewController->draw();
+}
+
+void Boof::exit() {
+	m_kinectController.reset();
 }
 
 //--------------------------------------------------------------
@@ -115,34 +100,4 @@ void Boof::dragEvent(ofDragInfo dragInfo){
 
 Boof::WindowPtr Boof::getWindow() const {
 	return m_window;
-}
-
-void Boof::addView(const ViewPtr& view) {
-	m_views.push_back(view);
-}
-
-Boof::ViewPtr Boof::getCurrentView() {
-	return (* m_viewsIterator);
-}
-
-void Boof::viewStart()
-{
-}
-
-void Boof::viewComplete()
-{
-	this->getCurrentView()->close();
-
-	m_viewsIterator++;
-
-	if(m_viewsIterator == m_views.end()) {
-		m_viewsIterator = m_views.begin();
-	}
-
-	this->getCurrentView()->setup();
-}
-
-void Boof::viewCountdownStarted() 
-{
-
 }

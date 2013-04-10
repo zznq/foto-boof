@@ -11,10 +11,12 @@ VisualEffect::~VisualEffect()
 
 }
 
-void VisualEffect::addUI(CanvasPtr canvas) {
+void VisualEffect::addUI(CanvasPtr canvas)
+{
 }
 
-void VisualEffect::removeUI(CanvasPtr canvas) {
+void VisualEffect::removeUI(CanvasPtr canvas)
+{
 }
 
 const std::string& VisualEffect::getName() 
@@ -27,7 +29,6 @@ void VisualEffect::setParent(View* parent)
 	m_parent = parent;
 
 	addUI(m_parent->getCanvas());
-
 	m_parent->getCanvas()->autoSizeToFitWidgets();
 }
 

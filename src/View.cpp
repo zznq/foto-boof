@@ -1,12 +1,15 @@
 #include "View.h"
 #include "KinectController.h"
+#include "ViewController.h"
 #include "ViewDelegate.h"
 
 View::View(KinectControllerPtr kinectController, int width, int height, bool useDepth) 
-: m_kinectController(kinectController),  m_width(width), m_height(height), m_timeInterval(5000), m_runningTime(0), m_useDepth(useDepth)
+: m_kinectController(kinectController),  m_width(width), m_height(height), m_timeInterval(5000), m_runningTime(0), m_useDepth(useDepth),
+m_countDownRunning(false)
 {
 	m_canvas = View::CanvasPtr(new ofxUICanvas());
 	m_canvas->setColorBack(ofColor(87.0f, 87.0F, 87.0F, 197.0f));
+	m_canvas->setVisible(false);
 
 	m_texture.allocate(m_kinectController->getDataWidth(), m_kinectController->getDataHeight(), GL_RGB);
 }
@@ -26,13 +29,27 @@ void View::close()
 	m_canvas->setVisible(false);
 }
 
+void View::startCountDown()
+{
+	m_runningTime = 0;
+	m_countDownRunning = true;
+}
+
+void View::stopCountDown()
+{
+	m_runningTime = 0;
+	m_countDownRunning = false;
+}
+
 void View::update(float delta)
 {
-	m_runningTime += delta;
+	if(m_countDownRunning) {
+		m_runningTime += delta;
 
-	if(m_runningTime > this->getViewInterval()) {
-		// Tell Delegate to update 
-		this->viewComplete();
+		if(m_runningTime > this->getViewInterval()) {
+			// Tell Delegate to update 
+			this->viewComplete();
+		}
 	}
 }
 
@@ -56,12 +73,6 @@ void View::draw()
 	doEffectsPostDraw();
 }
 
-void View::doViewDraw() 
-{
-	m_texture.loadData(m_useDepth ? getKinectData().m_depthStream : getKinectData().m_videoStream);
-	m_texture.draw(0, 0);
-}
-
 void View::doEffectsPreDraw() 
 {
 	for (VisualEffects::iterator iter = m_effects.begin(); iter != m_effects.end(); ++iter) {
@@ -76,6 +87,12 @@ void View::doEffectsDraw()
 	for (VisualEffects::iterator iter = m_effects.begin(); iter != m_effects.end(); ++iter) {
 		(*iter)->draw();
 	}
+}
+
+void View::doViewDraw() 
+{
+	m_texture.loadData(m_useDepth ? getKinectData().m_depthStream : getKinectData().m_videoStream);
+	m_texture.draw(0, 0);
 }
 
 void View::doEffectsPostDraw() 
@@ -108,11 +125,13 @@ void View::removeEffect(const std::string& effectName)
 	}
 }
 
-int View::getWidth() const {
+int View::getWidth() const
+{
 	return m_width;
 }
 
-int View::getHeight() const {
+int View::getHeight() const
+{
 	return m_height;
 }
 
@@ -148,26 +167,11 @@ void View::setViewDelegate(View::ViewDelegatePtr delegate)
 
 void View::viewComplete()
 {
+	m_countDownRunning = false;
 	m_runningTime = 0;
 
 	if(this->m_delegate)
 	{
-		this->m_delegate->viewComplete();
-	}
-}
-
-void View::viewStart()
-{
-	if(this->m_delegate)
-	{
-		this->m_delegate->viewStart();
-	}
-}
-
-void View::viewCountdownStarted()
-{
-	if(this->m_delegate)
-	{
-		this->m_delegate->viewCountdownStarted();
+		this->m_delegate->handleViewAction(EFFECT_COUNTDOWN_FINISHED);
 	}
 }

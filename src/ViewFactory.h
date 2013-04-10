@@ -12,6 +12,7 @@ typedef ofPtr<View> ViewPtr;
 struct ViewType {
 	enum Enum {
 		Normal = 0,
+		Idle,
 		BwView,
 		BwShaderView,
 		ColorInvertShaderView,

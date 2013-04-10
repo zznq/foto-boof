@@ -9,6 +9,7 @@
 #include "MeshView.h"
 #include "NormalMapView.h"
 #include "FatSuitView.h"
+#include "IdleView.h"
 
 ViewPtr CreateView(const ViewType::Enum& type, const KinectControllerPtr& kinectController, int width, int height) {
 	ViewPtr ptr;
@@ -36,6 +37,9 @@ ViewPtr CreateView(const ViewType::Enum& type, const KinectControllerPtr& kinect
 			break;
 		case ViewType::FatSuitView:
 			ptr.reset(new FatSuitView(kinectController, width, height));
+			break;
+		case ViewType::Idle:
+			ptr.reset(new IdleView(kinectController, width, height));
 			break;
 		default:
 			ptr.reset(new View(kinectController, width, height));
