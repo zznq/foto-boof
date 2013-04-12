@@ -38,6 +38,8 @@ ViewPtr CreateView(const ViewType::Enum& type, const KinectControllerPtr& kinect
 		case ViewType::FatSuitView:
 			ptr.reset(new FatSuitView(kinectController, width, height));
 			break;
+		case ViewType::PointCloudView:
+			ptr.reset(new MeshView(kinectController, width, height, true));
 		case ViewType::Idle:
 			ptr.reset(new IdleView(kinectController, width, height));
 			break;
