@@ -19,6 +19,7 @@ struct ViewType {
 		MeshView,
 		NormalMapView,
 		FatSuitView,
+		PointCloudView,
 
 		// add any new view types above here
 		Max,

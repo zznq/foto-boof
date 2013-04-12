@@ -85,6 +85,12 @@
     <ClCompile Include="src\FatSuitView.cpp">
       <Filter>src\views</Filter>
     </ClCompile>
+    <ClCompile Include="src\OutlineEffect.cpp">
+      <Filter>src\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PointCloudEffect.cpp">
+      <Filter>src\Effects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -366,6 +372,15 @@
       <Filter>src\views</Filter>
     </ClInclude>
     <ClInclude Include="src\FatSuitEffect.h">
+      <Filter>src\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TestView.h">
+      <Filter>src\views</Filter>
+    </ClInclude>
+    <ClInclude Include="src\OutlineEffect.h">
+      <Filter>src\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PointCloudEffect.h">
       <Filter>src\Effects</Filter>
     </ClInclude>
   </ItemGroup>

@@ -5,17 +5,17 @@
 
 #include "View.h"
 #include "KinectController.h"
-#include "MeshEffect.h"
 
 class MeshView : public View {
 public:
-	MeshView(KinectControllerPtr kinectController, int width, int height);
+	MeshView(KinectControllerPtr kinectController, int width, int height, bool pointCloud=false);
 protected:
 	virtual void doViewDraw();
 	virtual void doEffectsDraw();
 
 private:
 	ofEasyCam m_easyCam;
+	bool m_pointCloud;
 };
 
 #endif

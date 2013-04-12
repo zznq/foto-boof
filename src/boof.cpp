@@ -34,7 +34,7 @@ void Boof::setup(){
 	// add all view types
 	//for (int i=0; i < ViewType::Max; ++i) {
 		//ViewPtr view = CreateView(static_cast<ViewType::Enum>(i), m_kinectController, m_kinectController->getDataWidth(), m_kinectController->getDataHeight());
-	ViewPtr view = CreateView(ViewType::FatSuitView, m_kinectController, m_kinectController->getDataWidth(), m_kinectController->getDataHeight());
+	ViewPtr view = CreateView(ViewType::MeshView, m_kinectController, m_kinectController->getDataWidth(), m_kinectController->getDataHeight());
 		view->setViewDelegate(View::ViewDelegatePtr(this));
 		//if(i ==0) {
 			view->setup();
