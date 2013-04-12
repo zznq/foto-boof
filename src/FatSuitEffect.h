@@ -7,6 +7,7 @@
 #include "ShaderEffect.h"
 
 class ofShader;
+class ofVboMesh;
 
 class FatSuitEffect: public ShaderEffect {
 public:
@@ -14,13 +15,16 @@ public:
 	virtual ~FatSuitEffect();
 	virtual void addUI(CanvasPtr canvas);
 	virtual void preDraw();
+	virtual void draw();
 protected:
 	virtual void guiEvent(ofxUIEventArgs &e);
+	void createMesh();
 protected:
 	int m_width;
 	int m_height;
 	bool m_isDirty;
 	float m_chubFactor;
+	ofPtr<ofVboMesh> m_mesh;
 };
 
 #endif

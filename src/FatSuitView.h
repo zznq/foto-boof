@@ -2,6 +2,7 @@
 #define BOOF_FATSUITVIEW
 
 #include "ofFbo.h"
+#include "ofEasyCam.h"
 
 #include "View.h"
 #include "KinectController.h"
@@ -16,6 +17,7 @@ public:
 
 protected:
 	ofFbo m_fbo;
+	ofEasyCam m_easyCam;
 };
 
 #endif
