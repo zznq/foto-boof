@@ -212,6 +212,7 @@ xcopy /e /i /y "$(ProjectDir)..\..\..\addons\ofxKinect\libs\libfreenect\lib\vs20
     <ClInclude Include="src\NormalMapEffect.h" />
     <ClInclude Include="src\NormalMapView.h" />
     <ClInclude Include="src\OutlineEffect.h" />
+    <ClInclude Include="src\OutlineView.h" />
     <ClInclude Include="src\OverlayView.h" />
     <ClInclude Include="src\PointCloudEffect.h" />
     <ClInclude Include="src\ViewControllerState.h" />

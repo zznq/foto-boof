@@ -21,6 +21,7 @@ struct ViewType {
 		NormalMapView,
 		FatSuitView,
 		PointCloudView,
+		OutlineView,
 
 		// add any new view types above here
 		Max,

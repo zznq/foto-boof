@@ -437,5 +437,8 @@
     <ClInclude Include="src\PointCloudEffect.h">
       <Filter>src\effects</Filter>
     </ClInclude>
+    <ClInclude Include="src\OutlineView.h">
+      <Filter>src\views</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
