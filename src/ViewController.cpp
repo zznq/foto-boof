@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include "ViewController.h"
 #include "KinectController.h"
 #include "ViewFactory.h"
@@ -44,7 +46,8 @@ void ViewController::setup(KinectControllerPtr kinectController)
 
 	m_overlayView = OverlayViewPtr(new OverlayView(kinectController, kinectController->getDataWidth(), kinectController->getDataHeight()));
 	m_overlayView->setViewDelegate(View::ViewDelegatePtr(this));
-	//_screen.allocate(m_kinectController->getDataWidth(), m_kinectController->getDataHeight(), OF_IMAGE_COLOR_ALPHA);
+	
+	m_screen.allocate(kinectController->getDataWidth(), kinectController->getDataHeight(), OF_IMAGE_COLOR_ALPHA);
 }
 
 void ViewController::update(float delta)
@@ -68,6 +71,27 @@ void ViewController::updateGroupId()
 
 void ViewController::sharePhoto()
 {
+	std::ostringstream oss;
+
+	oss << "data/images/" << m_viewGroupId;
+
+	m_screen.grabScreen(0, 0, m_screen.getWidth(), m_screen.getHeight());
+	
+	std::string path = oss.str();
+
+	ofDirectory dir = ofDirectory(path);
+	
+	if(!dir.exists()){
+		dir.create(true);
+	}
+
+	dir.listDir();
+
+	oss << "/" << (dir.size() + 1) << ".jpg";
+	std::string filePath = oss.str();
+
+	m_screen.saveImage(filePath);
+
 	//TODO: 
 	//	Get screen data from overlay
 	//	Save photo to disk

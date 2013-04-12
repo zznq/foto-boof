@@ -69,6 +69,8 @@ private:
 	Views m_views;
 	ViewsIterator m_viewsIterator;
 
+	ofImage m_screen;
+
 	void addView(const ViewPtr& view);
 };
 

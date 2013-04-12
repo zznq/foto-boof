@@ -21,7 +21,7 @@ View::~View()
 
 void View::setup()
 {
-	m_canvas->setVisible(true);
+	//m_canvas->setVisible(true);
 }
 
 void View::close()
