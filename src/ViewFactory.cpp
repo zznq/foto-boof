@@ -40,6 +40,7 @@ ViewPtr CreateView(const ViewType::Enum& type, const KinectControllerPtr& kinect
 			break;
 		case ViewType::PointCloudView:
 			ptr.reset(new MeshView(kinectController, width, height, true));
+			break;
 		case ViewType::Idle:
 			ptr.reset(new IdleView(kinectController, width, height));
 			break;
