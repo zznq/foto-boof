@@ -22,16 +22,18 @@ public:
 	typedef ofPtr<ofxUICanvas> CanvasPtr;
 
 protected:
+	bool m_useDepth;
+	bool m_countDownRunning;
+
 	int m_width;
 	int m_height;
 	int m_timeInterval; // Interval in milliseconds
+	
+	float m_runningTime;
+
 	VisualEffects m_effects;
 	ofTexture m_texture;
 	ViewDelegatePtr m_delegate;
-
-	float m_runningTime;
-
-	bool m_useDepth;
 
 	CanvasPtr m_canvas;
 	KinectControllerPtr m_kinectController;
@@ -62,6 +64,9 @@ public:
 	virtual void update(float delta);
 	virtual void draw();
 	virtual void close();
+
+	void startCountDown();
+	void stopCountDown();
 
 	void addEffect(const VisualEffectPtr& effect);
 	void removeEffect(const std::string& effectName);

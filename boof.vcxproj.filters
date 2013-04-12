@@ -53,13 +53,13 @@
       <Filter>src\views</Filter>
     </ClCompile>
     <ClCompile Include="src\BwEffect.cpp">
-      <Filter>src\Effects</Filter>
+      <Filter>src\effects</Filter>
     </ClCompile>
     <ClCompile Include="src\VisualEffect.cpp">
-      <Filter>src\Effects</Filter>
+      <Filter>src\effects</Filter>
     </ClCompile>
     <ClCompile Include="src\ShaderEffect.cpp">
-      <Filter>src\Effects</Filter>
+      <Filter>src\effects</Filter>
     </ClCompile>
     <ClCompile Include="src\ViewFactory.cpp">
       <Filter>src\views</Filter>
@@ -68,28 +68,52 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\ColorDepthShaderEffect.cpp">
-      <Filter>src\Effects</Filter>
+      <Filter>src\effects</Filter>
     </ClCompile>
     <ClCompile Include="src\MeshEffect.cpp">
-      <Filter>src\Effects</Filter>
+      <Filter>src\effects</Filter>
     </ClCompile>
     <ClCompile Include="src\MeshView.cpp">
       <Filter>src\views</Filter>
     </ClCompile>
     <ClCompile Include="src\NormalMapEffect.cpp">
-      <Filter>src\Effects</Filter>
+      <Filter>src\effects</Filter>
     </ClCompile>
     <ClCompile Include="src\FatSuitEffect.cpp">
-      <Filter>src\Effects</Filter>
+      <Filter>src\effects</Filter>
     </ClCompile>
     <ClCompile Include="src\FatSuitView.cpp">
       <Filter>src\views</Filter>
     </ClCompile>
+    <ClCompile Include="src\ViewController.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ViewControllerStatePrint.cpp">
+      <Filter>src\states</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ViewControllerStateEffectTransition.cpp">
+      <Filter>src\states</Filter>
+    </ClCompile>
+    <ClCompile Include="src\OverlayView.cpp">
+      <Filter>src\views</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ViewControllerStateFlash.cpp">
+      <Filter>src\states</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ViewControllerStateIdle.cpp">
+      <Filter>src\states</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ViewControllerStateRunEffect.cpp">
+      <Filter>src\states</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ViewControllerStateStarting.cpp">
+      <Filter>src\states</Filter>
+    </ClCompile>
     <ClCompile Include="src\OutlineEffect.cpp">
-      <Filter>src\Effects</Filter>
+      <Filter>src\effects</Filter>
     </ClCompile>
     <ClCompile Include="src\PointCloudEffect.cpp">
-      <Filter>src\Effects</Filter>
+      <Filter>src\effects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -129,7 +153,10 @@
     <Filter Include="src\views">
       <UniqueIdentifier>{97918e25-4462-4678-80b4-540f6cfdd1ee}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\Effects">
+    <Filter Include="src\states">
+      <UniqueIdentifier>{a84fb4a7-6fb9-4481-a0b6-ac49502449e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\effects">
       <UniqueIdentifier>{cc7d12df-2503-44ab-b4ef-5526afe37343}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -324,10 +351,10 @@
       <Filter>src\views</Filter>
     </ClInclude>
     <ClInclude Include="src\VisualEffect.h">
-      <Filter>src\Effects</Filter>
+      <Filter>src\effects</Filter>
     </ClInclude>
     <ClInclude Include="src\BwEffect.h">
-      <Filter>src\Effects</Filter>
+      <Filter>src\effects</Filter>
     </ClInclude>
     <ClInclude Include="src\KinectData.h">
       <Filter>src</Filter>
@@ -339,7 +366,7 @@
       <Filter>src\views</Filter>
     </ClInclude>
     <ClInclude Include="src\ShaderEffect.h">
-      <Filter>src\Effects</Filter>
+      <Filter>src\effects</Filter>
     </ClInclude>
     <ClInclude Include="src\ViewFactory.h">
       <Filter>src\views</Filter>
@@ -354,16 +381,16 @@
       <Filter>src\views</Filter>
     </ClInclude>
     <ClInclude Include="src\ColorDepthShaderEffect.h">
-      <Filter>src\Effects</Filter>
+      <Filter>src\effects</Filter>
     </ClInclude>
     <ClInclude Include="src\MeshEffect.h">
-      <Filter>src\Effects</Filter>
+      <Filter>src\effects</Filter>
     </ClInclude>
     <ClInclude Include="src\MeshView.h">
       <Filter>src\views</Filter>
     </ClInclude>
     <ClInclude Include="src\NormalMapEffect.h">
-      <Filter>src\Effects</Filter>
+      <Filter>src\effects</Filter>
     </ClInclude>
     <ClInclude Include="src\NormalMapView.h">
       <Filter>src\views</Filter>
@@ -372,16 +399,43 @@
       <Filter>src\views</Filter>
     </ClInclude>
     <ClInclude Include="src\FatSuitEffect.h">
-      <Filter>src\Effects</Filter>
+      <Filter>src\effects</Filter>
     </ClInclude>
-    <ClInclude Include="src\TestView.h">
+    <ClInclude Include="src\ViewController.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\IdleView.h">
       <Filter>src\views</Filter>
     </ClInclude>
+    <ClInclude Include="src\ViewControllerState.h">
+      <Filter>src\states</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ViewControllerStateIdle.h">
+      <Filter>src\states</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ViewControllerStateRunEffect.h">
+      <Filter>src\states</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ViewControllerStateStarting.h">
+      <Filter>src\states</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ViewControllerStatePrint.h">
+      <Filter>src\states</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ViewControllerStateEffectTransition.h">
+      <Filter>src\states</Filter>
+    </ClInclude>
+    <ClInclude Include="src\OverlayView.h">
+      <Filter>src\views</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ViewControllerStateFlash.h">
+      <Filter>src\states</Filter>
+    </ClInclude>
     <ClInclude Include="src\OutlineEffect.h">
-      <Filter>src\Effects</Filter>
+      <Filter>src\effects</Filter>
     </ClInclude>
     <ClInclude Include="src\PointCloudEffect.h">
-      <Filter>src\Effects</Filter>
+      <Filter>src\effects</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
