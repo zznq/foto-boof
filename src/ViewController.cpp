@@ -20,11 +20,14 @@ ViewController::~ViewController()
 void ViewController::setup(KinectControllerPtr kinectController)
 {
 	ViewType::Enum views[] = 
-	{ 
+	{
+		ViewType::PointCloudView
+		/*
 		ViewType::Enum::Idle,
 		ViewType::Enum::BwShaderView,
 		ViewType::Enum::ColorDepthShaderView,
 		ViewType::Enum::FatSuitView 
+		*/
 	};
 
 
