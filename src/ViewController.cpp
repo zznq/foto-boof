@@ -6,7 +6,10 @@
 
 #include "ViewControllerStateIdle.h"
 
-ViewController::ViewController() : 
+int ViewController::VIEW_WIDTH = 640; //933;
+int ViewController::VIEW_HEIGHT = 480; //700;
+
+ViewController::ViewController() :
 	m_currentState(ViewControllerStateIdle::Instance()), m_viewGroupId(0), m_shouldStart(false),
 	m_isEffectCountdownFinished(false), m_isFlashFinished(false), m_isTransitionFinished(false),
 	m_lastView(false)
@@ -29,11 +32,10 @@ void ViewController::setup(KinectControllerPtr kinectController)
 		ViewType::Enum::FatSuitView 
 	};
 
-
 	// add all view types
 	for (int i=0; i < 4; ++i) 
 	{
-		ViewPtr view = CreateView(views[i], kinectController, kinectController->getDataWidth(), kinectController->getDataHeight());
+		ViewPtr view = CreateView(views[i], kinectController, VIEW_WIDTH, VIEW_HEIGHT);
 		//ViewPtr view = CreateView(ViewType::MeshView, kinectController, kinectController->getDataWidth(), kinectController->getDataHeight());
 		
 		view->setViewDelegate(View::ViewDelegatePtr(this));
@@ -44,10 +46,11 @@ void ViewController::setup(KinectControllerPtr kinectController)
 	m_viewsIterator = m_views.begin();
 	getCurrentView()->setup();
 
-	m_overlayView = OverlayViewPtr(new OverlayView(kinectController, kinectController->getDataWidth(), kinectController->getDataHeight()));
+	// This needs to be the entire width of the screen
+	m_overlayView = OverlayViewPtr(new OverlayView(kinectController, ofGetWindowWidth(), ofGetWindowHeight()));
 	m_overlayView->setViewDelegate(View::ViewDelegatePtr(this));
 	
-	m_screen.allocate(kinectController->getDataWidth(), kinectController->getDataHeight(), OF_IMAGE_COLOR_ALPHA);
+	m_screen.allocate(VIEW_WIDTH, VIEW_HEIGHT, OF_IMAGE_COLOR_ALPHA);
 }
 
 void ViewController::update(float delta)
@@ -140,7 +143,7 @@ bool ViewController::isLastEffect() const
 	return m_lastView;
 }
 
-void ViewController::handleViewAction(ViewAction action)
+void ViewController::handleViewAction(const ViewAction::Enum& action)
 {
 	std::cout << "ViewAction Triggered: ";
 

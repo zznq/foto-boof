@@ -75,5 +75,14 @@ float KinectController::getDataHeight() const {
 }
 
 void KinectController::setDepthClipping(float nearClip, float farClip) {
-	return m_kinectInterface->setDepthClipping(nearClip, farClip);
+	
+	m_kinectInterface->setDepthClipping(nearClip, farClip);
+}
+
+float KinectController::getNearClipping() {
+	return m_kinectInterface->getNearClipping();
+}
+
+float KinectController::getFarClipping() {
+	return m_kinectInterface->getFarClipping();
 }

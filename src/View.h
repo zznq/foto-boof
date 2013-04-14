@@ -21,6 +21,9 @@ public:
 	typedef ofPtr<ViewDelegate> ViewDelegatePtr;
 	typedef ofPtr<ofxUICanvas> CanvasPtr;
 
+private:
+	float m_nearClipping;
+	float m_farClipping;
 protected:
 	bool m_useDepth;
 	bool m_countDownRunning;

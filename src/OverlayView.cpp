@@ -67,7 +67,7 @@ void OverlayView::flashFinishedFired()
 {
 	if(this->m_delegate)
 	{
-		this->m_delegate->handleViewAction(FLASH_FINISHED);
+		this->m_delegate->handleViewAction(ViewAction::FLASH_FINISHED);
 	}
 }
 
@@ -75,7 +75,7 @@ void OverlayView::transitionFinishedFired()
 {
 	if(this->m_delegate)
 	{
-		this->m_delegate->handleViewAction(TRANSITION_FINISHED);
+		this->m_delegate->handleViewAction(ViewAction::TRANSITION_FINISHED);
 	}
 }
 

@@ -32,6 +32,8 @@ public:
 	float getDataHeight() const;
 
 	void setDepthClipping(float nearClip, float farClip);
+	float getFarClipping();
+	float getNearClipping();
 private:
 	bool m_newFrame;
 	KinectInterfacePtr m_kinectInterface;

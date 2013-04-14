@@ -2,31 +2,38 @@
 #define BOOF_IDLEVIEW
 
 #include "View.h"
-#include "ViewController.h"
 #include "KinectController.h"
+
+#include "ofxOpenCv.h"
 
 // Use this class to display the color stream without timer
 class IdleView : public View {
 public:
-	IdleView(KinectControllerPtr kinectController, int width, int height) : View(kinectController, width, height, false)
-	{
-		m_canvas->setColorBack(ofColor(0.0f, 0.0F, 0.0F, 0.0f));
-	}
+	typedef std::vector<bool> HaarReadResults;
+public:
+	IdleView(KinectControllerPtr kinectController, int width, int height);
 
-	void update(float delta) {
-		View::update(delta);
+	virtual void setup();
+	virtual void update(float delta);
 
-		//TODO: Add some sort of gesture recognition or button input
-		startActionFired();
-	}
+	virtual void doViewDraw();
 
-	void startActionFired()
-	{
-		if(this->m_delegate)
-		{
-			this->m_delegate->handleViewAction(STARTING);
-		}
-	}
+	void startActionFired();
+
+private:
+	int m_haarReadMax;
+	int m_haarReadResultsIndex;
+	int m_k;
+	int 				m_threshold;
+
+	HaarReadResults m_haarReadResults;
+
+	ofRectangle m_handbox;
+	ofxCvGrayscaleImage m_grayscale;
+	ofxCvColorImage m_color;
+
+	ofxCvContourFinder 	contourFinder;
+	ofxCvHaarFinder finder;
 };
 
 #endif

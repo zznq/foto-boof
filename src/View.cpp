@@ -12,6 +12,9 @@ m_countDownRunning(false)
 	m_canvas->setVisible(false);
 
 	m_texture.allocate(m_kinectController->getDataWidth(), m_kinectController->getDataHeight(), GL_RGB);
+
+	m_nearClipping = m_kinectController->getNearClipping();
+	m_farClipping = m_kinectController->getFarClipping();
 }
 
 View::~View()
@@ -27,6 +30,8 @@ void View::setup()
 void View::close()
 {
 	m_canvas->setVisible(false);
+
+	m_kinectController->setDepthClipping(m_nearClipping, m_farClipping);
 }
 
 void View::startCountDown()
@@ -172,6 +177,6 @@ void View::viewComplete()
 
 	if(this->m_delegate)
 	{
-		this->m_delegate->handleViewAction(EFFECT_COUNTDOWN_FINISHED);
+		this->m_delegate->handleViewAction(ViewAction::EFFECT_COUNTDOWN_FINISHED);
 	}
 }
