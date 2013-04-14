@@ -30,6 +30,8 @@ protected:
 	float m_numCols;
 	bool m_meshDirty;
 	float m_pointSize;
+	float m_nearDepth;
+	float m_farDepth;
 };
 
 #endif
