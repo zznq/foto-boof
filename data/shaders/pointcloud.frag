@@ -1,11 +1,11 @@
-#version 120
-#extension GL_ARB_texture_rectangle : enable
+#version 130
 
 uniform sampler2DRect color_lookup;
 uniform float near_depth;
 uniform float far_depth;
 
-in float depth;
+varying float depth;
+flat in float index;
 
 void main()
 {
@@ -15,8 +15,9 @@ void main()
 	}
 
 	//gl_TexCoord[0] = the current pixel location that this shader is processing
-	vec4 color = texture2DRect(color_lookup, gl_TexCoord[0].st);
+	//vec4 color = texture2DRect(color_lookup, vec2(index/100*640, index/100*480));
+	//vec4 color = texture2DRect(color_lookup, );
 	
 	//gl_FragColor = vec4(gl_PointCoord.st, 0, 1);
-	gl_FragColor = color;
+	gl_FragColor = gl_Color;
 }

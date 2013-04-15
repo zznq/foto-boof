@@ -25,6 +25,8 @@ protected:
 	bool m_isDirty;
 	float m_chubFactor;
 	ofPtr<ofVboMesh> m_mesh;
+	float m_nearDepth;
+	float m_farDepth;
 };
 
 #endif

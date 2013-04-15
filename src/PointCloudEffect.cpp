@@ -4,28 +4,9 @@
 #include "PointCloudEffect.h"
 #include "KinectController.h"
 
-ofTexture texture;
-void CreateSolidTexture() {
-	ofPixels pixels = ofPixels();
-	pixels.allocate(640, 480, OF_IMAGE_COLOR_ALPHA);
-
-	ofColor c;
-	for(int i = 0; i < 640; i++) {
-		for (int j=0; j < 480; ++j) {
-			c.r = 1.0;
-			c.g = 0.0;
-			c.b = 0.0;
-			c.a = 1.0;
-			pixels.setColor(i, j, c);
-		}
-	}
-
-	texture.allocate(640, 480, GL_RGB);
-}
-
 PointCloudEffect::PointCloudEffect(int width, int height)
 : ShaderEffect("point_cloud", "shaders/pointcloud.vert", "shaders/pointcloud.frag"),
-m_width(width), m_height(height), m_mesh(new ofVboMesh()), m_numRows(100), m_numCols(100), 
+m_width(width), m_height(height), m_mesh(new ofVboMesh()), m_numRows(200), m_numCols(200), 
 m_meshDirty(false), m_pointSize(1), m_nearDepth(500), m_farDepth(4000)
 {
 	m_colorTexture.allocate(m_width, m_height, GL_RGB);
@@ -34,7 +15,7 @@ m_meshDirty(false), m_pointSize(1), m_nearDepth(500), m_farDepth(4000)
 
 	createMesh();
 
-	CreateSolidTexture();
+	glEnable(GL_POINT_SPRITE);
 }
 
 PointCloudEffect::~PointCloudEffect()
@@ -55,7 +36,7 @@ void PointCloudEffect::createMesh()
 
 			// mesh
 			// add color, vertex and texture coordinates
-			//m_mesh->addColor(ofFloatColor(1,1,1,1));
+			m_mesh->addColor(ofFloatColor(1,1,1,1));
 			//mesh.addNormal(ofVec3f(0, 0, 1));
 			m_mesh->addVertex(ofVec3f(x, y, z));
 
@@ -79,11 +60,16 @@ void PointCloudEffect::draw()
 	// offset z vertices by the distance
 	ofFloatPixels& distanceValues = m_parent->getKinectData().m_distanceValues;
 	std::vector<ofVec3f>& vertices = m_mesh->getVertices();
+	std::vector<ofFloatColor>& colors = m_mesh->getColors();
 	std::vector<ofVec3f>::iterator iter;
+	int index = 0;
 	for (iter = vertices.begin(); iter != vertices.end(); ++iter) 
 	{
 		ofVec3f& vertex = *iter;
 		vertex.z = kinectInterface->getDistanceAt(vertex.x, vertex.y);
+
+		colors[index] = kinectInterface->getColorAt(vertex.x, vertex.y);
+		++index;
 	}
 
 	// bind color texture
@@ -91,17 +77,17 @@ void PointCloudEffect::draw()
 
 	m_shader->setUniform1f("near_depth", m_nearDepth);
 	m_shader->setUniform1f("far_depth", m_farDepth);
-	m_shader->setUniformTexture("color_lookup", texture/*m_colorTexture*/, 5);
-	glPointSize(m_pointSize);
-	//m_mesh->draw();
-	texture.draw(0, 0);
+	m_shader->setUniform1f("point_size", m_pointSize);
+	m_shader->setUniformTexture("color_lookup", m_colorTexture, 1);
+
+	m_mesh->draw();
 
 	ShaderEffect::draw();
 }
 
 void PointCloudEffect::addUI(CanvasPtr canvas) 
 {
-	ofxUISlider* slider = new ofxUISlider("Point Size", 0.0f, 10.f, m_pointSize, 100.0f, 25.0f);
+	ofxUISlider* slider = new ofxUISlider("Point Size", 0.0f, 50.f, m_pointSize, 100.0f, 25.0f);
 	canvas->addWidgetDown(slider);
 	m_widgets.push_back(slider);
 

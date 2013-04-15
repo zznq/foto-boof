@@ -5,7 +5,7 @@
 #include "KinectData.h"
 
 NormalMapEffect::NormalMapEffect(int width, int height)
-: ShaderEffect("normal_map", "shaders/default.vert", "shaders/normalmap.frag")
+: ShaderEffect("normal_map", "shaders/default.vert", "shaders/normalmapv2.frag")
 {
 
 }

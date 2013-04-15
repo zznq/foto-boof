@@ -12,7 +12,8 @@
 
 FatSuitEffect::FatSuitEffect(int width, int height)
 : ShaderEffect("fat_suit", "shaders/fatsuit.vert"), 
-  m_width(width), m_height(height), m_isDirty(false), m_chubFactor(1.0), m_mesh(new ofVboMesh())
+  m_width(width), m_height(height), m_isDirty(false), m_chubFactor(1.0), m_mesh(new ofVboMesh()),
+  m_nearDepth(500.f), m_farDepth(4000.f)
 {
 	m_mesh->setMode(OF_PRIMITIVE_TRIANGLE_STRIP);
 	m_mesh->setUsage(GL_DYNAMIC_DRAW);
@@ -32,8 +33,8 @@ void FatSuitEffect::createMesh()
 {
 	m_mesh->clear();
 
-	float m_numRows = m_width;
-	float m_numCols = m_height;
+	float m_numRows = m_width/4.f;
+	float m_numCols = m_height/4.f;
 	for(int row=0; row < m_numRows; row++){
 		for (int col=0; col < m_numCols; col++) {
 			// set current x y z
@@ -73,42 +74,35 @@ void FatSuitEffect::createMesh()
 void FatSuitEffect::preDraw() 
 {
 	ShaderEffect::preDraw();
-	if (m_isDirty) 
-	{
-		m_shader->setUniform1f("chubFactor", m_chubFactor);
-		m_isDirty = false;
-	}
+	m_shader->setUniform1f("chub_factor", m_chubFactor);
+	m_shader->setUniform1f("near_depth", m_nearDepth);
+	m_shader->setUniform1f("far_depth", m_farDepth);
 }
 
 void FatSuitEffect::draw()
 {
 	glTranslatef(-m_width*.5, -m_height*.5, 0);
 	
-	/*
 	KinectController::KinectInterfacePtr kinectInterface = m_parent->getKinectController()->getKinect();
 
+	/*
 	// offset z vertices by the distance
-	ofFloatPixels& distanceValues = m_parent->getKinectData().m_distanceValues;
+	ofPixels& distanceValues = m_parent->getKinectData().m_depthStream;
 	std::vector<ofVec3f>& vertices = m_mesh->getVertices();
+	std::vector<ofFloatColor>& colors = m_mesh->getColors();
 	std::vector<ofVec3f>::iterator iter;
 	float prevZValue = 0;
-	int count = 0;
-	float m_thresholdZ = 1000;
+	int index = 0;
 	for (iter = vertices.begin(); iter != vertices.end(); ++iter) 
 	{
 		ofVec3f& vertex = *iter;
-		vertex.z = kinectInterface->getDistanceAt(vertex.x, vertex.y);
-		if  (vertex.z > m_thresholdZ || vertex.z <= 0) 
+
+		if(kinectInterface->getDistanceAt(vertex.x, vertex.y) > 0) 
 		{
-			vertex.z = prevZValue;
-			m_mesh->setColor(count, ofFloatColor(0, 0, 0, 255));
+			colors[index] = kinectInterface->getColorAt(vertex.x,vertex.y);
+			vertex.z = kinectInterface->getWorldCoordinateAt(vertex.x, vertex.y).z;
 		}
-		else 
-		{
-			prevZValue = vertex.z;
-			m_mesh->setColor(count, kinectInterface->getColorAt(vertex.x, vertex.y));
-		}
-		++count;
+		++index;
 	}
 	*/
 	m_mesh->drawWireframe();
@@ -116,7 +110,19 @@ void FatSuitEffect::draw()
 
 void FatSuitEffect::addUI(CanvasPtr canvas) 
 {
-	ofxUISlider* slider = new ofxUISlider("ChubFactor", 1.0f, 500.0f, m_chubFactor, 100.0f, 25.0f);
+	ofxUISlider* slider = new ofxUISlider("Chub Factor", 1.0f, 500.0f, m_chubFactor, 100.0f, 25.0f);
+	canvas->addWidgetDown(slider);
+	m_widgets.push_back(slider);
+
+	slider = new ofxUISlider("Near Depth", 0.0f, 500.f, m_nearDepth, 100.0f, 25.0f);
+	canvas->addWidgetDown(slider);
+	m_widgets.push_back(slider);
+
+	ofxUISpacer* spacer = new ofxUISpacer(100, 2);
+	canvas->addWidgetDown(spacer);
+	m_widgets.push_back(spacer);
+
+	slider = new ofxUISlider("Far Depth", 501.0f, 8000.f, m_farDepth, 100.0f, 25.0f);
 	canvas->addWidgetDown(slider);
 	m_widgets.push_back(slider);
 
@@ -132,13 +138,27 @@ void FatSuitEffect::guiEvent(ofxUIEventArgs &e)
 	string name = e.widget->getName(); 
 	int kind = e.widget->getKind(); 
 
-	if(name == "ChubFactor")
+	if(name == "Chub Factor")
 	{
 		ofxUISlider *slider = (ofxUISlider *) e.widget; 
 		if(m_chubFactor != slider->getScaledValue()) {
 			m_chubFactor = slider->getScaledValue();
-
-			m_isDirty = true;
 		}
-	}  
+	}
+
+	if(name == "Near Depth")
+	{
+		ofxUISlider *slider = (ofxUISlider *) e.widget; 
+		if(m_nearDepth != slider->getScaledValue()) {
+			m_nearDepth = slider->getScaledValue();
+		}
+	}
+
+	if(name == "Far Depth")
+	{
+		ofxUISlider *slider = (ofxUISlider *) e.widget; 
+		if(m_farDepth != slider->getScaledValue()) {
+			m_farDepth = slider->getScaledValue();
+		}
+	}
 }
