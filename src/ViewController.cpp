@@ -1,10 +1,15 @@
+#include <string.h>
+
 #include "ViewController.h"
 #include "KinectController.h"
 #include "ViewFactory.h"
 
 #include "ViewControllerStateIdle.h"
 
-ViewController::ViewController() : 
+int ViewController::VIEW_WIDTH = 640; //933;
+int ViewController::VIEW_HEIGHT = 480; //700;
+
+ViewController::ViewController() :
 	m_currentState(ViewControllerStateIdle::Instance()), m_viewGroupId(0), m_shouldStart(false),
 	m_isEffectCountdownFinished(false), m_isFlashFinished(false), m_isTransitionFinished(false),
 	m_lastView(false)
@@ -30,11 +35,10 @@ void ViewController::setup(KinectControllerPtr kinectController)
 		*/
 	};
 
-
 	// add all view types
 	for (int i=0; i < 4; ++i) 
 	{
-		ViewPtr view = CreateView(views[i], kinectController, kinectController->getDataWidth(), kinectController->getDataHeight());
+		ViewPtr view = CreateView(views[i], kinectController, VIEW_WIDTH, VIEW_HEIGHT);
 		//ViewPtr view = CreateView(ViewType::MeshView, kinectController, kinectController->getDataWidth(), kinectController->getDataHeight());
 		
 		view->setViewDelegate(View::ViewDelegatePtr(this));
@@ -45,9 +49,11 @@ void ViewController::setup(KinectControllerPtr kinectController)
 	m_viewsIterator = m_views.begin();
 	getCurrentView()->setup();
 
-	m_overlayView = OverlayViewPtr(new OverlayView(kinectController, kinectController->getDataWidth(), kinectController->getDataHeight()));
+	// This needs to be the entire width of the screen
+	m_overlayView = OverlayViewPtr(new OverlayView(kinectController, ofGetWindowWidth(), ofGetWindowHeight()));
 	m_overlayView->setViewDelegate(View::ViewDelegatePtr(this));
-	//_screen.allocate(m_kinectController->getDataWidth(), m_kinectController->getDataHeight(), OF_IMAGE_COLOR_ALPHA);
+	
+	m_screen.allocate(VIEW_WIDTH, VIEW_HEIGHT, OF_IMAGE_COLOR_ALPHA);
 }
 
 void ViewController::update(float delta)
@@ -71,6 +77,27 @@ void ViewController::updateGroupId()
 
 void ViewController::sharePhoto()
 {
+	std::ostringstream oss;
+
+	oss << "data/images/" << m_viewGroupId;
+
+	m_screen.grabScreen(0, 0, m_screen.getWidth(), m_screen.getHeight());
+	
+	std::string path = oss.str();
+
+	ofDirectory dir = ofDirectory(path);
+	
+	if(!dir.exists()){
+		dir.create(true);
+	}
+
+	dir.listDir();
+
+	oss << "/" << (dir.size() + 1) << ".jpg";
+	std::string filePath = oss.str();
+
+	m_screen.saveImage(filePath);
+
 	//TODO: 
 	//	Get screen data from overlay
 	//	Save photo to disk
@@ -119,7 +146,7 @@ bool ViewController::isLastEffect() const
 	return m_lastView;
 }
 
-void ViewController::handleViewAction(ViewAction action)
+void ViewController::handleViewAction(const ViewAction::Enum& action)
 {
 	std::cout << "ViewAction Triggered: ";
 

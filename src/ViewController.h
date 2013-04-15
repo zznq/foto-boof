@@ -10,14 +10,6 @@ class ViewControllerState;
 #include "OverlayView.h"
 #include "ViewDelegate.h"
 
-enum ViewAction {
-	NONE,
-	STARTING,
-	EFFECT_COUNTDOWN_FINISHED,
-	FLASH_FINISHED,
-	TRANSITION_FINISHED
-};
-
 class ViewController: public ViewDelegate {
 public:
 	typedef ofPtr<View> ViewPtr;
@@ -49,7 +41,7 @@ public:
 	void changeState(const ViewControllerStatePtr state);
 	
 	// ViewDelegate Overrides
-	virtual void handleViewAction(ViewAction action);
+	virtual void handleViewAction(const ViewAction::Enum& action);
 
 	void incrementView();
 private:
@@ -58,6 +50,9 @@ private:
 	bool m_isFlashFinished;
 	bool m_isTransitionFinished;
 	bool m_lastView;
+
+	static int VIEW_WIDTH;
+	static int VIEW_HEIGHT;
 
 	int m_viewGroupId;
 
@@ -68,6 +63,8 @@ private:
 
 	Views m_views;
 	ViewsIterator m_viewsIterator;
+
+	ofImage m_screen;
 
 	void addView(const ViewPtr& view);
 };

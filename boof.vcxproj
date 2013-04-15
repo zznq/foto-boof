@@ -106,6 +106,7 @@ xcopy /e /i /y "$(ProjectDir)..\..\..\addons\ofxKinect\libs\libfreenect\lib\vs20
     <ClCompile Include="src\ColorDepthShaderEffect.cpp" />
     <ClCompile Include="src\FatSuitEffect.cpp" />
     <ClCompile Include="src\FatSuitView.cpp" />
+    <ClCompile Include="src\IdleView.cpp" />
     <ClCompile Include="src\MeshEffect.cpp" />
     <ClCompile Include="src\MeshView.cpp" />
     <ClCompile Include="src\NormalMapEffect.cpp" />

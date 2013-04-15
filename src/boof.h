@@ -14,7 +14,7 @@ public:
 	typedef ofPtr<KinectController> KinectControllerPtr;
 	typedef ofPtr<ViewController> ViewControllerPtr;
 public:
-	Boof(int windowWidth = 1024, int windowHeight = 768);
+	Boof(int windowWidth = 1280, int windowHeight = 720);
 	~Boof();
 
 	void setup();
