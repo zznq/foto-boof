@@ -20,8 +20,8 @@ FatSuitEffect::FatSuitEffect(int width, int height)
 	createMesh();
 
 	// bind attribute and relink program
-	glBindAttribLocation(m_shader->getProgram(), 0, "in_Position");
-	m_shader->load("shaders/fatsuit.vert", "shaders/fatsuit.frag", "");
+	//glBindAttribLocation(m_shader->getProgram(), 0, "in_Position");
+	//m_shader->load("shaders/fatsuit.vert", "shaders/fatsuit.frag", "");
 }
 
 FatSuitEffect::~FatSuitEffect() 
@@ -33,42 +33,58 @@ void FatSuitEffect::createMesh()
 {
 	m_mesh->clear();
 
+	m_vertices.clear();
+
 	float m_numRows = m_width/4.f;
 	float m_numCols = m_height/4.f;
-	for(int row=0; row < m_numRows; row++){
+	m_vertices.reserve(m_numRows * m_numCols);
+
+	for(int row=0; row < m_numRows; row++) {
 		for (int col=0; col < m_numCols; col++) {
 			// set current x y z
 			int x = m_width * (col/(m_numCols-1));
 			int y = m_height * (row/(m_numRows-1));
 			int z = 0;
 
+			Vertex v;
+			v.x = x;
+			v.y = y;
+			v.z = z;
+			m_vertices.push_back(v);
 			// mesh
 			// add color, vertex and texture coordinates
-			m_mesh->addColor(ofFloatColor(1,1,1,1));
+			//m_mesh->addColor(ofFloatColor(1,1,1,1));
 			//mesh.addNormal(ofVec3f(0, 0, 1));
-			m_mesh->addVertex(ofVec3f(x, y, z));
+			//m_mesh->addVertex(ofVec3f(x, y, z));
 
-			m_mesh->addTexCoord(ofVec2f( col/(m_numCols-1), row/(m_numRows-1)) ); 
+			//m_mesh->addTexCoord(ofVec2f( col/(m_numCols-1), row/(m_numRows-1)) ); 
 		}
 	}
+
 	// add indices to mesh for triangle strip generation
 	int n = 0;  
 	int colSteps = m_numCols * 2;  
 	int rowSteps = m_numRows - 1;  
-	vector<ofIndexType> indices;
-	indices.reserve(rowSteps * colSteps);
+	m_indices.reserve(rowSteps * colSteps);
 	for ( int r = 0; r < rowSteps; r++ ) {  
 		for ( int c = 0; c < colSteps; c++ ) {  
 			int t = c + r * colSteps;  
 			if ( c == colSteps - 1 ) {  
-				indices.push_back(n);
+				m_indices.push_back(n);
 			} else {  
-				indices.push_back(n);
+				m_indices.push_back(n);
 				( t%2 == 0 ) ? n += m_numCols : (r%2 == 0) ? n -= (m_numCols-1) : n -= (m_numCols+1);  
 			}  
 		}  
 	}
-	m_mesh->addIndices(indices);
+	//m_mesh->addIndices(indices);
+
+	glGenBuffers(1, &m_vboId);
+	glGenBuffers(1, &m_iboId);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_iboId);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(ofIndexType) * m_indices.size(), &m_indices[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 void FatSuitEffect::preDraw() 
@@ -85,6 +101,31 @@ void FatSuitEffect::draw()
 	
 	KinectController::KinectInterfacePtr kinectInterface = m_parent->getKinectController()->getKinect();
 
+	for (int i=0; i < m_vertices.size(); ++i) {
+		Vertex& vertex = m_vertices[i];
+
+		if(kinectInterface->getDistanceAt(vertex.x, vertex.y) > 0) 
+		{
+			//vertex.z = kinectInterface->getWorldCoordinateAt(vertex.x, vertex.y).z;
+		}
+	}
+
+	GLint position = m_shader->getAttributeLocation("in_Position");
+
+	glBindBuffer(GL_ARRAY_BUFFER, m_vboId);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * m_vertices.size(), &m_vertices[0], GL_DYNAMIC_DRAW);
+
+	glEnableVertexAttribArray(position);
+	glVertexAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_iboId);
+	//glDrawArrays(GL_TRIANGLE_STRIP, 0, m_vertices.size());
+	glDrawElements(GL_TRIANGLE_STRIP, m_indices.size(), GL_UNSIGNED_INT, NULL);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	glDisableVertexAttribArray(position);
 	/*
 	// offset z vertices by the distance
 	ofPixels& distanceValues = m_parent->getKinectData().m_depthStream;
@@ -105,7 +146,7 @@ void FatSuitEffect::draw()
 		++index;
 	}
 	*/
-	m_mesh->drawWireframe();
+	//m_mesh->drawWireframe();
 }
 
 void FatSuitEffect::addUI(CanvasPtr canvas) 

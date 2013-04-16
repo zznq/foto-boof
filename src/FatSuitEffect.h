@@ -9,6 +9,11 @@
 class ofShader;
 class ofVboMesh;
 
+struct Vertex
+{
+	float x, y, z;
+};
+
 class FatSuitEffect: public ShaderEffect {
 public:
 	FatSuitEffect(int width, int height);
@@ -27,6 +32,11 @@ protected:
 	ofPtr<ofVboMesh> m_mesh;
 	float m_nearDepth;
 	float m_farDepth;
+
+	std::vector<Vertex> m_vertices;
+	std::vector<ofIndexType> m_indices;
+	GLuint m_vboId;
+	GLuint m_iboId;
 };
 
 #endif
