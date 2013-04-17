@@ -96,12 +96,11 @@ void TestEffect::preDraw()
 
 	m_shader->begin();
 	m_colorTex.loadData(m_parent->getKinectData().m_videoStream);
-	m_colorTex.draw(0, 0);
 	m_shader->setUniform1f("chub_factor", m_chubFactor);
 	m_shader->setUniform1f("near_depth", m_nearDepth);
 	m_shader->setUniform1f("far_depth", m_farDepth);
-	m_shader->setUniformTexture("color_tex", m_colorTex, 0);
-	m_shader->setUniformTexture("normal_tex", m_fbo.getTextureReference(), 1);
+	m_shader->setUniformTexture("color_tex", m_colorTex, 1);
+	m_shader->setUniformTexture("normal_tex", m_fbo.getTextureReference(), 2);
 }
 
 void TestEffect::postDraw()

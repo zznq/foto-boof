@@ -15,9 +15,9 @@ void main()
 		discard;
 	}
 	
-	//gl_FragColor = gl_Color;
-	gl_FragColor.rgb = texture2DRect(color_tex, gl_TexCoord[0].st).rgb;
-	gl_FragColor.rgb = texture2DRect(normal_tex, gl_TexCoord[0].st).rgb;
+	gl_FragColor = gl_Color;
+	//gl_FragColor = texture2DRect(color_tex, vec2(gl_TexCoord[0])); 
+	//gl_FragColor = texture2DRect(normal_tex, gl_FragCoord.st);
 	//gl_FragColor.a = 1.0;
 	
 }
