@@ -12,6 +12,8 @@
 #include "OutlineView.h"
 #include "IdleView.h"
 
+#include "TestView.h"
+
 ViewPtr CreateView(const ViewType::Enum& type, const KinectControllerPtr& kinectController, int width, int height) {
 	ViewPtr ptr;
 	switch (type) {
@@ -45,8 +47,13 @@ ViewPtr CreateView(const ViewType::Enum& type, const KinectControllerPtr& kinect
 		case ViewType::OutlineView:
 			ptr.reset(new OutlineView(kinectController, width, height));
 			break;
+			/*
 		case ViewType::Idle:
 			ptr.reset(new IdleView(kinectController, width, height));
+			break;
+			*/
+		case ViewType::TestView:
+			ptr.reset(new TestView(kinectController, width, height));
 			break;
 		default:
 			ptr.reset(new View(kinectController, width, height));

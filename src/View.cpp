@@ -9,7 +9,7 @@ m_countDownRunning(false)
 {
 	m_canvas = View::CanvasPtr(new ofxUICanvas());
 	m_canvas->setColorBack(ofColor(87.0f, 87.0F, 87.0F, 197.0f));
-	m_canvas->setVisible(false);
+	m_canvas->setVisible(true);
 
 	m_texture.allocate(m_kinectController->getDataWidth(), m_kinectController->getDataHeight(), GL_RGB);
 

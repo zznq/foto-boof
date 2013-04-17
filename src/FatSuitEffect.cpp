@@ -38,7 +38,7 @@ void FatSuitEffect::createMesh()
 	float m_numRows = m_width/4.f;
 	float m_numCols = m_height/4.f;
 	m_vertices.reserve(m_numRows * m_numCols);
-
+	m_colors.reserve(m_numRows * m_numCols);
 	for(int row=0; row < m_numRows; row++) {
 		for (int col=0; col < m_numCols; col++) {
 			// set current x y z
@@ -53,10 +53,11 @@ void FatSuitEffect::createMesh()
 			m_vertices.push_back(v);
 			// mesh
 			// add color, vertex and texture coordinates
+			m_colors.push_back(ColorValue(1, 1, 1, 1));
 			//m_mesh->addColor(ofFloatColor(1,1,1,1));
 			//mesh.addNormal(ofVec3f(0, 0, 1));
 			//m_mesh->addVertex(ofVec3f(x, y, z));
-
+			m_texCoords.push_back(TexCoord(col/(m_numCols-1), row/(m_numRows-1)));
 			//m_mesh->addTexCoord(ofVec2f( col/(m_numCols-1), row/(m_numRows-1)) ); 
 		}
 	}
@@ -81,6 +82,12 @@ void FatSuitEffect::createMesh()
 
 	glGenBuffers(1, &m_vboId);
 	glGenBuffers(1, &m_iboId);
+	glGenBuffers(1, &m_colorId);
+	glGenBuffers(1, &m_texCoordId);
+
+	glBindBuffer(GL_ARRAY_BUFFER, m_texCoordId);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(TexCoord)*m_texCoords.size(), &m_texCoords[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_iboId);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(ofIndexType) * m_indices.size(), &m_indices[0], GL_STATIC_DRAW);
@@ -106,26 +113,42 @@ void FatSuitEffect::draw()
 
 		if(kinectInterface->getDistanceAt(vertex.x, vertex.y) > 0) 
 		{
-			//vertex.z = kinectInterface->getWorldCoordinateAt(vertex.x, vertex.y).z;
+			vertex.z = kinectInterface->getWorldCoordinateAt(vertex.x, vertex.y).z;
+			ofColor ofc = kinectInterface->getColorAt(vertex.x,vertex.y);
+			ColorValue c(ofc.r/255.f, ofc.g/255.f, ofc.b/255.f, ofc.a/255.f);
+			m_colors[i] = c;
 		}
 	}
 
 	GLint position = m_shader->getAttributeLocation("in_Position");
+	GLint color = m_shader->getAttributeLocation("in_Color");
+	GLint texCoord = m_shader->getAttributeLocation("in_TexCoord");
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_vboId);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * m_vertices.size(), &m_vertices[0], GL_DYNAMIC_DRAW);
-
 	glEnableVertexAttribArray(position);
-	glVertexAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glVertexAttribPointer(position, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex)*3, 0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, m_colorId);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(ColorValue) * m_colors.size(), &m_colors[0], GL_DYNAMIC_DRAW);
+	glEnableVertexAttribArray(color);
+	glVertexAttribPointer(color, 4, GL_FLOAT, GL_FALSE, sizeof(ColorValue)*4, 0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, m_texCoordId);
+	glEnableVertexAttribArray(texCoord);
+	glVertexAttribPointer(texCoord, 2, GL_FLOAT, GL_FALSE, sizeof(TexCoord)*2, 0);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_iboId);
 	//glDrawArrays(GL_TRIANGLE_STRIP, 0, m_vertices.size());
+	glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 	glDrawElements(GL_TRIANGLE_STRIP, m_indices.size(), GL_UNSIGNED_INT, NULL);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	glDisableVertexAttribArray(position);
+	glDisableVertexAttribArray(color);
+	glDisableVertexAttribArray(texCoord);
 	/*
 	// offset z vertices by the distance
 	ofPixels& distanceValues = m_parent->getKinectData().m_depthStream;
@@ -202,4 +225,6 @@ void FatSuitEffect::guiEvent(ofxUIEventArgs &e)
 			m_farDepth = slider->getScaledValue();
 		}
 	}
+
+	m_parent->getCanvas()->saveSettings("GUI/FatSuitSettings.xml");
 }

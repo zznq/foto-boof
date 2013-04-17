@@ -48,7 +48,7 @@ void FatSuitView::draw()
 	shader->setUniformTexture("normal_tex", m_fbo.getTextureReference(), 1);
 
 	m_effects[1]->draw();
-	m_fbo.draw(0, 0);
+	//m_fbo.draw(0, 0);
 	//m_texture.draw(0, 0);
 	m_effects[1]->postDraw();
 

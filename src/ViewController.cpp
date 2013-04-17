@@ -26,7 +26,7 @@ void ViewController::setup(KinectControllerPtr kinectController)
 {
 	ViewType::Enum views[] = 
 	{
-		ViewType::FatSuitView
+		ViewType::TestView
 		/*
 		ViewType::Enum::Idle,
 		ViewType::Enum::BwShaderView,

@@ -106,13 +106,13 @@ xcopy /e /i /y "$(ProjectDir)..\..\..\addons\ofxKinect\libs\libfreenect\lib\vs20
     <ClCompile Include="src\ColorDepthShaderEffect.cpp" />
     <ClCompile Include="src\FatSuitEffect.cpp" />
     <ClCompile Include="src\FatSuitView.cpp" />
-    <ClCompile Include="src\IdleView.cpp" />
     <ClCompile Include="src\MeshEffect.cpp" />
     <ClCompile Include="src\MeshView.cpp" />
     <ClCompile Include="src\NormalMapEffect.cpp" />
     <ClCompile Include="src\OutlineEffect.cpp" />
     <ClCompile Include="src\OverlayView.cpp" />
     <ClCompile Include="src\PointCloudEffect.cpp" />
+    <ClCompile Include="src\Test.cpp" />
     <ClCompile Include="src\ViewController.cpp" />
     <ClCompile Include="src\ViewControllerStateEffectTransition.cpp" />
     <ClCompile Include="src\ViewControllerStateFlash.cpp" />
@@ -213,9 +213,10 @@ xcopy /e /i /y "$(ProjectDir)..\..\..\addons\ofxKinect\libs\libfreenect\lib\vs20
     <ClInclude Include="src\NormalMapEffect.h" />
     <ClInclude Include="src\NormalMapView.h" />
     <ClInclude Include="src\OutlineEffect.h" />
-    <ClInclude Include="src\OutlineView.h" />
     <ClInclude Include="src\OverlayView.h" />
     <ClInclude Include="src\PointCloudEffect.h" />
+    <ClInclude Include="src\Test.h" />
+    <ClInclude Include="src\TestView.h" />
     <ClInclude Include="src\ViewControllerState.h" />
     <ClInclude Include="src\ViewController.h" />
     <ClInclude Include="src\ViewControllerStateIdle.h" />

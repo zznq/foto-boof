@@ -115,8 +115,8 @@
     <ClCompile Include="src\PointCloudEffect.cpp">
       <Filter>src\effects</Filter>
     </ClCompile>
-    <ClCompile Include="src\IdleView.cpp">
-      <Filter>src\views</Filter>
+    <ClCompile Include="src\Test.cpp">
+      <Filter>src\effects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -440,7 +440,10 @@
     <ClInclude Include="src\PointCloudEffect.h">
       <Filter>src\effects</Filter>
     </ClInclude>
-    <ClInclude Include="src\OutlineView.h">
+    <ClInclude Include="src\Test.h">
+      <Filter>src\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TestView.h">
       <Filter>src\views</Filter>
     </ClInclude>
   </ItemGroup>

@@ -23,6 +23,8 @@ struct ViewType {
 		PointCloudView,
 		OutlineView,
 
+		TestView,
+
 		// add any new view types above here
 		Max,
 		Invalid = -1
