@@ -2,6 +2,7 @@
 
 uniform sampler2DRect color_tex;
 uniform sampler2DRect normal_tex;
+uniform sampler2DRect displacement_tex;
 
 uniform float near_depth;
 uniform float far_depth;
@@ -12,6 +13,12 @@ varying float depth;
 void main()
 {
 	if (depth < near_depth || depth > far_depth)
+	{
+		discard;
+	}
+	
+	vec4 dv = texture2DRect(displacement_tex, gl_TexCoord[0].st);
+	if (dv.r < 0.1 && dv.g < 0.1 && dv.b < 0.1)
 	{
 		discard;
 	}

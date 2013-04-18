@@ -19,6 +19,8 @@ m_mesh(new ofVboMesh()), m_nearDepth(500.f), m_farDepth(4000.f), m_shaderSetup(f
 
 	m_fbo.allocate(width, height);
 	m_colorTex.allocate(m_width, m_height, GL_RGB);
+
+	m_displacementTex.allocate(width, height, GL_RGB);
 }
 
 TestEffect::~TestEffect() 
@@ -43,7 +45,7 @@ void TestEffect::createMesh()
 			// mesh
 			// add color, vertex and texture coordinates
 			m_mesh->addColor(ofFloatColor(1,1,1,1));
-			//mesh.addNormal(ofVec3f(0, 0, 1));
+			m_mesh->addNormal(ofVec3f(0, 0, 1));
 			m_mesh->addVertex(ofVec3f(x, y, z));
 			m_mesh->addTexCoord(ofVec2f( col/(m_numCols-1), row/(m_numRows-1)) ); 
 			//m_mesh->addTexCoord(ofVec2f(row/(m_numRows-1), col/(m_numCols-1)));
@@ -72,7 +74,7 @@ void TestEffect::createMesh()
 
 void TestEffect::setupShader() 
 {
-	m_shader->load("shaders/test.vert", "shaders/test.frag");
+	m_shader->load("shaders/displacement.vert", "shaders/test.frag");
 	m_normalShader->load("shaders/default.vert", "shaders/normalmapv2.frag");
 
 	m_shaderSetup = true;
@@ -84,6 +86,8 @@ void TestEffect::preDraw()
 	{
 		setupShader();
 	}
+
+	m_displacementTex.draw(1024-200, 768-200, 200, 200);
 
 	easyCam.begin();
 
@@ -103,13 +107,16 @@ void TestEffect::preDraw()
 	m_fbo.end();
 
 	m_shader->begin();
+	m_displacementTex.loadData(m_parent->getKinectData().m_depthStream);
 	m_colorTex.loadData(m_parent->getKinectData().m_videoStream);
+
 	m_shader->setUniform1f("chub_factor", m_chubFactor);
 	m_shader->setUniform1f("near_depth", m_nearDepth);
 	m_shader->setUniform1f("far_depth", m_farDepth);
 	m_shader->setUniform2f("normal_size", m_fbo.getWidth(), m_fbo.getHeight());
 	m_shader->setUniformTexture("color_tex", m_colorTex, 1);
 	m_shader->setUniformTexture("normal_tex", m_fbo.getTextureReference(), 2);
+	m_shader->setUniformTexture("displacement_tex", m_displacementTex, 3);
 }
 
 void TestEffect::postDraw()
@@ -121,6 +128,8 @@ void TestEffect::draw()
 {
 	KinectController::KinectInterfacePtr kinectInterface = m_parent->getKinectController()->getKinect();
 
+	//m_colorTex.draw(0, 0);
+	
 	std::vector<ofVec3f>& vertices = m_mesh->getVertices();
 	std::vector<ofFloatColor>& colors = m_mesh->getColors();
 	for (int i=0; i < vertices.size(); ++i) {
@@ -133,9 +142,9 @@ void TestEffect::draw()
 			color = kinectInterface->getColorAt(vertex.x, vertex.y);
 		}
 	}
+	
 
 	m_mesh->draw();
-
 	easyCam.end();
 }
 

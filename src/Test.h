@@ -27,6 +27,7 @@ protected:
 	bool m_isDirty;
 	float m_chubFactor;
 	ofTexture m_colorTex;
+	ofTexture m_displacementTex;
 	ofPtr<ofShader> m_shader;
 	ofPtr<ofShader> m_normalShader;
 	ofPtr<ofVboMesh> m_mesh;
