@@ -46,6 +46,7 @@ void TestEffect::createMesh()
 			//mesh.addNormal(ofVec3f(0, 0, 1));
 			m_mesh->addVertex(ofVec3f(x, y, z));
 			m_mesh->addTexCoord(ofVec2f( col/(m_numCols-1), row/(m_numRows-1)) ); 
+			//m_mesh->addTexCoord(ofVec2f(row/(m_numRows-1), col/(m_numCols-1)));
 		}
 	}
 
@@ -84,6 +85,13 @@ void TestEffect::preDraw()
 		setupShader();
 	}
 
+	easyCam.begin();
+
+	ofPushMatrix();
+	ofTranslate(0, 0, -100);
+	ofScale(1, -1, 1);  
+	glTranslatef(-m_width*.5, -m_height*.5, 0);
+
 	// draw normal map first into FBO
 	ofTexture texture;
 	texture.allocate(m_width, m_height, GL_RGB);
@@ -99,6 +107,7 @@ void TestEffect::preDraw()
 	m_shader->setUniform1f("chub_factor", m_chubFactor);
 	m_shader->setUniform1f("near_depth", m_nearDepth);
 	m_shader->setUniform1f("far_depth", m_farDepth);
+	m_shader->setUniform2f("normal_size", m_fbo.getWidth(), m_fbo.getHeight());
 	m_shader->setUniformTexture("color_tex", m_colorTex, 1);
 	m_shader->setUniformTexture("normal_tex", m_fbo.getTextureReference(), 2);
 }
@@ -110,13 +119,6 @@ void TestEffect::postDraw()
 
 void TestEffect::draw()
 {
-	easyCam.begin();
-
-	ofPushMatrix();
-	ofTranslate(0, 0, -100);
-	ofScale(1, -1, 1);  
-	glTranslatef(-m_width*.5, -m_height*.5, 0);
-
 	KinectController::KinectInterfacePtr kinectInterface = m_parent->getKinectController()->getKinect();
 
 	std::vector<ofVec3f>& vertices = m_mesh->getVertices();
@@ -127,19 +129,19 @@ void TestEffect::draw()
 
 		if(kinectInterface->getDistanceAt(vertex.x, vertex.y) > 0) 
 		{
-			vertex.z = kinectInterface->getWorldCoordinateAt(vertex.x, vertex.y).z;
+			//vertex.z = kinectInterface->getWorldCoordinateAt(vertex.x, vertex.y).z;
 			color = kinectInterface->getColorAt(vertex.x, vertex.y);
 		}
 	}
 
-	m_mesh->drawWireframe();
+	m_mesh->draw();
 
 	easyCam.end();
 }
 
 void TestEffect::addUI(CanvasPtr canvas) 
 {
-	ofxUISlider* slider = new ofxUISlider("Chub Factor", 1.0f, 500.0f, m_chubFactor, 100.0f, 25.0f);
+	ofxUISlider* slider = new ofxUISlider("Chub Factor", -20.0f, 200.f, m_chubFactor, 100.0f, 25.0f);
 	canvas->addWidgetDown(slider);
 	m_widgets.push_back(slider);
 
