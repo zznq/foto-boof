@@ -87,6 +87,15 @@ void TestEffect::preDraw()
 		setupShader();
 	}
 
+	ofTexture texture;
+	texture.allocate(m_width, m_height, GL_RGB);
+	m_normalShader->begin();
+	texture.loadData(m_parent->getKinectData().m_depthStream);
+	texture.draw(1024-400, 768-200, 200, 200);
+	m_normalShader->end();
+
+	texture.unbind();
+
 	m_displacementTex.draw(1024-200, 768-200, 200, 200);
 
 	easyCam.begin();
@@ -97,8 +106,6 @@ void TestEffect::preDraw()
 	glTranslatef(-m_width*.5, -m_height*.5, 0);
 
 	// draw normal map first into FBO
-	ofTexture texture;
-	texture.allocate(m_width, m_height, GL_RGB);
 	m_fbo.begin();
 	m_normalShader->begin();
 	texture.loadData(m_parent->getKinectData().m_depthStream);

@@ -4,6 +4,7 @@ uniform sampler2DRect color_tex;
 
 uniform float chub_factor = 1.0;
 
+varying vec4 vertexPos;
 varying float depth;
 
 void main(void)
@@ -12,6 +13,8 @@ void main(void)
 	vec4 dv;
 	vec3 nm;
 	float df;
+	
+	vertexPos = gl_Vertex;
 	
 	gl_TexCoord[0] = gl_MultiTexCoord0;
 	

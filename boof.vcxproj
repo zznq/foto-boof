@@ -103,6 +103,7 @@ xcopy /e /i /y "$(ProjectDir)..\..\..\addons\ofxKinect\libs\libfreenect\lib\vs20
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\BwEffect.cpp" />
+    <ClCompile Include="src\CloudTest.cpp" />
     <ClCompile Include="src\ColorDepthShaderEffect.cpp" />
     <ClCompile Include="src\FatSuitEffect.cpp" />
     <ClCompile Include="src\FatSuitView.cpp" />
@@ -203,6 +204,7 @@ xcopy /e /i /y "$(ProjectDir)..\..\..\addons\ofxKinect\libs\libfreenect\lib\vs20
     <ClInclude Include="..\..\..\addons\ofxUI\src\ofxUIWidget.h" />
     <ClInclude Include="..\..\..\addons\ofxUI\src\ofxUIWidgetWithLabel.h" />
     <ClInclude Include="src\BwEffect.h" />
+    <ClInclude Include="src\CloudTest.h" />
     <ClInclude Include="src\ColorDepthShaderEffect.h" />
     <ClInclude Include="src\ColorDepthShaderView.h" />
     <ClInclude Include="src\FatSuitEffect.h" />

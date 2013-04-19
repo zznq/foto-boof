@@ -118,6 +118,9 @@
     <ClCompile Include="src\Test.cpp">
       <Filter>src\effects</Filter>
     </ClCompile>
+    <ClCompile Include="src\CloudTest.cpp">
+      <Filter>src\effects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -445,6 +448,9 @@
     </ClInclude>
     <ClInclude Include="src\TestView.h">
       <Filter>src\views</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CloudTest.h">
+      <Filter>src\effects</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

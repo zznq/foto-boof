@@ -8,6 +8,7 @@ uniform float near_depth;
 uniform float far_depth;
 uniform vec2 normal_size;
 
+varying vec4 vertexPos;
 varying float depth;
 
 void main()
@@ -17,7 +18,7 @@ void main()
 		discard;
 	}
 	
-	vec4 dv = texture2DRect(displacement_tex, gl_TexCoord[0].st);
+	vec4 dv = texture2DRect(displacement_tex, vertexPos.xy);
 	if (dv.r < 0.1 && dv.g < 0.1 && dv.b < 0.1)
 	{
 		discard;
