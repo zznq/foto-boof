@@ -121,6 +121,9 @@
     <ClCompile Include="src\CloudTest.cpp">
       <Filter>src\effects</Filter>
     </ClCompile>
+    <ClCompile Include="src\MeshTest.cpp">
+      <Filter>src\effects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -450,6 +453,9 @@
       <Filter>src\views</Filter>
     </ClInclude>
     <ClInclude Include="src\CloudTest.h">
+      <Filter>src\effects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MeshTest.h">
       <Filter>src\effects</Filter>
     </ClInclude>
   </ItemGroup>

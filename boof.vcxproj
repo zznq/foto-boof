@@ -108,6 +108,7 @@ xcopy /e /i /y "$(ProjectDir)..\..\..\addons\ofxKinect\libs\libfreenect\lib\vs20
     <ClCompile Include="src\FatSuitEffect.cpp" />
     <ClCompile Include="src\FatSuitView.cpp" />
     <ClCompile Include="src\MeshEffect.cpp" />
+    <ClCompile Include="src\MeshTest.cpp" />
     <ClCompile Include="src\MeshView.cpp" />
     <ClCompile Include="src\NormalMapEffect.cpp" />
     <ClCompile Include="src\OutlineEffect.cpp" />
@@ -211,6 +212,7 @@ xcopy /e /i /y "$(ProjectDir)..\..\..\addons\ofxKinect\libs\libfreenect\lib\vs20
     <ClInclude Include="src\FatSuitView.h" />
     <ClInclude Include="src\IdleView.h" />
     <ClInclude Include="src\MeshEffect.h" />
+    <ClInclude Include="src\MeshTest.h" />
     <ClInclude Include="src\MeshView.h" />
     <ClInclude Include="src\NormalMapEffect.h" />
     <ClInclude Include="src\NormalMapView.h" />

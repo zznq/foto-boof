@@ -6,6 +6,8 @@
 #include "OutlineEffect.h"
 #include "PointCloudEffect.h"
 #include "CloudTest.h"
+#include "MeshEffect.h"
+#include "MeshTest.h"
 #include "Test.h"
 
 class TestView : public View {
@@ -14,7 +16,8 @@ public:
 		//addEffect(View::VisualEffectPtr(new OutlineEffect(width, height)));
 		//addEffect(View::VisualEffectPtr(new PointCloudEffect(width, height)));
 		//addEffect(View::VisualEffectPtr(new TestEffect(width, height)));
-		addEffect(View::VisualEffectPtr(new CloudTest(width, height)));
+		//addEffect(View::VisualEffectPtr(new CloudTest(width, height)));
+		addEffect(View::VisualEffectPtr(new MeshTest(width, height)));
 	}
 
 protected:
