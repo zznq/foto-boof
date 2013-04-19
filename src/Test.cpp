@@ -13,6 +13,9 @@ TestEffect::TestEffect(int width, int height)
 m_isDirty(false), m_chubFactor(1.0), m_shader(new ofShader()), m_normalShader(new ofShader()),
 m_mesh(new ofVboMesh()), m_nearDepth(500.f), m_farDepth(4000.f), m_shaderSetup(false)
 {
+	// disabled rectangle texture and fall back to tex_2d (pot textures)
+	ofDisableArbTex();
+	
 	m_mesh->setMode(OF_PRIMITIVE_TRIANGLE_STRIP);
 	m_mesh->setUsage(GL_DYNAMIC_DRAW);
 	createMesh();
@@ -25,7 +28,8 @@ m_mesh(new ofVboMesh()), m_nearDepth(500.f), m_farDepth(4000.f), m_shaderSetup(f
 
 TestEffect::~TestEffect() 
 {
-
+	// turn rectangle textures back on (npot textures)
+	ofEnableArbTex();
 }
 
 void TestEffect::createMesh() 
@@ -74,7 +78,7 @@ void TestEffect::createMesh()
 
 void TestEffect::setupShader() 
 {
-	m_shader->load("shaders/displacement.vert", "shaders/test.frag");
+	m_shader->load("shaders/test.vert", "shaders/test.frag");
 	m_normalShader->load("shaders/default.vert", "shaders/normalmapv2.frag");
 
 	m_shaderSetup = true;
@@ -157,7 +161,7 @@ void TestEffect::draw()
 
 void TestEffect::addUI(CanvasPtr canvas) 
 {
-	ofxUISlider* slider = new ofxUISlider("Chub Factor", -20.0f, 200.f, m_chubFactor, 100.0f, 25.0f);
+	ofxUISlider* slider = new ofxUISlider("Chub Factor", -100.0f, 100.f, m_chubFactor, 100.0f, 25.0f);
 	canvas->addWidgetDown(slider);
 	m_widgets.push_back(slider);
 

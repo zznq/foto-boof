@@ -28,7 +28,7 @@ ofVec3f getNormal(ofVec3f& a, ofVec3f& b, ofVec3f& c) {
 MeshTest::MeshTest(int width, int height) 
 : VisualEffect("mesh_test"), m_width(width), m_height(height)
 {
-	ofSetVerticalSync(true);
+	//ofSetVerticalSync(true);
 	light.setPosition(0,ofGetMouseX(), -ofGetMouseY());
 	light.setDiffuseColor(ofColor(255,0,0));
 	light.setAmbientColor(ofColor(0));
@@ -36,8 +36,10 @@ MeshTest::MeshTest(int width, int height)
 }
 
 void MeshTest::draw() {
-	ofBackground(0);
+	//ofBackground(0);
 	
+	KinectController::KinectInterfacePtr kinect = m_parent->getKinectController()->getKinect();
+
 	float* distancePixels = m_parent->getKinectData().m_distanceValues.getPixels(); // distance in centimeters
 	mesh.clear();
 	mesh.setMode(OF_PRIMITIVE_TRIANGLES);
@@ -57,11 +59,16 @@ void MeshTest::draw() {
 				
 			if(nwz > 0 && nez > 0 && sez > 0 && swz > 0) { // ignore empty depth pixels
 				// get real world locations for each corner
-				ofVec3f nwv = ConvertProjectiveToRealWorld(x + 0, y + 0, nwz);
-				ofVec3f nev = ConvertProjectiveToRealWorld(x + 1, y + 0, nez);
-				ofVec3f sev = ConvertProjectiveToRealWorld(x + 1, y + 1, sez);
-				ofVec3f swv = ConvertProjectiveToRealWorld(x + 0, y + 1, swz);
-					
+				//ofVec3f nwv = ConvertProjectiveToRealWorld(x + 0, y + 0, nwz);
+				//ofVec3f nev = ConvertProjectiveToRealWorld(x + 1, y + 0, nez);
+				//ofVec3f sev = ConvertProjectiveToRealWorld(x + 1, y + 1, sez);
+				//ofVec3f swv = ConvertProjectiveToRealWorld(x + 0, y + 1, swz);
+				
+				ofVec3f nwv = kinect->getWorldCoordinateAt(x+0, y+0);
+				ofVec3f nev = kinect->getWorldCoordinateAt(x + 1, y + 0);
+				ofVec3f sev = kinect->getWorldCoordinateAt(x + 1, y + 1);
+				ofVec3f swv = kinect->getWorldCoordinateAt(x + 0, y + 1);
+
 				// compute normal for the upper left
 				ofVec3f normal = getNormal(nwv, nev, swv);
 				
@@ -94,7 +101,7 @@ void MeshTest::draw() {
 	//	mesh.drawWireframe();
 	//} else {
 		ofEnableLighting();
-		mesh.drawFaces();
+		mesh.draw();
 	//}
 	easyCam.end();
 	

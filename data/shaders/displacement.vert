@@ -1,6 +1,6 @@
-uniform sampler2DRect displacement_tex;
-uniform sampler2DRect normal_tex;
-uniform sampler2DRect color_tex;
+uniform sampler2D displacement_tex;
+uniform sampler2D normal_tex;
+uniform sampler2D color_tex;
 
 uniform float chub_factor = 1.0;
 
@@ -18,9 +18,9 @@ void main(void)
 	
 	gl_TexCoord[0] = gl_MultiTexCoord0;
 	
-	dv = texture2DRect(displacement_tex, gl_Vertex.xy);
-	//nm = texture2DRect(normal_tex, gl_Vertex.xy).xyz;
-	nm = normalize(texture2DRect(normal_tex, gl_Vertex.xy).rgb * 2.0 - 1.0);
+	dv = texture2D(displacement_tex, gl_Vertex.xy);
+	//nm = texture2D(normal_tex, gl_Vertex.xy).xyz;
+	nm = normalize(texture2D(normal_tex, gl_Vertex.xy).rgb * 2.0 - 1.0);
 	
 	df = 0.30*dv.x + 0.59*dv.y + 0.11*dv.z;
 	

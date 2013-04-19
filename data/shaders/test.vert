@@ -1,8 +1,8 @@
 #version 130
 
-uniform sampler2DRect texture;
-uniform sampler2DRect normal_tex;
-uniform float chub_factor = 100.0;
+uniform sampler2D texture;
+uniform sampler2D normal_tex;
+uniform float chub_factor = 1.0;
 
 varying float depth;
 
@@ -12,7 +12,7 @@ void main()
 	
 	// Extract the normal from the normal map,
 	// convert [0,1] range to [-1,1] 
-	vec3 normal = normalize(texture2DRect(normal_tex, vec2(gl_Vertex.x, gl_Vertex.y)).rgb * 2.0 - 1.0);
+	vec3 normal = normalize(texture2D(normal_tex, gl_TexCoord[0].st).rgb * 2.0 - 1.0);
 	
 	//float df = 0.30*normal.x + 0.59*normal.y + 0.11*normal.z;
 	
