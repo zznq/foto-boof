@@ -1,4 +1,4 @@
-#version 130
+#version 120
 
 uniform sampler2D color_tex;
 uniform sampler2D normal_tex;
@@ -18,7 +18,7 @@ void main()
 		discard;
 	}
 	
-	vec4 dv = texture2D(normal_tex, gl_TexCoord[0].st);
+	vec4 dv = texture2D(displacement_tex, gl_TexCoord[0].st);
 	if (dv.r < 0.1 && dv.g < 0.1 && dv.b < 0.1)
 	{
 		discard;
