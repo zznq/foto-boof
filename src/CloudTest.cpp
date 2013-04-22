@@ -42,7 +42,7 @@ void CloudTest::draw() {
 	//} else {
 		ofTranslate(0, 0, -150); // rotate about z = 150 cm
 	//}
-	float* distancePixels = m_parent->getKinectData().m_distanceValues.getPixels(); // distance in centimeters
+	unsigned short* distancePixels = m_parent->getKinectData().m_distanceValues.getPixels(); // distance in centimeters
 	ofMesh cloud;
 	cloud.setMode(OF_PRIMITIVE_POINTS);
 	for(int y = 0; y < m_height; y++) {

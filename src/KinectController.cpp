@@ -6,7 +6,7 @@
 KinectController::KinectController(bool infrared, bool video, bool texture) 
 : m_newFrame(false),
   m_kinectInterface(new ofxKinect()), 
-  m_kinectData(m_kinectInterface->getPixelsRef(), m_kinectInterface->getDepthPixelsRef(), m_kinectInterface->getDistancePixelsRef())
+  m_kinectData(m_kinectInterface->getPixelsRef(), m_kinectInterface->getDepthPixelsRef(), m_kinectInterface->getRawDepthPixelsRef())
 {
 	// initialize the kinect interface
 	m_kinectInterface->init(infrared, video, texture);
@@ -43,7 +43,7 @@ void KinectController::update()
 	if (isFrameNew())
 	{
 		// update local copy of kinect data on a new frame
-		m_kinectData = KinectData(m_kinectInterface->getPixelsRef(), m_kinectInterface->getDepthPixelsRef(), m_kinectInterface->getDistancePixelsRef());
+		m_kinectData = KinectData(m_kinectInterface->getPixelsRef(), m_kinectInterface->getDepthPixelsRef(), m_kinectInterface->getRawDepthPixelsRef());
 	}
 }
 

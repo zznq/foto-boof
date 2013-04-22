@@ -15,7 +15,7 @@ struct KinectStreamType {
 };
 struct KinectData {
 public:
-	KinectData(ofPixels& videoStream, ofPixels& depthStream, ofFloatPixels& distanceValues)
+	KinectData(ofPixels& videoStream, ofPixels& depthStream, ofShortPixels& distanceValues)
 		: m_videoStream(videoStream), m_depthStream(depthStream), m_distanceValues(distanceValues)
 	{
 
@@ -31,7 +31,7 @@ public:
 
 	ofPixels& m_videoStream;
 	ofPixels& m_depthStream;
-	ofFloatPixels& m_distanceValues;
+	ofShortPixels& m_distanceValues;
 };
 
 #endif

@@ -40,7 +40,7 @@ void MeshTest::draw() {
 	
 	KinectController::KinectInterfacePtr kinect = m_parent->getKinectController()->getKinect();
 
-	float* distancePixels = m_parent->getKinectData().m_distanceValues.getPixels(); // distance in centimeters
+	float* distancePixels = kinect->getDistancePixelsRef().getPixels(); // distance in centimeters
 	mesh.clear();
 	mesh.setMode(OF_PRIMITIVE_TRIANGLES);
 	for(int y = 0; y < m_height - 1; y++) { // don't go to the end

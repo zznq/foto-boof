@@ -58,7 +58,6 @@ void PointCloudEffect::draw()
 	KinectController::KinectInterfacePtr kinectInterface = m_parent->getKinectController()->getKinect();
 
 	// offset z vertices by the distance
-	ofFloatPixels& distanceValues = m_parent->getKinectData().m_distanceValues;
 	std::vector<ofVec3f>& vertices = m_mesh->getVertices();
 	std::vector<ofFloatColor>& colors = m_mesh->getColors();
 	std::vector<ofVec3f>::iterator iter;

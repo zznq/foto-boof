@@ -30,11 +30,17 @@ protected:
 	ofTexture m_displacementTex;
 	ofPtr<ofShader> m_shader;
 	ofPtr<ofShader> m_normalShader;
+	ofPtr<ofShader> m_blurShader;
+	ofPtr<ofShader> m_normalDrawShader;
 	ofPtr<ofVboMesh> m_mesh;
 	ofFbo m_fbo;
+	ofFbo m_blurHorizontal;
+	ofFbo m_blurVertical;
 	float m_nearDepth;
 	float m_farDepth;
 	bool m_shaderSetup;
+	bool m_drawWireframe;
+	ofLight light;
 };
 
 #endif

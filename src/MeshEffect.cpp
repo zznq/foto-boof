@@ -72,7 +72,6 @@ void MeshEffect::draw()
 	KinectController::KinectInterfacePtr kinectInterface = m_parent->getKinectController()->getKinect();
 
 	// offset z vertices by the distance
-	ofFloatPixels& distanceValues = m_parent->getKinectData().m_distanceValues;
 	std::vector<ofVec3f>& vertices = m_mesh->getVertices();
 	std::vector<ofVec3f>::iterator iter;
 	float prevZValue = 0;

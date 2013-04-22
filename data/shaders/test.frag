@@ -18,7 +18,7 @@ void main()
 		discard;
 	}
 	
-	vec4 dv = texture2D(displacement_tex, gl_TexCoord[0].st);
+	vec4 dv = texture2D(normal_tex, gl_TexCoord[0].st);
 	if (dv.r < 0.1 && dv.g < 0.1 && dv.b < 0.1)
 	{
 		discard;
@@ -29,8 +29,9 @@ void main()
     //vec2 coord = gl_FragCoord.xy/normal_size ;
     //coord.y = 1.0f-coord.y ;
 	
-	gl_FragColor = vec4(normal,1.0);
-	//gl_FragColor = texture2D(color_tex, vec2(gl_TexCoord[0])); 
+	//gl_FragColor = gl_Color;
+	//gl_FragColor = vec4(normal,1.0);
+	gl_FragColor = texture2D(color_tex, gl_TexCoord[0].st); 
 	//gl_FragColor = texture2D(normal_tex, coord);
 	//gl_FragColor = vec4(normal, 1.0);
 	//gl_FragColor.a = 1.0;
