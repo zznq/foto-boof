@@ -26,8 +26,8 @@ void main()
 	*/
 	
 
-	vec4 bumpColor = texture2D(displacement_tex, gl_TexCoord[0].st) * 2.0 - 1.0;
-	float df = 0.30*bumpColor.x + 0.59*bumpColor.y + 0.11*bumpColor.z;
+	vec4 displacement = texture2D(displacement_tex, gl_TexCoord[0].st) * 2.0 - 1.0;
+	float df = 0.30*displacement.x + 0.59*displacement.y + 0.11*displacement.z;
     vec4 position = vec4(normal * df * chub_factor, 0.0) + gl_Vertex;
 
 	gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * position;

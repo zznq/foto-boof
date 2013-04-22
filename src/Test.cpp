@@ -288,8 +288,6 @@ void TestEffect::guiEvent(ofxUIEventArgs &e)
 
 	if(name == "Fill")
 	{
-		//ofxUIToggle *radio = (ofxUIToggle *) e.widget;
-		//std::string value = radio->getValue();
 		if(m_drawWireframe == true) {
 			m_drawWireframe = !m_drawWireframe;
 		}
