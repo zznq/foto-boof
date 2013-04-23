@@ -15,12 +15,19 @@ void ViewControllerStateStarting::enter(ViewController* viewController)
 	ViewControllerState::enter(viewController);
 
 	m_viewController->getOverlayView()->startEffectTransition();
-	m_viewController->incrementView();
+	is_pastHalfWay = false;
 }
 
 // Once transition is finished change state to run effect
 void ViewControllerStateStarting::execute()
 {
+	if(m_viewController->isTransitionHalfWay() && !is_pastHalfWay)
+	{
+		m_viewController->incrementView();
+
+		is_pastHalfWay = true;
+	}
+
 	if(m_viewController->isTransitionFinished())
 	{
 		m_viewController->changeState(ViewControllerStateRunEffect::Instance());

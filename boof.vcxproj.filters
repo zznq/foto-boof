@@ -162,6 +162,9 @@
     <Filter Include="src\effects">
       <UniqueIdentifier>{cc7d12df-2503-44ab-b4ef-5526afe37343}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\ui">
+      <UniqueIdentifier>{8ce3df1e-b3d9-4f85-a9be-f7e6c4eb5993}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\addons\ofxOpenCv\src\ofxCvBlob.h">
@@ -442,6 +445,9 @@
     </ClInclude>
     <ClInclude Include="src\OutlineView.h">
       <Filter>src\views</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ofxBoofSlider.h">
+      <Filter>src\ui</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

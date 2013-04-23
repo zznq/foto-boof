@@ -7,6 +7,8 @@
 class ViewControllerStateRunEffect;
 
 class ViewControllerStateEffectTransition : public ViewControllerState {
+private:
+	bool is_pastHalfWay;
 public:
 	static ViewControllerStatePtr Instance();
 

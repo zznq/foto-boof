@@ -4,6 +4,8 @@
 #include "ViewControllerState.h"
 
 class ViewControllerStateStarting : public ViewControllerState {
+private:
+	bool is_pastHalfWay;
 public:
 	static ViewControllerStatePtr Instance();
 

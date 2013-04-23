@@ -22,8 +22,16 @@ public:
 	typedef ofPtr<ofxUICanvas> CanvasPtr;
 
 private:
+	const float static DEFAULT_X_OFFSET;
+	const float static DEFAULT_Y_OFFSET;
+	const float static DEFAULT_Z_OFFSET;
+
+	ofVec3f m_offset;
+
 	float m_nearClipping;
 	float m_farClipping;
+
+	ofCamera m_cam;
 protected:
 	bool m_useDepth;
 	bool m_countDownRunning;
@@ -74,8 +82,14 @@ public:
 	void addEffect(const VisualEffectPtr& effect);
 	void removeEffect(const std::string& effectName);
 	void clearEffects();
+
 	int getWidth() const;
 	int getHeight() const;
+
+	ofVec3f getOffset() const;
+	void setOffset(const ofVec3f& offset);
+	void setOffset(const float x, const float y, const float z);
+
 	int getViewInterval();
 	
 	const KinectControllerPtr& getKinectController() const;

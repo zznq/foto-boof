@@ -10,6 +10,8 @@ class ViewControllerState;
 #include "OverlayView.h"
 #include "ViewDelegate.h"
 
+#include "ofCamera.h"
+
 class ViewController: public ViewDelegate {
 public:
 	typedef ofPtr<View> ViewPtr;
@@ -35,6 +37,7 @@ public:
 	bool shouldStart() const;
 	bool isEffectCountdownFinished() const;
 	bool isFlashFinished() const;
+	bool isTransitionHalfWay() const;
 	bool isTransitionFinished() const;
 	bool isLastEffect() const;
 
@@ -48,6 +51,7 @@ private:
 	bool m_shouldStart;
 	bool m_isEffectCountdownFinished;
 	bool m_isFlashFinished;
+	bool m_isTransitionHalfWay;
 	bool m_isTransitionFinished;
 	bool m_lastView;
 

@@ -6,13 +6,13 @@
 
 #include "ViewControllerStateIdle.h"
 
-int ViewController::VIEW_WIDTH = 640; //933;
-int ViewController::VIEW_HEIGHT = 480; //700;
+int ViewController::VIEW_WIDTH = 933;
+int ViewController::VIEW_HEIGHT = 700;
 
 ViewController::ViewController() :
 	m_currentState(ViewControllerStateIdle::Instance()), m_viewGroupId(0), m_shouldStart(false),
-	m_isEffectCountdownFinished(false), m_isFlashFinished(false), m_isTransitionFinished(false),
-	m_lastView(false)
+	m_isEffectCountdownFinished(false), m_isFlashFinished(false), m_isTransitionHalfWay(false),
+	m_isTransitionFinished(false), m_lastView(false)
 { 
 	m_currentState->enter(this);
 }
@@ -26,13 +26,11 @@ void ViewController::setup(KinectControllerPtr kinectController)
 {
 	ViewType::Enum views[] = 
 	{
-		ViewType::PointCloudView
-		/*
+		/*ViewType::PointCloudView*/
 		ViewType::Enum::Idle,
 		ViewType::Enum::BwShaderView,
 		ViewType::Enum::ColorDepthShaderView,
 		ViewType::Enum::FatSuitView 
-		*/
 	};
 
 	// add all view types
@@ -52,6 +50,7 @@ void ViewController::setup(KinectControllerPtr kinectController)
 	// This needs to be the entire width of the screen
 	m_overlayView = OverlayViewPtr(new OverlayView(kinectController, ofGetWindowWidth(), ofGetWindowHeight()));
 	m_overlayView->setViewDelegate(View::ViewDelegatePtr(this));
+	m_overlayView->setup();
 	
 	m_screen.allocate(VIEW_WIDTH, VIEW_HEIGHT, OF_IMAGE_COLOR_ALPHA);
 }
@@ -66,8 +65,9 @@ void ViewController::update(float delta)
 
 void ViewController::draw()
 {
-	this->getCurrentView()->draw();
 	this->getOverlayView()->draw();
+	this->getCurrentView()->draw();
+	this->getOverlayView()->drawForeground();
 }
 
 void ViewController::updateGroupId()
@@ -81,7 +81,7 @@ void ViewController::sharePhoto()
 
 	oss << "data/images/" << m_viewGroupId;
 
-	m_screen.grabScreen(0, 0, m_screen.getWidth(), m_screen.getHeight());
+	//m_screen.grabScreen(0, 0, m_screen.getWidth(), m_screen.getHeight());
 	
 	std::string path = oss.str();
 
@@ -96,7 +96,7 @@ void ViewController::sharePhoto()
 	oss << "/" << (dir.size() + 1) << ".jpg";
 	std::string filePath = oss.str();
 
-	m_screen.saveImage(filePath);
+	this->getOverlayView()->getScreen().saveImage(filePath);
 
 	//TODO: 
 	//	Get screen data from overlay
@@ -136,6 +136,11 @@ bool ViewController::isFlashFinished() const
 	return m_isFlashFinished;
 }
 
+bool ViewController::isTransitionHalfWay() const
+{
+	return m_isTransitionHalfWay;
+}
+
 bool ViewController::isTransitionFinished() const
 {
 	return m_isTransitionFinished;
@@ -164,11 +169,15 @@ void ViewController::handleViewAction(const ViewAction::Enum& action)
 		std::cout << "FLASH_FINISHED" << std::endl;
 		m_isFlashFinished = true;
 		break;
+	case ViewAction::TRANSITION_HALF_WAY:
+		m_isTransitionHalfWay = true;
+		break;
 	case ViewAction::TRANSITION_FINISHED:
 		std::cout << "TRANSITION_FINISHED" << std::endl;
 		if(m_shouldStart) {
 			m_shouldStart = false;
 		}
+		m_isTransitionHalfWay = false;
 		m_isEffectCountdownFinished = false;
 		m_isFlashFinished = false;
 		m_isTransitionFinished = true;

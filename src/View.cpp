@@ -3,9 +3,13 @@
 #include "ViewController.h"
 #include "ViewDelegate.h"
 
+const float View::DEFAULT_X_OFFSET = 338.0;
+const float View::DEFAULT_Y_OFFSET = 10.0;
+const float View::DEFAULT_Z_OFFSET = 0.0;
+
 View::View(KinectControllerPtr kinectController, int width, int height, bool useDepth) 
-: m_kinectController(kinectController),  m_width(width), m_height(height), m_timeInterval(5000), m_runningTime(0), m_useDepth(useDepth),
-m_countDownRunning(false)
+: m_kinectController(kinectController),  m_width(width), m_height(height), m_timeInterval(5000), 
+m_runningTime(0), m_useDepth(useDepth), m_countDownRunning(false), m_offset(ofVec3f(DEFAULT_X_OFFSET, DEFAULT_Y_OFFSET, DEFAULT_Z_OFFSET))
 {
 	m_canvas = View::CanvasPtr(new ofxUICanvas());
 	m_canvas->setColorBack(ofColor(87.0f, 87.0F, 87.0F, 197.0f));
@@ -24,7 +28,9 @@ View::~View()
 
 void View::setup()
 {
-	//m_canvas->setVisible(true);
+	m_canvas->setVisible(true);
+
+	m_cam.setupPerspective(true);
 }
 
 void View::close()
@@ -65,6 +71,11 @@ void View::draw()
 		return;
 	}
 
+	m_cam.begin();
+	
+	ofPushMatrix();
+	ofTranslate(m_offset.x, m_offset.y, m_offset.z);
+
 	// effects pre-draw
 	doEffectsPreDraw();
 
@@ -76,6 +87,10 @@ void View::draw()
 
 	// effects post-draw
 	doEffectsPostDraw();
+
+	ofPopMatrix();
+
+	m_cam.end();
 }
 
 void View::doEffectsPreDraw() 
@@ -138,6 +153,23 @@ int View::getWidth() const
 int View::getHeight() const
 {
 	return m_height;
+}
+
+ofVec3f View::getOffset() const
+{
+	return m_offset;
+}
+
+void View::setOffset(const ofVec3f& offset)
+{
+	m_offset = offset;
+}
+
+void View::setOffset(const float x, const float y, const float z)
+{
+	m_offset.x = x;
+	m_offset.y = y;
+	m_offset.z = z;
 }
 
 int View::getViewInterval()
