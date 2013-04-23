@@ -10,6 +10,7 @@ uniform vec2 normal_size;
 
 varying vec4 vertexPos;
 varying float depth;
+varying vec4 displacement;
 
 void main()
 {
@@ -19,7 +20,7 @@ void main()
 	}
 	
 	vec4 dv = texture2D(displacement_tex, gl_TexCoord[0].st);
-	if (dv.r < 0.1 && dv.g < 0.1 && dv.b < 0.1)
+	if (dv.r < 0.1)
 	{
 		discard;
 	}
@@ -33,7 +34,8 @@ void main()
 	//gl_FragColor = vec4(normal,1.0);
 	gl_FragColor = texture2D(color_tex, gl_TexCoord[0].st); 
 	//gl_FragColor = texture2D(normal_tex, coord);
-	//gl_FragColor = vec4(normal, 1.0);
+	gl_FragColor = vec4(normal, 1.0);
 	//gl_FragColor.a = 1.0;
+	//gl_FragData[0] = displacement;
 	
 }

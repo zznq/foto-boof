@@ -9,7 +9,8 @@
 #include <gl/GLU.h>
 
 ofEasyCam easyCam;
-GLUquadricObj *quadric = gluNewQuadric();
+ofFbo blurColor1;
+ofFbo blurColor2;
 
 TestEffect::TestEffect(int width, int height)
 : VisualEffect("test_effect"), m_width(width), m_height(height),
@@ -85,7 +86,7 @@ void TestEffect::createMesh()
 void TestEffect::setupShader() 
 {
 	m_shader->load("shaders/test.vert", "shaders/test.frag");
-	m_normalShader->load("shaders/default.vert", "shaders/normalmapv2.frag");
+	m_normalShader->load("shaders/default.vert", "shaders/normalmap.frag");
 	m_blurShader->load("shaders/default.vert", "shaders/blur.frag");
 	m_shaderSetup = true;
 }
@@ -127,6 +128,26 @@ void TestEffect::draw()
 	*/
 
 	m_displacementTex.loadData(m_parent->getKinectController()->getKinect()->getDistancePixelsRef());
+	
+	ofTexture depthTex;
+	depthTex.allocate(m_width, m_height, GL_LUMINANCE);
+	depthTex.loadData(m_parent->getKinectData().m_depthStream);
+
+	int blurSize = 9;
+	int sigma = 5;
+
+	m_fbo.begin();
+	//ofEnableAlphaBlending();
+	m_normalShader->begin();
+	m_normalShader->setUniform1f("xOffset", 1.0/m_width);
+	m_normalShader->setUniform1f("yOffset", 1.0/m_height);
+	//texture.loadData(m_parent->getKinectController()->getKinect()->getDistancePixelsRef());
+	//texture.draw(0, 0);
+	//m_blurHorizontal.draw(0, 0);
+	m_displacementTex.draw(0, 0);
+	m_normalShader->end();
+	//ofClearAlpha();
+	m_fbo.end();
 
 	// load displacement map
 	// vertical blur pass
@@ -134,10 +155,11 @@ void TestEffect::draw()
 	//ofEnableAlphaBlending();
 	m_blurShader->begin();
 	m_blurShader->setUniform1i("horizontalPass", 0);
-	m_blurShader->setUniform1i("blurSize", 5);
-	m_blurShader->setUniform1f("sigma", 2);
+	m_blurShader->setUniform1i("blurSize", blurSize);
+	m_blurShader->setUniform1f("sigma", sigma);
 	m_blurShader->setUniform1f("pixelSize", 1.f/m_blurVertical.getHeight());
-	m_displacementTex.draw(0, 0);
+	//m_displacementTex.draw(0, 0);
+	m_fbo.draw(0, 0);
 	m_blurShader->end();
 	//ofClearAlpha();
 	m_blurVertical.end();
@@ -147,8 +169,8 @@ void TestEffect::draw()
 	//ofEnableAlphaBlending();
 	m_blurShader->begin();
 	m_blurShader->setUniform1i("horizontalPass", 1);
-	m_blurShader->setUniform1i("blurSize", 5);
-	m_blurShader->setUniform1f("sigma", 2);
+	m_blurShader->setUniform1i("blurSize", blurSize);
+	m_blurShader->setUniform1f("sigma", sigma);
 	m_blurShader->setUniform1f("pixelSize", 1.f/m_blurHorizontal.getWidth());
 	m_blurVertical.draw(0, 0);
 	m_blurShader->end();
@@ -164,23 +186,42 @@ void TestEffect::draw()
 	//ofTexture texture;
 	//texture.allocate(m_width, m_height, GL_LUMINANCE32F_ARB);
 	// draw normal map first into FBO
-	m_fbo.begin();
-	//ofEnableAlphaBlending();
-	m_normalShader->begin();
-	//texture.loadData(m_parent->getKinectController()->getKinect()->getDistancePixelsRef());
-	//texture.draw(0, 0);
-	//m_blurHorizontal.draw(0, 0);
-	m_displacementTex.draw(0, 0);
-	m_normalShader->end();
-	//ofClearAlpha();
-	m_fbo.end();
 
 	//m_fbo.draw(1024-200, 768-200, 200, 200);
+
+	blurColor1.allocate(m_width, m_height);
+	blurColor1.begin();
+	//ofEnableAlphaBlending();
+	m_blurShader->begin();
+	m_blurShader->setUniform1i("horizontalPass", 0);
+	m_blurShader->setUniform1i("blurSize", blurSize);
+	m_blurShader->setUniform1f("sigma", sigma);
+	m_blurShader->setUniform1f("pixelSize", 1.f/m_blurVertical.getHeight());
+	//m_displacementTex.draw(0, 0);
+	m_colorTex.loadData(m_parent->getKinectData().m_videoStream);
+	m_colorTex.draw(0, 0);
+	m_blurShader->end();
+	//ofClearAlpha();
+	blurColor1.end();
+
+	blurColor2.allocate(m_width, m_height);
+	// horizontal pass
+	blurColor2.begin();
+	//ofEnableAlphaBlending();
+	m_blurShader->begin();
+	m_blurShader->setUniform1i("horizontalPass", 1);
+	m_blurShader->setUniform1i("blurSize", blurSize);
+	m_blurShader->setUniform1f("sigma", sigma);
+	m_blurShader->setUniform1f("pixelSize", 1.f/m_blurHorizontal.getWidth());
+	blurColor1.draw(0, 0);
+	m_blurShader->end();
+	//ofClearAlpha();
+	blurColor2.end();
 
 	easyCam.begin();
 	ofPushMatrix();
 	ofTranslate(0, 0, -100);
-	ofScale(1, -1, 1);  
+	ofScale(1, -1, 1);
 	glTranslatef(-m_width*.5, -m_height*.5, 0);
 
 	m_shader->begin();
@@ -189,9 +230,9 @@ void TestEffect::draw()
 	m_shader->setUniform1f("chub_factor", m_chubFactor);
 	m_shader->setUniform1f("near_depth", m_nearDepth);
 	m_shader->setUniform1f("far_depth", m_farDepth);
-	m_shader->setUniformTexture("color_tex", m_colorTex, 1);
-	m_shader->setUniformTexture("normal_tex", m_fbo.getTextureReference(), 2);
-	m_shader->setUniformTexture("displacement_tex", m_blurHorizontal.getTextureReference(), 3);
+	m_shader->setUniformTexture("color_tex", blurColor2.getTextureReference(), 1);
+	m_shader->setUniformTexture("normal_tex", m_blurHorizontal.getTextureReference(), 2);
+	m_shader->setUniformTexture("displacement_tex", depthTex, 3);
 	/*
 	m_shader->setUniformTexture("color_tex", image3.getTextureReference(), 1);
 	m_shader->setUniformTexture("normal_tex", image.getTextureReference(), 2);
@@ -224,7 +265,7 @@ void TestEffect::draw()
 
 void TestEffect::addUI(CanvasPtr canvas) 
 {
-	ofxUISlider* slider = new ofxUISlider("Chub Factor", -0.05f, 0.f, m_chubFactor, 100.0f, 25.0f);
+	ofxUISlider* slider = new ofxUISlider("Chub Factor", 0.f, 100.0f, m_chubFactor, 100.0f, 25.0f);
 	canvas->addWidgetDown(slider);
 	m_widgets.push_back(slider);
 
