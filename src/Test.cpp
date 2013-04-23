@@ -29,8 +29,9 @@ m_nearDepth(500.f), m_farDepth(4000.f), m_shaderSetup(false), m_drawWireframe(fa
 	m_fbo.allocate(m_width, m_height);
 	m_blurHorizontal.allocate(m_width, m_height);
 	m_blurVertical.allocate(m_width, m_height);
-	m_colorTex.allocate(m_width, m_height, GL_RGB);
+	m_colorTex.allocate(m_width, m_height, GL_RGBA);
 	m_displacementTex.allocate(m_width, m_height, GL_RGB32F_ARB);
+	m_depthTex.allocate(m_width, m_height, GL_RGBA);
 }
 
 TestEffect::~TestEffect() 
@@ -85,8 +86,8 @@ void TestEffect::createMesh()
 
 void TestEffect::setupShader() 
 {
-	m_shader->load("shaders/test.vert", "shaders/test.frag");
-	m_normalShader->load("shaders/default.vert", "shaders/normalmap.frag");
+	m_shader->load("shaders/mainVert.glsl", "shaders/mainFrag.glsl");
+	m_normalShader->load("shaders/default.vert", "shaders/normalmapv2.frag");
 	m_blurShader->load("shaders/default.vert", "shaders/blur.frag");
 	m_shaderSetup = true;
 }
@@ -128,13 +129,10 @@ void TestEffect::draw()
 	*/
 
 	m_displacementTex.loadData(m_parent->getKinectController()->getKinect()->getDistancePixelsRef());
-	
-	ofTexture depthTex;
-	depthTex.allocate(m_width, m_height, GL_LUMINANCE);
-	depthTex.loadData(m_parent->getKinectData().m_depthStream);
+	m_depthTex.loadData(m_parent->getKinectData().m_depthStream);
 
-	int blurSize = 9;
-	int sigma = 5;
+	int blurSize = 7;
+	int sigma = 3;
 
 	m_fbo.begin();
 	//ofEnableAlphaBlending();
@@ -145,6 +143,7 @@ void TestEffect::draw()
 	//texture.draw(0, 0);
 	//m_blurHorizontal.draw(0, 0);
 	m_displacementTex.draw(0, 0);
+	//m_depthTex.draw(0, 0);
 	m_normalShader->end();
 	//ofClearAlpha();
 	m_fbo.end();
@@ -219,6 +218,7 @@ void TestEffect::draw()
 	blurColor2.end();
 
 	easyCam.begin();
+	easyCam.getPosition();
 	ofPushMatrix();
 	ofTranslate(0, 0, -100);
 	ofScale(1, -1, 1);
@@ -227,12 +227,16 @@ void TestEffect::draw()
 	m_shader->begin();
 	m_colorTex.loadData(m_parent->getKinectData().m_videoStream);
 
+	ofVec3f eyePos = easyCam.getPosition();
+	m_shader->setUniform3f("eyePos", eyePos.x, eyePos.y, eyePos.z);
 	m_shader->setUniform1f("chub_factor", m_chubFactor);
 	m_shader->setUniform1f("near_depth", m_nearDepth);
 	m_shader->setUniform1f("far_depth", m_farDepth);
+	m_shader->setUniform1f("clip", m_farDepth);
 	m_shader->setUniformTexture("color_tex", blurColor2.getTextureReference(), 1);
 	m_shader->setUniformTexture("normal_tex", m_blurHorizontal.getTextureReference(), 2);
-	m_shader->setUniformTexture("displacement_tex", depthTex, 3);
+	m_shader->setUniformTexture("displacement_tex", m_depthTex, 3);
+	m_shader->setUniformTexture("depth_tex", m_depthTex, 4);
 	/*
 	m_shader->setUniformTexture("color_tex", image3.getTextureReference(), 1);
 	m_shader->setUniformTexture("normal_tex", image.getTextureReference(), 2);

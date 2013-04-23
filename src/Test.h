@@ -28,6 +28,7 @@ protected:
 	float m_chubFactor;
 	ofTexture m_colorTex;
 	ofTexture m_displacementTex;
+	ofTexture m_depthTex;
 	ofPtr<ofShader> m_shader;
 	ofPtr<ofShader> m_normalShader;
 	ofPtr<ofShader> m_blurShader;
