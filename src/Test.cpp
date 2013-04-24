@@ -179,7 +179,7 @@ void TestEffect::draw()
 
 	// horizontal pass
 	m_blurHorizontal.begin();
-	ofEnableAlphaBlending();
+	//ofEnableAlphaBlending();
 	m_blurShader->begin();
 	m_blurShader->setUniform1i("horizontalPass", 1);
 	m_blurShader->setUniform1i("blurSize", blurSize);
@@ -193,10 +193,10 @@ void TestEffect::draw()
 	m_blurShader->setUniform1f("blurAmt", m_blurFactor);
 	m_blurVertical.draw(0, 0);
 	m_blurShader->end();
-	ofClearAlpha();
+	//ofClearAlpha();
 	m_blurHorizontal.end();
 
-	m_blurHorizontal.draw(1024-200, 768-200, 200, 200);
+	//m_blurHorizontal.draw(1024-200, 768-200, 200, 200);
 
 	//m_blurHorizontal.draw(1024-200, 768-200, 200, 200);
 	//m_displacementTex.draw(0, 0);
@@ -208,6 +208,7 @@ void TestEffect::draw()
 
 	//m_fbo.draw(1024-200, 768-200, 200, 200);
 
+	/*
 	blurColor1.allocate(m_width, m_height);
 	blurColor1.begin();
 	//ofEnableAlphaBlending();
@@ -236,20 +237,21 @@ void TestEffect::draw()
 	m_blurShader->end();
 	//ofClearAlpha();
 	blurColor2.end();
+	*/
 
 	ofFbo depthFbo;
 	depthFbo.allocate(m_width, m_height);
 	depthFbo.begin();
-	ofEnableAlphaBlending();
+	//ofEnableAlphaBlending();
 	m_depthShader->begin();
 	m_depthShader->setUniform1f("scale", 1.f);
-	m_depthShader->setUniformTexture("depth", m_depthTex, 1);
-	//depthShader->setUniformTexture("video", m_colorTex, 2);
+	m_depthShader->setUniformTexture("video_tex", m_colorTex, 1);
+	m_depthShader->setUniformTexture("depth_tex", m_depthTex, 2);
 	m_colorTex.draw(0, 0);
-	ofClearAlpha();
+	//ofClearAlpha();
 	m_depthShader->end();
 	depthFbo.end();
-	depthFbo.draw(1024-400, 768-200, 200, 200);
+	//depthFbo.draw(1024-400, 768-200, 200, 200);
 
 	easyCam.begin();
 	easyCam.getPosition();
@@ -267,15 +269,16 @@ void TestEffect::draw()
 	m_shader->setUniform1f("chub_factor", m_chubFactor);
 	m_shader->setUniform1f("near_depth", m_nearDepth);
 	m_shader->setUniform1f("far_depth", m_farDepth);
-	m_shader->setUniformTexture("color_tex", depthFbo.getTextureReference(), 1);
+	//m_shader->setUniformTexture("color_tex", depthFbo.getTextureReference(), 1);
 	m_shader->setUniformTexture("normal_tex", m_blurHorizontal.getTextureReference(), 2);
 	m_shader->setUniformTexture("displacement_tex", m_depthTex, 3);
-	m_shader->setUniformTexture("depth_tex", m_depthTex, 4);
+	m_shader->setUniformTexture("depth_tex", depthFbo.getTextureReference(), 1);
 	/*
 	m_shader->setUniformTexture("color_tex", image3.getTextureReference(), 1);
 	m_shader->setUniformTexture("normal_tex", image.getTextureReference(), 2);
 	m_shader->setUniformTexture("displacement_tex", image2.getTextureReference(), 3);
 	*/
+	/*
 	std::vector<ofVec3f>& vertices = m_mesh->getVertices();
 	std::vector<ofFloatColor>& colors = m_mesh->getColors();
 	for (int i=0; i < vertices.size(); ++i) {
@@ -288,6 +291,7 @@ void TestEffect::draw()
 			color = kinectInterface->getColorAt(vertex.x, vertex.y);
 		}
 	}
+	*/
 
 	if (!m_drawWireframe)
 	{
@@ -303,7 +307,7 @@ void TestEffect::draw()
 
 void TestEffect::addUI(CanvasPtr canvas) 
 {
-	ofxUISlider* slider = new ofxUISlider("Chub Factor", -2000.f, 1000.0f, m_chubFactor, 100.0f, 25.0f);
+	ofxUISlider* slider = new ofxUISlider("Chub Factor", -2000.f, 2000.0f, m_chubFactor, 100.0f, 25.0f);
 	canvas->addWidgetDown(slider);
 	m_widgets.push_back(slider);
 
@@ -406,16 +410,16 @@ void TestEffect::guiEvent(ofxUIEventArgs &e)
 
 	if(name == "Fill")
 	{
-		if(m_drawWireframe == true) {
-			m_drawWireframe = !m_drawWireframe;
-		}
+		ofxUIToggle *toggle = (ofxUIToggle *) e.widget; 
+		bool toggled = toggle->getValue();
+		m_drawWireframe = !toggled;
 	}
 
 	if (name == "Wireframe")
 	{
-		if(m_drawWireframe == false) {
-			m_drawWireframe = !m_drawWireframe;
-		}
+		ofxUIToggle *toggle = (ofxUIToggle *) e.widget; 
+		bool toggled = toggle->getValue();
+		m_drawWireframe = toggled;
 	}
 
 	m_parent->getCanvas()->saveSettings("GUI/TestEffectSettings.xml");

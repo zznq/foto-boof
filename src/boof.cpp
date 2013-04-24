@@ -9,7 +9,7 @@
 
 Boof::Boof(int windowWidth, int windowHeight)
 : m_windowWidth(windowWidth), m_windowHeight(windowHeight), m_window(new ofAppGlutWindow()), 
-m_kinectController(new KinectController()), m_viewController(new ViewController())
+m_kinectController(new KinectController(false, true, false)), m_viewController(new ViewController())
 {
 	// setup opengl context and window
 	ofSetupOpenGL(m_window, windowWidth, windowHeight, OF_WINDOW);
