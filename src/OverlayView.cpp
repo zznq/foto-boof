@@ -1,7 +1,9 @@
 #include "OverlayView.h"
 #include "ViewController.h"
 
-OverlayView::OverlayView(KinectControllerPtr kinectController, int width, int height) : View(kinectController, width, height, false)
+OverlayView::OverlayView(KinectControllerPtr kinectController, int width, int height, int indicatorCount) : 
+	View(kinectController, width, height, false),
+	m_indicatorCount(indicatorCount), m_restartedIndicators(false)
 {
 	this->setOffset(0.0, 0.0, 0.0);
 
@@ -36,14 +38,26 @@ OverlayView::OverlayView(KinectControllerPtr kinectController, int width, int he
 	m_indicatorInActive = ofImage("indicator_inactive.png");
 	m_indicatorInActive.allocate(22, 22, OF_IMAGE_COLOR_ALPHA);
 
-	m_indicators = std::vector<OverlayIndicator>(4);
-	m_indicatorIndex = 0;
-	m_indicators[0] = OverlayIndicator();
-	m_indicators[1] = OverlayIndicator(IndicatorState::InActive, ofVec2f(30, 0));
-	m_indicators[2] = OverlayIndicator(IndicatorState::InActive, ofVec2f(30, 0));
-	m_indicators[3] = OverlayIndicator(IndicatorState::InActive, ofVec2f(30, 0));
+	m_indicators = std::vector<OverlayIndicator>(m_indicatorCount -1);
+	m_indicatorIndex = -1;
+	for(int i = 0; i < m_indicatorCount; i ++)
+	{
+		// Represents Idle View
+		if(i == 0)
+		{
+			continue;
+		}
+		ofVec2f offset(0, 0);
+		if(i > 1) {
+			offset.x = 30;
+		}
+
+		m_indicators[i -1] = OverlayIndicator(IndicatorState::InActive, offset);
+	}
 
 	m_isTransitioning = false;
+	m_isTransitionHalfWay = false;
+	m_showScreen = false;
 	m_transDuration = 3000.f; 
 	m_transRunningTime = 0;
 	m_transProgress = 0;
@@ -71,27 +85,22 @@ OverlayView::OverlayView(KinectControllerPtr kinectController, int width, int he
 
 void OverlayView::update(float delta)
 {
-	/*
-	m_canvas->setVisible(true);
-
-	ofxUIMinimalSlider *slider = new ofxUIMinimalSlider("Mini", 0, 10, 5, 25, 100);
-	m_canvas->addWidget(slider);
-	slider->setShowValue(true);
-	*/
-
 	View::update(delta);
 
 	if(m_isTransitioning)
 	{
 		m_transRunningTime += delta;
-		m_transProgress = m_transRunningTime / m_transDuration;
-		if(m_transRunningTime >= m_transDuration)
+		m_transProgress = ofClamp(m_transRunningTime / m_transDuration, 0, 1);
+
+		if(m_transProgress == 1)
 		{
+			std::cout << "TRANSITION FINISHED: " << m_transProgress << endl;
 			m_isTransitioning = false;
 			m_transRunningTime = 0;
 
 			transitionFinishedFired();
-		} else if(m_transProgress >= 0.5) {
+		} else if(m_transProgress >= 0.5 && !m_isTransitionHalfWay) {
+			std::cout << "TRANSITION HalfWay: " << m_transProgress << endl;
 			transitionHalfWayFired();
 		}
 	}
@@ -104,7 +113,7 @@ void OverlayView::update(float delta)
 		m_flashRunningTime += delta;
 
 		if(m_flashRunningTime >= m_flashDuration) {
-			//m_isFlashing = false;
+			m_isFlashing = false;
 			m_flashRunningTime = 0;
 
 			flashFinishedFired();
@@ -124,9 +133,9 @@ void OverlayView::drawForeground()
 		drawCountdown();
 	}
 
-	if(m_isFlashing)
+	if(m_showScreen)
 	{
-		drawFlash();
+		drawScreen();
 	}
 
 	if(m_isTransitioning)
@@ -145,7 +154,7 @@ void OverlayView::drawForeground()
 	ofPopMatrix();
 }
 
-void OverlayView::drawFlash()
+void OverlayView::drawScreen()
 {
 	ofPushMatrix();
 	ofTranslate(338, 10);
@@ -178,8 +187,8 @@ void OverlayView::drawTransition()
 	ofPopMatrix();
 }
 
-void OverlayView::drawCountdown() {
-	
+void OverlayView::drawCountdown()
+{
 	int timeLeftMS = (m_countDownDuration - m_countDownRunningTime);
 	int timeLeft = timeLeftMS / 1000;
 
@@ -219,8 +228,8 @@ void OverlayView::drawCountdown() {
 	ofPopMatrix();
 }
 
-void OverlayView::drawIndicator(IndicatorState indicatorState) {
-
+void OverlayView::drawIndicator(IndicatorState indicatorState)
+{
 	switch(indicatorState) {
 	case Active:
 		m_indicatorActive.draw(0, 0, 22, 22);
@@ -264,23 +273,36 @@ void OverlayView::flashFinishedFired()
 
 void OverlayView::transitionHalfWayFired()
 {
-	m_isFlashing = false;
-
-	if(this->m_delegate)
+	if(!m_isTransitionHalfWay)
 	{
-		this->m_delegate->handleViewAction(ViewAction::TRANSITION_HALF_WAY);
+		m_isTransitionHalfWay = true;
+		m_showScreen = false;
+
+		if(this->m_delegate)
+		{
+			this->m_delegate->handleViewAction(ViewAction::TRANSITION_HALF_WAY);
+		}
 	}
 }
 
 void OverlayView::transitionFinishedFired()
 {
-	m_indicators[m_indicatorIndex].state = Active;
-	m_indicatorIndex = ++m_indicatorIndex % m_indicators.size();
+	m_isTransitionHalfWay = false;
+	
+	if(m_indicatorIndex == -1)
+	{
+		setIndicatorsState(OverlayView::IndicatorState::InActive);
+	}
 
-	if(m_indicatorIndex == 0) {
-		for (std::vector<OverlayIndicator>::iterator iter = m_indicators.begin(); iter != m_indicators.end(); ++iter) {
-			(iter)->state = OverlayView::IndicatorState::InActive;
-		}
+	if(!m_restartedIndicators)
+	{
+		m_indicatorIndex = m_indicatorIndex++;
+
+		m_indicators[m_indicatorIndex].state = Active;
+	}
+	else
+	{
+		m_restartedIndicators = false;
 	}
 
 	if(this->m_delegate)
@@ -291,10 +313,13 @@ void OverlayView::transitionFinishedFired()
 
 void OverlayView::startEffectTransition()
 {
-	if(m_indicatorIndex == (m_indicators.size() - 1)) {
+	if(m_indicatorIndex == (m_indicators.size() - 1))
+	{
 		restart();
-	} else {
-		m_indicators[m_indicatorIndex].state = TowardsActive;
+	}
+	else
+	{
+		m_indicators[m_indicatorIndex + 1].state = TowardsActive;
 	}
 
 	m_isTransitioning = true;
@@ -321,6 +346,7 @@ void OverlayView::stopTimer()
 void OverlayView::startFlash()
 {
 	m_isFlashing = true;
+	m_showScreen = true;
 	m_flashRunningTime = 0;
 
 	m_screen.grabScreen(338, 10, 933, 700);
@@ -334,8 +360,15 @@ void OverlayView::stopFlash()
 
 void OverlayView::restart()
 {
+	m_indicatorIndex = -1;
+	m_restartedIndicators = true;
+	setIndicatorsState(OverlayView::IndicatorState::TowardsInActive);
+}
+
+void OverlayView::setIndicatorsState(OverlayView::IndicatorState state)
+{
 	for (std::vector<OverlayIndicator>::iterator iter = m_indicators.begin(); iter != m_indicators.end(); ++iter) {
-		(iter)->state = OverlayView::IndicatorState::TowardsInActive;
+		(iter)->state = state;
 	}
 }
 

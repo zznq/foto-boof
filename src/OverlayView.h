@@ -22,6 +22,8 @@ private:
 	float m_flashRunningTime;
 
 	bool m_isTransitioning;
+	bool m_isTransitionHalfWay;
+	bool m_showScreen;
 	float m_transDuration;
 	float m_transRunningTime;
 	float m_transProgress;
@@ -48,8 +50,12 @@ private:
 	ofColor m_countDownColorSecondary;
 	ofTrueTypeFont m_codeFont;
 
+	bool m_restartedIndicators;
+	int m_indicatorCount; // Includes Idle View
 	int m_indicatorIndex;
 	std::vector<OverlayIndicator> m_indicators;
+
+	void setIndicatorsState(OverlayView::IndicatorState state);
 
 	void transitionHalfWayFired();
 	void transitionFinishedFired();
@@ -57,14 +63,14 @@ private:
 
 	void drawCountdown();
 	void drawIndicator(IndicatorState indicatorState);
-	void drawFlash();
+	void drawScreen();
 	void drawTransition();
 
 protected:
 	ofPtr<ofShader> m_shader;
 	ofPtr<ofShader> m_fader;
 public:
-	OverlayView(KinectControllerPtr kinectController, int width, int height);
+	OverlayView(KinectControllerPtr kinectController, int width, int height, int indicatorCount);
 
 	virtual void update(float delta);
 	virtual void doViewDraw();

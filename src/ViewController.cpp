@@ -48,7 +48,7 @@ void ViewController::setup(KinectControllerPtr kinectController)
 	getCurrentView()->setup();
 
 	// This needs to be the entire width of the screen
-	m_overlayView = OverlayViewPtr(new OverlayView(kinectController, ofGetWindowWidth(), ofGetWindowHeight()));
+	m_overlayView = OverlayViewPtr(new OverlayView(kinectController, ofGetWindowWidth(), ofGetWindowHeight(), m_views.size()));
 	m_overlayView->setViewDelegate(View::ViewDelegatePtr(this));
 	m_overlayView->setup();
 	
@@ -158,6 +158,7 @@ void ViewController::handleViewAction(const ViewAction::Enum& action)
 	switch(action) {
 	case ViewAction::STARTING:
 		std::cout << "STARTING" << std::endl;
+		m_isTransitionFinished = false;
 		m_shouldStart = true;
 		break;
 	case ViewAction::EFFECT_COUNTDOWN_FINISHED:
@@ -170,6 +171,7 @@ void ViewController::handleViewAction(const ViewAction::Enum& action)
 		m_isFlashFinished = true;
 		break;
 	case ViewAction::TRANSITION_HALF_WAY:
+		std::cout << "TRANSITION_HALF_WAY" << std::endl;
 		m_isTransitionHalfWay = true;
 		break;
 	case ViewAction::TRANSITION_FINISHED:
@@ -181,6 +183,9 @@ void ViewController::handleViewAction(const ViewAction::Enum& action)
 		m_isEffectCountdownFinished = false;
 		m_isFlashFinished = false;
 		m_isTransitionFinished = true;
+		break;
+	default:
+		std::cout << "NONE -> " << action << std::endl;
 		break;
 	}
 }
