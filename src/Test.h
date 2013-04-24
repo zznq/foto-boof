@@ -32,7 +32,7 @@ protected:
 	ofPtr<ofShader> m_shader;
 	ofPtr<ofShader> m_normalShader;
 	ofPtr<ofShader> m_blurShader;
-	ofPtr<ofShader> m_normalDrawShader;
+	ofPtr<ofShader> m_depthShader;
 	ofPtr<ofVboMesh> m_mesh;
 	ofFbo m_fbo;
 	ofFbo m_blurHorizontal;
@@ -42,6 +42,8 @@ protected:
 	bool m_shaderSetup;
 	bool m_drawWireframe;
 	ofLight light;
+	float m_clipValue;
+	float m_blurFactor;
 };
 
 #endif

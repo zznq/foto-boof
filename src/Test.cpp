@@ -15,8 +15,9 @@ ofFbo blurColor2;
 TestEffect::TestEffect(int width, int height)
 : VisualEffect("test_effect"), m_width(width), m_height(height),
 m_isDirty(false), m_chubFactor(1.0), m_shader(new ofShader()), m_normalShader(new ofShader()),
-m_blurShader(new ofShader()), m_normalDrawShader(new ofShader()), m_mesh(new ofVboMesh()), 
-m_nearDepth(500.f), m_farDepth(4000.f), m_shaderSetup(false), m_drawWireframe(false)
+m_blurShader(new ofShader()), m_depthShader(new ofShader()), m_mesh(new ofVboMesh()), 
+m_nearDepth(500.f), m_farDepth(4000.f), m_shaderSetup(false), m_drawWireframe(false), 
+m_clipValue(1.f), m_blurFactor(0.f)
 {
 	// disabled rectangle texture and fall back to tex_2d (pot textures)
 	ofDisableArbTex();
@@ -87,8 +88,9 @@ void TestEffect::createMesh()
 void TestEffect::setupShader() 
 {
 	m_shader->load("shaders/mainVert.glsl", "shaders/mainFrag.glsl");
-	m_normalShader->load("shaders/default.vert", "shaders/normalmapv2.frag");
-	m_blurShader->load("shaders/default.vert", "shaders/blur.frag");
+	m_normalShader->load("shaders/default.vert", "shaders/normalmap.frag");
+	m_blurShader->load("shaders/default.vert", "shaders/blurFrag.glsl");
+	m_depthShader->load("shaders/default.vert", "shaders/depthFrag.glsl");
 	m_shaderSetup = true;
 }
 
@@ -133,6 +135,8 @@ void TestEffect::draw()
 
 	int blurSize = 7;
 	int sigma = 3;
+	float kernelRes = 21.f;
+	float invKernelRes = 1.f/kernelRes;
 
 	m_fbo.begin();
 	//ofEnableAlphaBlending();
@@ -148,6 +152,9 @@ void TestEffect::draw()
 	//ofClearAlpha();
 	m_fbo.end();
 
+	ofImage blurKernel;
+	blurKernel.loadImage("images/kernel.png");
+
 	// load displacement map
 	// vertical blur pass
 	m_blurVertical.begin();
@@ -157,6 +164,13 @@ void TestEffect::draw()
 	m_blurShader->setUniform1i("blurSize", blurSize);
 	m_blurShader->setUniform1f("sigma", sigma);
 	m_blurShader->setUniform1f("pixelSize", 1.f/m_blurVertical.getHeight());
+	//m_blurShader->setUniformTexture("fboTex", m_fbo.getTextureReference(), 0);
+	m_blurShader->setUniformTexture("kernelTex", blurKernel.getTextureReference(), 1);
+	m_blurShader->setUniform1f("kernelRes", kernelRes);
+	m_blurShader->setUniform1f("invKernelRes", invKernelRes);
+	m_blurShader->setUniform2f("orientationVector", 0.f, 1.f/m_fbo.getHeight());
+	m_blurShader->setUniform1f("blurAmt", m_blurFactor);
+
 	//m_displacementTex.draw(0, 0);
 	m_fbo.draw(0, 0);
 	m_blurShader->end();
@@ -165,18 +179,24 @@ void TestEffect::draw()
 
 	// horizontal pass
 	m_blurHorizontal.begin();
-	//ofEnableAlphaBlending();
+	ofEnableAlphaBlending();
 	m_blurShader->begin();
 	m_blurShader->setUniform1i("horizontalPass", 1);
 	m_blurShader->setUniform1i("blurSize", blurSize);
 	m_blurShader->setUniform1f("sigma", sigma);
 	m_blurShader->setUniform1f("pixelSize", 1.f/m_blurHorizontal.getWidth());
+	//m_blurShader->setUniformTexture("fboTex", m_blurVertical.getTextureReference(), 0);
+	m_blurShader->setUniformTexture("kernelTex", blurKernel.getTextureReference(), 1);
+	m_blurShader->setUniform1f("kernelRes",kernelRes);
+	m_blurShader->setUniform1f("invKernelRes", invKernelRes);
+	m_blurShader->setUniform2f("orientationVector", 1.f/m_blurVertical.getWidth(), 0.f);
+	m_blurShader->setUniform1f("blurAmt", m_blurFactor);
 	m_blurVertical.draw(0, 0);
 	m_blurShader->end();
-	//ofClearAlpha();
+	ofClearAlpha();
 	m_blurHorizontal.end();
 
-	//m_blurHorizontal.draw(1024-600, 768-200, 200, 200);
+	m_blurHorizontal.draw(1024-200, 768-200, 200, 200);
 
 	//m_blurHorizontal.draw(1024-200, 768-200, 200, 200);
 	//m_displacementTex.draw(0, 0);
@@ -217,6 +237,20 @@ void TestEffect::draw()
 	//ofClearAlpha();
 	blurColor2.end();
 
+	ofFbo depthFbo;
+	depthFbo.allocate(m_width, m_height);
+	depthFbo.begin();
+	ofEnableAlphaBlending();
+	m_depthShader->begin();
+	m_depthShader->setUniform1f("scale", 1.f);
+	m_depthShader->setUniformTexture("depth", m_depthTex, 1);
+	//depthShader->setUniformTexture("video", m_colorTex, 2);
+	m_colorTex.draw(0, 0);
+	ofClearAlpha();
+	m_depthShader->end();
+	depthFbo.end();
+	depthFbo.draw(1024-400, 768-200, 200, 200);
+
 	easyCam.begin();
 	easyCam.getPosition();
 	ofPushMatrix();
@@ -229,11 +263,11 @@ void TestEffect::draw()
 
 	ofVec3f eyePos = easyCam.getPosition();
 	m_shader->setUniform3f("eyePos", eyePos.x, eyePos.y, eyePos.z);
+	m_shader->setUniform1f("clip", m_clipValue);
 	m_shader->setUniform1f("chub_factor", m_chubFactor);
 	m_shader->setUniform1f("near_depth", m_nearDepth);
 	m_shader->setUniform1f("far_depth", m_farDepth);
-	m_shader->setUniform1f("clip", m_farDepth);
-	m_shader->setUniformTexture("color_tex", blurColor2.getTextureReference(), 1);
+	m_shader->setUniformTexture("color_tex", depthFbo.getTextureReference(), 1);
 	m_shader->setUniformTexture("normal_tex", m_blurHorizontal.getTextureReference(), 2);
 	m_shader->setUniformTexture("displacement_tex", m_depthTex, 3);
 	m_shader->setUniformTexture("depth_tex", m_depthTex, 4);
@@ -269,11 +303,7 @@ void TestEffect::draw()
 
 void TestEffect::addUI(CanvasPtr canvas) 
 {
-	ofxUISlider* slider = new ofxUISlider("Chub Factor", 0.f, 100.0f, m_chubFactor, 100.0f, 25.0f);
-	canvas->addWidgetDown(slider);
-	m_widgets.push_back(slider);
-
-	slider = new ofxUISlider("Near Depth", 0.0f, 500.f, m_nearDepth, 100.0f, 25.0f);
+	ofxUISlider* slider = new ofxUISlider("Chub Factor", -2000.f, 1000.0f, m_chubFactor, 100.0f, 25.0f);
 	canvas->addWidgetDown(slider);
 	m_widgets.push_back(slider);
 
@@ -281,7 +311,31 @@ void TestEffect::addUI(CanvasPtr canvas)
 	canvas->addWidgetDown(spacer);
 	m_widgets.push_back(spacer);
 
+	slider = new ofxUISlider("Blur Factor", 0.0f, 0.1f, m_chubFactor, 100.0f, 25.0f);
+	canvas->addWidgetDown(slider);
+	m_widgets.push_back(slider);
+
+	spacer = new ofxUISpacer(100, 2);
+	canvas->addWidgetDown(spacer);
+	m_widgets.push_back(spacer);
+
+	slider = new ofxUISlider("Near Depth", 0.0f, 500.f, m_nearDepth, 100.0f, 25.0f);
+	canvas->addWidgetDown(slider);
+	m_widgets.push_back(slider);
+
+	spacer = new ofxUISpacer(100, 2);
+	canvas->addWidgetDown(spacer);
+	m_widgets.push_back(spacer);
+
 	slider = new ofxUISlider("Far Depth", 501.0f, 8000.f, m_farDepth, 100.0f, 25.0f);
+	canvas->addWidgetDown(slider);
+	m_widgets.push_back(slider);
+
+	spacer = new ofxUISpacer(100, 2);
+	canvas->addWidgetDown(spacer);
+	m_widgets.push_back(spacer);
+
+	slider = new ofxUISlider("Clip", 0.f, 1.f, m_clipValue, 100.0f, 25.0f);
 	canvas->addWidgetDown(slider);
 	m_widgets.push_back(slider);
 
@@ -316,6 +370,14 @@ void TestEffect::guiEvent(ofxUIEventArgs &e)
 		}
 	}
 
+	if(name == "Blur Factor")
+	{
+		ofxUISlider *slider = (ofxUISlider *) e.widget; 
+		if(m_blurFactor != slider->getScaledValue()) {
+			m_blurFactor = slider->getScaledValue();
+		}
+	}
+
 	if(name == "Near Depth")
 	{
 		ofxUISlider *slider = (ofxUISlider *) e.widget; 
@@ -331,6 +393,14 @@ void TestEffect::guiEvent(ofxUIEventArgs &e)
 		if(m_farDepth != slider->getScaledValue()) {
 			m_farDepth = slider->getScaledValue();
 			m_parent->setKinectDepthClipping(m_nearDepth, m_farDepth);
+		}
+	}
+
+	if(name == "Clip")
+	{
+		ofxUISlider *slider = (ofxUISlider *) e.widget; 
+		if(m_clipValue != slider->getScaledValue()) {
+			m_clipValue = slider->getScaledValue();
 		}
 	}
 
