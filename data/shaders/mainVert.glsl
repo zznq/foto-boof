@@ -16,9 +16,8 @@ void main()
 	vVertex.xy			*= 2.5;
 	vec3 dirToVertex	= normalize( eyePos - vVertex.xyz );
 
-	vVertex.xyz			+= depth * 500.0 * dirToVertex;
-	//vVertex.xyz			+= vNormal * chub_factor * 3.0 * depth;
-	vVertex.xyz += /*dirToVertex **/ vNormal * chub_factor * 3.0 * depth;
+	vVertex.xyz	+= depth * 500.0 * dirToVertex;
+	vVertex.xyz += vNormal * chub_factor * 3.0 * depth;
 
 	
 	gl_Position			= gl_ModelViewProjectionMatrix * vVertex;
