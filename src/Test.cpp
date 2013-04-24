@@ -180,6 +180,9 @@ void TestEffect::draw()
 	// horizontal pass
 	m_blurHorizontal.begin();
 	//ofEnableAlphaBlending();
+	//glPushAttrib(GL_ALL_ATTRIB_BITS);  
+    //glEnable(GL_BLEND);  
+    //glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA,GL_ONE,GL_ONE_MINUS_SRC_ALPHA);
 	m_blurShader->begin();
 	m_blurShader->setUniform1i("horizontalPass", 1);
 	m_blurShader->setUniform1i("blurSize", blurSize);
@@ -193,10 +196,14 @@ void TestEffect::draw()
 	m_blurShader->setUniform1f("blurAmt", m_blurFactor);
 	m_blurVertical.draw(0, 0);
 	m_blurShader->end();
+	//glDisable(GL_BLEND);
+	//glPopAttrib();
 	//ofClearAlpha();
 	m_blurHorizontal.end();
 
-	//m_blurHorizontal.draw(1024-200, 768-200, 200, 200);
+	ofEnableAlphaBlending();
+	m_blurHorizontal.draw(1024-200, 768-200, 200, 200);
+	ofDisableAlphaBlending();
 
 	//m_blurHorizontal.draw(1024-200, 768-200, 200, 200);
 	//m_displacementTex.draw(0, 0);
@@ -243,15 +250,23 @@ void TestEffect::draw()
 	depthFbo.allocate(m_width, m_height);
 	depthFbo.begin();
 	//ofEnableAlphaBlending();
+	//glPushAttrib(GL_ALL_ATTRIB_BITS);
+	//glEnable(GL_BLEND);
+	//glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA,GL_ONE,GL_ONE_MINUS_SRC_ALPHA);
 	m_depthShader->begin();
 	m_depthShader->setUniform1f("scale", 1.f);
 	m_depthShader->setUniformTexture("video_tex", m_colorTex, 1);
 	m_depthShader->setUniformTexture("depth_tex", m_depthTex, 2);
 	m_colorTex.draw(0, 0);
+	//glDisable(GL_BLEND);
+	//glPopAttrib();
 	//ofClearAlpha();
 	m_depthShader->end();
 	depthFbo.end();
-	//depthFbo.draw(1024-400, 768-200, 200, 200);
+
+	ofEnableAlphaBlending();
+	depthFbo.draw(1024-400, 768-200, 200, 200);
+	ofDisableAlphaBlending();
 
 	easyCam.begin();
 	easyCam.getPosition();
