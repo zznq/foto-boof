@@ -44,6 +44,7 @@ protected:
 	ofLight light;
 	float m_clipValue;
 	float m_blurFactor;
+	float m_cullingValue;
 };
 
 #endif

@@ -12,12 +12,20 @@ ofEasyCam easyCam;
 ofFbo blurColor1;
 ofFbo blurColor2;
 
+ofPtr<ofShader> cullShader;
+
+void CreateCullShader() 
+{
+	cullShader.reset(new ofShader());
+	cullShader->load("shaders/cull.vert", "shaders/default.frag", "shaders/default.geom");
+}
+
 TestEffect::TestEffect(int width, int height)
 : VisualEffect("test_effect"), m_width(width), m_height(height),
 m_isDirty(false), m_chubFactor(1.0), m_shader(new ofShader()), m_normalShader(new ofShader()),
 m_blurShader(new ofShader()), m_depthShader(new ofShader()), m_mesh(new ofVboMesh()), 
 m_nearDepth(500.f), m_farDepth(4000.f), m_shaderSetup(false), m_drawWireframe(false), 
-m_clipValue(1.f), m_blurFactor(0.f)
+m_clipValue(1.f), m_blurFactor(0.f), m_cullingValue(0.1f)
 {
 	// disabled rectangle texture and fall back to tex_2d (pot textures)
 	ofDisableArbTex();
@@ -33,6 +41,8 @@ m_clipValue(1.f), m_blurFactor(0.f)
 	m_colorTex.allocate(m_width, m_height, GL_RGBA);
 	m_displacementTex.allocate(m_width, m_height, GL_RGB32F_ARB);
 	m_depthTex.allocate(m_width, m_height, GL_RGBA);
+
+	CreateCullShader();
 }
 
 TestEffect::~TestEffect() 
@@ -87,7 +97,7 @@ void TestEffect::createMesh()
 
 void TestEffect::setupShader() 
 {
-	m_shader->load("shaders/mainVert.glsl", "shaders/mainFrag.glsl");
+	m_shader->load("shaders/mainVert.glsl", "shaders/mainFrag.glsl", "shaders/default.geom");
 	m_normalShader->load("shaders/default.vert", "shaders/normalmap.frag");
 	m_blurShader->load("shaders/default.vert", "shaders/blurFrag.glsl");
 	m_depthShader->load("shaders/default.vert", "shaders/depthFrag.glsl");
@@ -141,8 +151,8 @@ void TestEffect::draw()
 	m_fbo.begin();
 	//ofEnableAlphaBlending();
 	m_normalShader->begin();
-	m_normalShader->setUniform1f("xOffset", 1.0/m_width);
-	m_normalShader->setUniform1f("yOffset", 1.0/m_height);
+	m_normalShader->setUniform1f("xOffset", 1.f/m_width);
+	m_normalShader->setUniform1f("yOffset", 1.f/m_height);
 	//texture.loadData(m_parent->getKinectController()->getKinect()->getDistancePixelsRef());
 	//texture.draw(0, 0);
 	//m_blurHorizontal.draw(0, 0);
@@ -180,9 +190,9 @@ void TestEffect::draw()
 	// horizontal pass
 	m_blurHorizontal.begin();
 	//ofEnableAlphaBlending();
-	//glPushAttrib(GL_ALL_ATTRIB_BITS);  
-    //glEnable(GL_BLEND);  
-    //glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA,GL_ONE,GL_ONE_MINUS_SRC_ALPHA);
+	glPushAttrib(GL_ALL_ATTRIB_BITS);  
+    glEnable(GL_BLEND);  
+    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA,GL_ONE,GL_ONE_MINUS_SRC_ALPHA);
 	m_blurShader->begin();
 	m_blurShader->setUniform1i("horizontalPass", 1);
 	m_blurShader->setUniform1i("blurSize", blurSize);
@@ -196,8 +206,8 @@ void TestEffect::draw()
 	m_blurShader->setUniform1f("blurAmt", m_blurFactor);
 	m_blurVertical.draw(0, 0);
 	m_blurShader->end();
-	//glDisable(GL_BLEND);
-	//glPopAttrib();
+	glDisable(GL_BLEND);
+	glPopAttrib();
 	//ofClearAlpha();
 	m_blurHorizontal.end();
 
@@ -275,15 +285,26 @@ void TestEffect::draw()
 	ofScale(1, -1, 1);
 	glTranslatef(-m_width*.5, -m_height*.5, 0);
 
-	m_shader->begin();
 	m_colorTex.loadData(m_parent->getKinectData().m_videoStream);
 
+	/*
+	cullShader->begin();
+	cullShader->setUniform1f("cullingValue", 1.f - m_cullingValue);
+	cullShader->setUniform1i("cullBg", 0);
+	cullShader->setUniformTexture("depth_tex", depthFbo.getTextureReference(), 1);
+	m_colorTex.draw(0, 0);
+	cullShader->end();
+	*/
+
+	
+	m_shader->begin();
 	ofVec3f eyePos = easyCam.getPosition();
 	m_shader->setUniform3f("eyePos", eyePos.x, eyePos.y, eyePos.z);
 	m_shader->setUniform1f("clip", m_clipValue);
 	m_shader->setUniform1f("chub_factor", m_chubFactor);
 	m_shader->setUniform1f("near_depth", m_nearDepth);
 	m_shader->setUniform1f("far_depth", m_farDepth);
+	m_shader->setUniform1f("cullingValue", m_cullingValue);
 	//m_shader->setUniformTexture("color_tex", depthFbo.getTextureReference(), 1);
 	m_shader->setUniformTexture("normal_tex", m_blurHorizontal.getTextureReference(), 2);
 	m_shader->setUniformTexture("displacement_tex", m_depthTex, 3);
@@ -292,21 +313,7 @@ void TestEffect::draw()
 	m_shader->setUniformTexture("color_tex", image3.getTextureReference(), 1);
 	m_shader->setUniformTexture("normal_tex", image.getTextureReference(), 2);
 	m_shader->setUniformTexture("displacement_tex", image2.getTextureReference(), 3);
-	*/
-	/*
-	std::vector<ofVec3f>& vertices = m_mesh->getVertices();
-	std::vector<ofFloatColor>& colors = m_mesh->getColors();
-	for (int i=0; i < vertices.size(); ++i) {
-		ofVec3f& vertex = vertices[i];
-		ofFloatColor& color = colors[i];
-
-		if(kinectInterface->getDistanceAt(vertex.x, vertex.y) > 0) 
-		{
-			//vertex.z = kinectInterface->getWorldCoordinateAt(vertex.x, vertex.y).z;
-			color = kinectInterface->getColorAt(vertex.x, vertex.y);
-		}
-	}
-	*/
+	*/	
 
 	if (!m_drawWireframe)
 	{
@@ -317,12 +324,13 @@ void TestEffect::draw()
 		m_mesh->drawWireframe();
 	}
 	m_shader->end();
+	
 	easyCam.end();
 }
 
 void TestEffect::addUI(CanvasPtr canvas) 
 {
-	ofxUISlider* slider = new ofxUISlider("Chub Factor", -2000.f, 2000.0f, m_chubFactor, 100.0f, 25.0f);
+	ofxUISlider* slider = new ofxUISlider("Chub Factor", -200.f, 200.0f, m_chubFactor, 100.0f, 25.0f);
 	canvas->addWidgetDown(slider);
 	m_widgets.push_back(slider);
 
@@ -355,6 +363,14 @@ void TestEffect::addUI(CanvasPtr canvas)
 	m_widgets.push_back(spacer);
 
 	slider = new ofxUISlider("Clip", 0.f, 1.f, m_clipValue, 100.0f, 25.0f);
+	canvas->addWidgetDown(slider);
+	m_widgets.push_back(slider);
+
+	spacer = new ofxUISpacer(100, 2);
+	canvas->addWidgetDown(spacer);
+	m_widgets.push_back(spacer);
+
+	slider = new ofxUISlider("Culling Value", 0.f, 1.f, m_cullingValue, 100.0f, 25.0f);
 	canvas->addWidgetDown(slider);
 	m_widgets.push_back(slider);
 
@@ -420,6 +436,14 @@ void TestEffect::guiEvent(ofxUIEventArgs &e)
 		ofxUISlider *slider = (ofxUISlider *) e.widget; 
 		if(m_clipValue != slider->getScaledValue()) {
 			m_clipValue = slider->getScaledValue();
+		}
+	}
+
+	if(name == "Culling Value")
+	{
+		ofxUISlider *slider = (ofxUISlider *) e.widget; 
+		if(m_cullingValue != slider->getScaledValue()) {
+			m_cullingValue = slider->getScaledValue();
 		}
 	}
 
