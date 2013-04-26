@@ -1,27 +1,34 @@
-#version 120       
-#extension GL_ARB_geometry_shader4 : enable
+#version 150
+ 
+layout(points) in;
+layout(line_strip, max_vertices = 2) out;
 
-uniform float draw_length;     
+uniform int cullBg = 1;
+uniform float cullingValue = 0.1;
+uniform float normal_length = 1.0;
 
-varying vec3 normal[];      
+in float depth[];
+in vec3 normal[];
+in mat4 mvp[];
 
-void main()
+out vec3 fcolor;
+
+bool cullVertex(float depth)
 {
-    // assert(gl_VerticesIn == 3);
-    // assert(GL_GEOMETRY_INPUT_TYPE_EXT == GL_TRIANGLES);
-    // assert(GL_GEOMETRY_OUTPUT_TYPE_EXT == GL_LINE_STRIP);
-    // assert(GL_GEOMETRY_VERTICES_OUT_EXT == 6);      
- 
-    for(int i = 0; i < gl_VerticesIn; ++i)
-    {
-        gl_Position = gl_ModelViewProjectionMatrix * gl_PositionIn[i];
-        gl_FrontColor = gl_FrontColorIn[i];
-        EmitVertex();
- 
-        gl_Position = gl_ModelViewProjectionMatrix * (gl_PositionIn[i] + (vec4(normal[i], 0) * draw_length));
-        gl_FrontColor = gl_FrontColorIn[i];
-        EmitVertex();      
- 
-        EndPrimitive();
-    }
+	return (cullBg == 1) ? (depth < cullingValue) : (depth > cullingValue);
+}
+
+void main() {
+	if (!cullVertex(depth[0]))
+	{
+		fcolor = vec3(0.0);
+		gl_Position = mvp[0] * gl_in[0].gl_Position;
+		EmitVertex();
+
+		fcolor = vec3(1.0);
+		gl_Position = mvp[0] * vec4(gl_in[0].gl_Position.xyz + normal[0] * depth[0] * normal_length, 1.0);
+		EmitVertex();
+
+		EndPrimitive();
+	}
 }

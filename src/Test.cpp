@@ -20,6 +20,13 @@ void CreateCullShader()
 	cullShader->load("shaders/cull.vert", "shaders/default.frag", "shaders/default.geom");
 }
 
+ofPtr<ofShader> drawNormalsShader;
+void CreateDrawNormalShader()
+{
+	drawNormalsShader.reset(new ofShader());
+	drawNormalsShader->load("shaders/normal_draw.vert", "shaders/normal_draw.frag", "shaders/normal_draw.geom");
+}
+
 TestEffect::TestEffect(int width, int height)
 : VisualEffect("test_effect"), m_width(width), m_height(height),
 m_isDirty(false), m_chubFactor(1.0), m_shader(new ofShader()), m_normalShader(new ofShader()),
@@ -43,6 +50,7 @@ m_clipValue(1.f), m_blurFactor(0.f), m_cullingValue(0.1f)
 	m_depthTex.allocate(m_width, m_height, GL_RGBA);
 
 	CreateCullShader();
+	CreateDrawNormalShader();
 }
 
 TestEffect::~TestEffect() 
@@ -55,8 +63,8 @@ void TestEffect::createMesh()
 {
 	m_mesh->clear();
 
-	float m_numRows = m_width/4.f;
-	float m_numCols = m_height/4.f;
+	float m_numRows = m_width;
+	float m_numCols = m_height;
 	std::vector<ofVec3f> vertices;
 	for(int row=0; row < m_numRows; row++) {
 		for (int col=0; col < m_numCols; col++) {
@@ -78,7 +86,7 @@ void TestEffect::createMesh()
 	// add indices to mesh for triangle strip generation
 	int n = 0;  
 	int colSteps = m_numCols * 2;  
-	int rowSteps = m_numRows - 1;  
+	int rowSteps = m_numRows - 1;
 	std::vector<ofIndexType> indices;
 	indices.reserve(rowSteps * colSteps);
 	for ( int r = 0; r < rowSteps; r++ ) {  
@@ -153,6 +161,7 @@ void TestEffect::draw()
 	m_normalShader->begin();
 	m_normalShader->setUniform1f("xOffset", 1.f/m_width);
 	m_normalShader->setUniform1f("yOffset", 1.f/m_height);
+	m_normalShader->setUniform1f("scaleFactor", m_clipValue);
 	//texture.loadData(m_parent->getKinectController()->getKinect()->getDistancePixelsRef());
 	//texture.draw(0, 0);
 	//m_blurHorizontal.draw(0, 0);
@@ -190,9 +199,9 @@ void TestEffect::draw()
 	// horizontal pass
 	m_blurHorizontal.begin();
 	//ofEnableAlphaBlending();
-	glPushAttrib(GL_ALL_ATTRIB_BITS);  
-    glEnable(GL_BLEND);  
-    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA,GL_ONE,GL_ONE_MINUS_SRC_ALPHA);
+	//glPushAttrib(GL_ALL_ATTRIB_BITS);  
+    //glEnable(GL_BLEND);  
+	//glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA,GL_ONE,GL_ONE_MINUS_SRC_ALPHA);
 	m_blurShader->begin();
 	m_blurShader->setUniform1i("horizontalPass", 1);
 	m_blurShader->setUniform1i("blurSize", blurSize);
@@ -206,15 +215,16 @@ void TestEffect::draw()
 	m_blurShader->setUniform1f("blurAmt", m_blurFactor);
 	m_blurVertical.draw(0, 0);
 	m_blurShader->end();
-	glDisable(GL_BLEND);
-	glPopAttrib();
+	//glDisable(GL_BLEND);
+	//glPopAttrib();
 	//ofClearAlpha();
 	m_blurHorizontal.end();
 
+	/*
 	ofEnableAlphaBlending();
 	m_blurHorizontal.draw(1024-200, 768-200, 200, 200);
 	ofDisableAlphaBlending();
-
+	*/
 	//m_blurHorizontal.draw(1024-200, 768-200, 200, 200);
 	//m_displacementTex.draw(0, 0);
 	//ofSaveScreen("images/test.png");
@@ -274,10 +284,11 @@ void TestEffect::draw()
 	m_depthShader->end();
 	depthFbo.end();
 
+	/*
 	ofEnableAlphaBlending();
 	depthFbo.draw(1024-400, 768-200, 200, 200);
 	ofDisableAlphaBlending();
-
+	*/
 	easyCam.begin();
 	easyCam.getPosition();
 	ofPushMatrix();
@@ -296,6 +307,7 @@ void TestEffect::draw()
 	cullShader->end();
 	*/
 
+	ofBackground(0, 0, 0);
 	
 	m_shader->begin();
 	ofVec3f eyePos = easyCam.getPosition();
@@ -309,11 +321,11 @@ void TestEffect::draw()
 	m_shader->setUniformTexture("normal_tex", m_blurHorizontal.getTextureReference(), 2);
 	m_shader->setUniformTexture("displacement_tex", m_depthTex, 3);
 	m_shader->setUniformTexture("depth_tex", depthFbo.getTextureReference(), 1);
-	/*
-	m_shader->setUniformTexture("color_tex", image3.getTextureReference(), 1);
-	m_shader->setUniformTexture("normal_tex", image.getTextureReference(), 2);
-	m_shader->setUniformTexture("displacement_tex", image2.getTextureReference(), 3);
-	*/	
+
+	//m_shader->setUniformTexture("color_tex", image3.getTextureReference(), 1);
+	//m_shader->setUniformTexture("normal_tex", image.getTextureReference(), 2);
+	//m_shader->setUniformTexture("displacement_tex", image2.getTextureReference(), 3);
+
 
 	if (!m_drawWireframe)
 	{
@@ -323,8 +335,41 @@ void TestEffect::draw()
 	{
 		m_mesh->drawWireframe();
 	}
+	
 	m_shader->end();
 	
+	/*
+	drawNormalsShader->begin();
+	drawNormalsShader->setUniformTexture("normal_tex", m_blurHorizontal.getTextureReference(), 1);
+	drawNormalsShader->setUniformTexture("depth_tex", depthFbo.getTextureReference(), 2);
+	drawNormalsShader->setUniform1f("normal_length", 5.0);
+	drawNormalsShader->setUniform1f("cullingValue", m_cullingValue);
+	drawNormalsShader->setUniform1f("time", m_chubFactor);
+	drawNormalsShader->setUniform3f("eyePos", eyePos.x, eyePos.y, eyePos.z);
+	drawNormalsShader->setUniform1f("clip", m_clipValue);
+	drawNormalsShader->setUniform1f("chub_factor", m_chubFactor);
+	drawNormalsShader->setUniform1f("near_depth", m_nearDepth);
+	drawNormalsShader->setUniform1f("far_depth", m_farDepth);
+	drawNormalsShader->setUniform1f("cullingValue", m_cullingValue);
+	//m_shader->setUniformTexture("color_tex", depthFbo.getTextureReference(), 1);
+	drawNormalsShader->setUniformTexture("normal_tex", m_blurHorizontal.getTextureReference(), 2);
+	drawNormalsShader->setUniformTexture("displacement_tex", m_depthTex, 3);
+	drawNormalsShader->setUniformTexture("depth_tex", depthFbo.getTextureReference(), 1);
+
+	m_mesh->setMode(OF_PRIMITIVE_POINTS);
+	if (!m_drawWireframe)
+	{
+		m_mesh->draw();
+	}
+	else 
+	{
+		m_mesh->drawWireframe();
+	}
+
+	m_mesh->setMode(OF_PRIMITIVE_TRIANGLE_STRIP);
+	drawNormalsShader->end();
+	*/
+
 	easyCam.end();
 }
 

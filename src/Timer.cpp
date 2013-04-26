@@ -34,7 +34,7 @@ double Timer::TimerUpdate() {
 	delta = (of_elapsedTime - m_lastElapsedTime);
 	
 	if(Timer::stopped) {
-		return 0.0;		
+		return 0.0;
 	}
 
 	m_lastElapsedTime = of_elapsedTime;

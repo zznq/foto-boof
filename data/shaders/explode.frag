@@ -1,7 +1,6 @@
 #version 130
-uniform sampler2D depth_tex, normal_tex;
-uniform float clip = 1.0;
-uniform float brightness = 1.0;
+
+uniform sampler2D depth_tex;
 
 in vec2 texCoord;
 
@@ -11,7 +10,7 @@ void main()
 	
 	//if( colorFrag.a < clip ) discard;
 	//colorFrag = texture2D(depth_tex, texCoord).rgb;
-	colorFrag = vec4(texture2D(normal_tex, texCoord).rgb, 1.0);
-	gl_FragColor.rgb = colorFrag.rgb * brightness;
+	//colorFrag = vec4(texture2D(normal_tex, texCoord).rgb, 1.0);
+	gl_FragColor.rgb = colorFrag.rgb;
 	gl_FragColor.a = 1.0;
 }
