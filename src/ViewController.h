@@ -57,6 +57,7 @@ private:
 
 	static int VIEW_WIDTH;
 	static int VIEW_HEIGHT;
+	static std::string IMAGE_PATH;
 
 	int m_viewGroupId;
 
@@ -71,6 +72,8 @@ private:
 	ofImage m_screen;
 
 	void addView(const ViewPtr& view);
+
+	void initializeGroupId();
 };
 
 #endif

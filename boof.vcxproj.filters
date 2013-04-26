@@ -118,6 +118,12 @@
     <ClCompile Include="src\IdleView.cpp">
       <Filter>src\views</Filter>
     </ClCompile>
+    <ClCompile Include="src\Element.cpp">
+      <Filter>src\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ImageElement.cpp">
+      <Filter>src\ui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -446,7 +452,19 @@
     <ClInclude Include="src\OutlineView.h">
       <Filter>src\views</Filter>
     </ClInclude>
-    <ClInclude Include="src\ofxBoofSlider.h">
+    <ClInclude Include="src\Element.h">
+      <Filter>src\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ImageElement.h">
+      <Filter>src\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PrimarySideBarImageElement.h">
+      <Filter>src\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BackgroundImageElement.h">
+      <Filter>src\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\StartSideBarImageElement.h">
       <Filter>src\ui</Filter>
     </ClInclude>
   </ItemGroup>

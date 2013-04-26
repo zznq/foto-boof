@@ -7,35 +7,49 @@ OverlayView::OverlayView(KinectControllerPtr kinectController, int width, int he
 {
 	this->setOffset(0.0, 0.0, 0.0);
 
+	m_shader = ofPtr<ofShader>(new ofShader());
+	m_shader->load("shaders/default.vert", "shaders/indicator_blend.frag", "");
+
+	//m_fader = ofPtr<ofShader>(new ofShader());
+	//m_fader->load("shaders/default.vert", "shaders/fader.frag", "");
+
 	m_canvas->setColorBack(ofColor(0.0f, 0.0F, 0.0F, 175.0f));
 	
 	m_screen.allocate(933, 700, OF_IMAGE_COLOR_ALPHA);
 
-	m_background = ofImage("background.png");
-	m_background.allocate(width, height, OF_IMAGE_COLOR);
+	m_background = BackgroundImageElement();
+	m_primarySidebar = PrimarySideBarImageElement("shaders/default.vert", "shaders/fader.frag", "");
+	m_startSidebar = StartSideBarImageElement("shaders/default.vert", "shaders/fader.frag", "");
 
-	m_transition = ofImage("transition.png");
+	m_transition = ofImage("graphics/transition.png");
 	m_transition.allocate(933, 700, OF_IMAGE_COLOR);
 
-	m_counter_background = ofImage("counter_background.png");
+
+	/****************************
+	Counter Images
+	****************************/
+	m_counter_background = ofImage("graphics/counter_background.png");
 	m_counter_background.allocate(24, 430, OF_IMAGE_COLOR_ALPHA);
 	
-	m_counter_top_cap = ofImage("counter_top_cap.png");
+	m_counter_top_cap = ofImage("graphics/counter_top_cap.png");
 	m_counter_top_cap.allocate(18, 3, OF_IMAGE_COLOR_ALPHA);
 
-	m_counter_bottom_cap = ofImage("counter_bottom_cap.png");
+	m_counter_bottom_cap = ofImage("graphics/counter_bottom_cap.png");
 	m_counter_bottom_cap.allocate(18, 3, OF_IMAGE_COLOR_ALPHA);
 
-	m_counter_fill = ofImage("counter_fill.png");
+	m_counter_fill = ofImage("graphics/counter_fill.png");
 	m_counter_fill.allocate(18, 1, OF_IMAGE_COLOR_ALPHA);
 
-	m_counter_label = ofImage("counter_label.png");
+	m_counter_label = ofImage("graphics/counter_label.png");
 	m_counter_label.allocate(84, 7, OF_IMAGE_COLOR_ALPHA);
 
-	m_indicatorActive = ofImage("indicator_active.png");
+	/**************************
+	Indicator Images
+	**************************/
+	m_indicatorActive = ofImage("graphics/indicator_active.png");
 	m_indicatorActive.allocate(22, 22, OF_IMAGE_COLOR_ALPHA);
 
-	m_indicatorInActive = ofImage("indicator_inactive.png");
+	m_indicatorInActive = ofImage("graphics/indicator_inactive.png");
 	m_indicatorInActive.allocate(22, 22, OF_IMAGE_COLOR_ALPHA);
 
 	m_indicators = std::vector<OverlayIndicator>(m_indicatorCount -1);
@@ -70,17 +84,10 @@ OverlayView::OverlayView(KinectControllerPtr kinectController, int width, int he
 	m_flashDuration = 1000.f;
 	m_flashRunningTime = 0;
 
-	m_shader = ofPtr<ofShader>(new ofShader());
-	m_shader->load("shaders/default.vert", "shaders/indicator_blend.frag", "");
-
-	m_fader = ofPtr<ofShader>(new ofShader());
-	m_fader->load("shaders/default.vert", "shaders/fader.frag", "");
-
-	
 	m_countDownTimerThresehold = 3;
 	m_countDownColor = ofColor(2,166,79);
 	m_countDownColorSecondary = ofColor(144,15,15);
-	m_codeFont.loadFont("CODE Bold.otf", 50);
+	m_codeFont.loadFont("GUI/CODEBold.otf", 50);
 }
 
 void OverlayView::update(float delta)
@@ -92,16 +99,22 @@ void OverlayView::update(float delta)
 		m_transRunningTime += delta;
 		m_transProgress = ofClamp(m_transRunningTime / m_transDuration, 0, 1);
 
-		if(m_transProgress == 1)
+		if(m_transProgress >= 0.5)
 		{
-			std::cout << "TRANSITION FINISHED: " << m_transProgress << endl;
-			m_isTransitioning = false;
-			m_transRunningTime = 0;
+			if(!m_isTransitionHalfWay)
+			{
+				std::cout << "TRANSITION HalfWay: " << m_transProgress << endl;
+				transitionHalfWayFired();
+			}
 
-			transitionFinishedFired();
-		} else if(m_transProgress >= 0.5 && !m_isTransitionHalfWay) {
-			std::cout << "TRANSITION HalfWay: " << m_transProgress << endl;
-			transitionHalfWayFired();
+			if(m_transProgress == 1)
+			{
+				std::cout << "TRANSITION FINISHED: " << m_transProgress << endl;
+				m_isTransitioning = false;
+				m_transRunningTime = 0;
+
+				transitionFinishedFired();
+			}
 		}
 	}
 
@@ -119,11 +132,17 @@ void OverlayView::update(float delta)
 			flashFinishedFired();
 		}
 	}
+
+	m_background.update(delta);
+	//m_primarySidebar.update(delta);
+	m_startSidebar.update(delta);
 }
 
 void OverlayView::doViewDraw()
 {
-	m_background.draw(0, 0, this->getWidth(), this->getHeight());
+	m_background.draw(0, 0);
+	//m_primarySidebar.draw(0, 0);
+	m_startSidebar.draw(0, 0);
 }
 
 void OverlayView::drawForeground()
@@ -165,7 +184,7 @@ void OverlayView::drawScreen()
 void OverlayView::drawTransition()
 {
 	ofPushMatrix();
-	m_fader->begin();
+	/*m_fader->begin();
 	
 	m_fader->setUniformTexture("tex", m_transition, 1);
 
@@ -178,11 +197,11 @@ void OverlayView::drawTransition()
 		m_transProgress = m_transProgress - 0.5;
 	}
 	
-	m_fader->setUniform1f("fade_value", ofLerp(start, stop, m_transProgress * 2));
+	m_fader->setUniform1f("progress_value", ofLerp(start, stop, m_transProgress * 2));
 
 	m_transition.draw(338.0, 10.0);
 
-	m_fader->end();
+	m_fader->end();*/
 
 	ofPopMatrix();
 }

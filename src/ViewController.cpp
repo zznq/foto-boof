@@ -9,12 +9,16 @@
 int ViewController::VIEW_WIDTH = 933;
 int ViewController::VIEW_HEIGHT = 700;
 
+std::string ViewController::IMAGE_PATH = "data/images/";
+
 ViewController::ViewController() :
 	m_currentState(ViewControllerStateIdle::Instance()), m_viewGroupId(0), m_shouldStart(false),
 	m_isEffectCountdownFinished(false), m_isFlashFinished(false), m_isTransitionHalfWay(false),
 	m_isTransitionFinished(false), m_lastView(false)
 { 
 	m_currentState->enter(this);
+
+	initializeGroupId();
 }
 
 ViewController::~ViewController()
@@ -30,7 +34,7 @@ void ViewController::setup(KinectControllerPtr kinectController)
 		ViewType::Enum::Idle,
 		ViewType::Enum::BwShaderView,
 		ViewType::Enum::ColorDepthShaderView,
-		ViewType::Enum::FatSuitView 
+		ViewType::Enum::FatSuitView
 	};
 
 	// add all view types
@@ -79,10 +83,8 @@ void ViewController::sharePhoto()
 {
 	std::ostringstream oss;
 
-	oss << "data/images/" << m_viewGroupId;
+	oss << ViewController::IMAGE_PATH << m_viewGroupId;
 
-	//m_screen.grabScreen(0, 0, m_screen.getWidth(), m_screen.getHeight());
-	
 	std::string path = oss.str();
 
 	ofDirectory dir = ofDirectory(path);
@@ -97,19 +99,83 @@ void ViewController::sharePhoto()
 	std::string filePath = oss.str();
 
 	this->getOverlayView()->getScreen().saveImage(filePath);
+}
 
-	//TODO: 
-	//	Get screen data from overlay
-	//	Save photo to disk
-	//	Send photo to web server
+void ViewController::initializeGroupId()
+{
+	ofDirectory dir = ofDirectory(ViewController::IMAGE_PATH);
+
+	if(dir.exists())
+	{
+		dir.listDir();
+
+		m_viewGroupId = dir.size();
+	}
+	else
+	{
+		m_viewGroupId = 0;
+	}
+
 }
 
 void ViewController::printPhotoStrip()
 {
-	//TODO:
-	//	Composite a photostrip from the 4 photos taken
-	//	Print Composite
-	//	Send COmposite to web server
+	static ofRectangle print_size = ofRectangle(0, 0, 288, 432);
+	std::ostringstream oss;
+
+	oss << ViewController::IMAGE_PATH << m_viewGroupId;
+
+	std::string path = oss.str();
+
+	ofDirectory dir = ofDirectory(path);
+
+	if(dir.exists()){
+		dir.listDir();
+
+		oss << "/strip.jpg";
+		std::string filePath = oss.str();
+
+		std::vector<ofFile, allocator<ofFile>> files = dir.getFiles();
+
+		ofImage tex = ofImage();
+		tex.allocate(print_size.getWidth(), print_size.getHeight(), ofImageType::OF_IMAGE_COLOR);
+
+		ofImage background = ofImage("graphics/print_background.png");
+		background.allocate(print_size.getWidth(), print_size.getHeight(), ofImageType::OF_IMAGE_COLOR);
+
+		ofFbo fbo;
+		ofCamera cam;
+		fbo.allocate(print_size.getWidth(), print_size.getHeight(), GL_RGB);
+		cam.begin();
+		cam.setupPerspective();
+
+		
+		fbo.begin();
+		ofPushMatrix();
+
+		ofScale(1, -1, 1);
+		ofTranslate(0, -print_size.getHeight());
+
+		int x = 10;
+		int y = 10;
+		
+		background.draw(0, 0, print_size.getWidth(), print_size.getHeight());
+		for (std::vector<ofFile, allocator<ofFile>>::iterator iter = files.begin(); iter != files.end(); ++iter) {
+			std::string path = (*iter).getAbsolutePath();
+			ofImage image(path);
+
+			image.draw(x, y, 175, 131);
+			y += 141;
+		}
+		ofPopMatrix();
+
+		tex.grabScreen(0, 0, print_size.getWidth(), print_size.getHeight());
+
+		fbo.end();
+		cam.end();
+
+		tex.saveImage(filePath);
+	}
 }
 
 void ViewController::changeState(const ViewControllerStatePtr state)

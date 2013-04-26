@@ -3,39 +3,41 @@
 
 
 //TODO: Adjust m_handbox to accomidate for larger display
-IdleView::IdleView(KinectControllerPtr kinectController, int width, int height) : View(kinectController, width, height, false), 
+IdleView::IdleView(KinectControllerPtr kinectController, int width, int height) : View(kinectController, width, height, true), 
 	m_threshold(50), m_haarReadMax(10), m_k(1), m_haarReadResultsIndex(0)
 {
 	m_canvas->setColorBack(ofColor(0.0f, 0.0F, 0.0F, 0.0f));
 
 	m_grayscale.allocate(width, height);
-	m_color.allocate(width, height);
 
 	finder.setup("haarcascade_hand.xml");
 	finder.setScaleHaar(1.3);
 
 	m_haarReadResults = std::vector<bool>(m_haarReadMax);
 
-	m_handbox = ofRectangle(40, 40, width * .50, height * .55);
+	m_handbox = ofImage("graphics/start_box.png");
+	m_handbox.allocate(270, 270, ofImageType::OF_IMAGE_COLOR_ALPHA);
+
+	// since we are displaying the grid x1.5 larger then the kinect data stream is the handboxRect should be a little smaller then displayed graphic
+	m_handboxRect = ofRectangle(0, 0, 270, 270);
 }
 
 void IdleView::setup() {
 	View::setup();
 
-	this->setKinectDepthClipping(500, 1000);
+	this->setKinectDepthClipping(500, 1500);
 }
 
 void IdleView::update(float delta) {
 	View::update(delta);
 
 	m_grayscale.setFromPixels(getKinectData().m_depthStream);
-	m_color.setFromPixels(getKinectData().m_videoStream);
 	
-	m_grayscale.blurGaussian();
-	m_grayscale.threshold(m_threshold, false);
+	// make our fingers a little skinnier so the haar cascade works better
+	m_grayscale.erode();
 
 	// Improves performance a ton by specifiying a ROI Rect
-	finder.findHaarObjects(m_grayscale, m_handbox);
+	finder.findHaarObjects(m_grayscale, m_handboxRect);
 
 	int haarFoundCount = 0;
 
@@ -51,7 +53,6 @@ void IdleView::update(float delta) {
 	float ls = (haarFoundCount + m_k) / (float)(m_haarReadResults.size() + m_k * 2);
 
 	if(ls > .6) {
-		std::cout << "ls: " << ls << "\tSTART!!!!!!!!!!!!!!!!!!!\n";
 		startActionFired();
 		m_haarReadResults = std::vector<bool>(m_haarReadMax);
 	}
@@ -59,15 +60,22 @@ void IdleView::update(float delta) {
 
 void IdleView::doViewDraw()
 {
-	m_haarReadResults[m_haarReadResultsIndex++ % m_haarReadResults.size()] = finder.blobs.size() > 0;
+	// The base class will draw the kinect stream already flipped
+	View::doViewDraw();
 
-	//m_color.draw(0, 0, this->getWidth(), this->getHeight());
-	m_grayscale.draw(0, 0, this->getWidth(), this->getHeight());
+	m_handbox.draw(625, 50); // pixel offset of box based on comps
+
+	// Results isn't filled out until the draw call for some reason
+	m_haarReadResults[m_haarReadResultsIndex++ % m_haarReadResults.size()] = finder.blobs.size() > 0;
+	
+	/*
+	 * Uncomment to Debug 
+	m_grayscale.draw(0, 0);
 
 	finder.draw(0,0);
 
 	ofNoFill();
-	ofRect(m_handbox);
+	ofRect(m_handboxRect);*/
 }
 
 void IdleView::startActionFired()

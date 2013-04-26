@@ -111,8 +111,16 @@ void View::doEffectsDraw()
 
 void View::doViewDraw() 
 {
+	ofPushMatrix();
+	
+	//Flip image and re-adjust
+	ofScale(-1, 1, 1);
+	ofTranslate(-this->getWidth(), 0, 0);
+
 	m_texture.loadData(m_useDepth ? getKinectData().m_depthStream : getKinectData().m_videoStream);
-	m_texture.draw(0, 0);
+	m_texture.draw(0, 0, this->getWidth(), this->getHeight());
+	
+	ofPopMatrix();
 }
 
 void View::doEffectsPostDraw() 

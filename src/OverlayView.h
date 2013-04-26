@@ -4,6 +4,10 @@
 #include "View.h"
 #include "KinectController.h"
 
+#include "BackgroundImageElement.h"
+#include "PrimarySidebarImageElement.h"
+#include "StartSideBarImageElement.h"
+
 struct OverlayIndicator;
 
 // Use this class to display the color stream without timer
@@ -34,7 +38,12 @@ private:
 	float m_countDownRunningTime;
 
 	ofImage m_screen;
-	ofImage m_background;
+
+	BackgroundImageElement m_background;
+	PrimarySideBarImageElement m_primarySidebar;
+	StartSideBarImageElement m_startSidebar;
+
+	//ofImage m_background;
 	ofImage m_transition;
 
 	ofImage m_counter_background;
