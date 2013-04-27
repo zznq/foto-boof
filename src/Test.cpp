@@ -63,8 +63,8 @@ void TestEffect::createMesh()
 {
 	m_mesh->clear();
 
-	float m_numRows = m_width/8;
-	float m_numCols = m_height/8;
+	float m_numRows = m_width;
+	float m_numCols = m_height;
 	std::vector<ofVec3f> vertices;
 	for(int row=0; row < m_numRows; row++) {
 		for (int col=0; col < m_numCols; col++) {
@@ -118,12 +118,6 @@ void TestEffect::preDraw()
 	{
 		setupShader();
 	}
-
-	//ofEnableAlphaBlending();
-	//m_normalShader->begin();
-	//texture.loadData(m_parent->getKinectData().m_depthStream);
-	//texture.draw(1024-400, 768-200, 200, 200);
-	//m_normalShader->end();
 }
 
 void TestEffect::postDraw()
@@ -151,63 +145,49 @@ void TestEffect::draw()
 	m_displacementTex.loadData(m_parent->getKinectController()->getKinect()->getDistancePixelsRef());
 	m_depthTex.loadData(m_parent->getKinectData().m_depthStream);
 
+	// generate normal map
+	m_fbo.begin();
+	m_normalShader->begin();
+	m_normalShader->setUniform1f("xOffset", 1.f/m_width);
+	m_normalShader->setUniform1f("yOffset", 1.f/m_height);
+	m_normalShader->setUniform1f("scaleFactor", m_clipValue);
+	m_displacementTex.draw(0, 0);
+	m_normalShader->end();
+	m_fbo.end();
+
+	// blur variables
 	int blurSize = 7;
 	int sigma = 3;
 	float kernelRes = 21.f;
 	float invKernelRes = 1.f/kernelRes;
 
-	m_fbo.begin();
-	//ofEnableAlphaBlending();
-	m_normalShader->begin();
-	m_normalShader->setUniform1f("xOffset", 1.f/m_width);
-	m_normalShader->setUniform1f("yOffset", 1.f/m_height);
-	m_normalShader->setUniform1f("scaleFactor", m_clipValue);
-	//texture.loadData(m_parent->getKinectController()->getKinect()->getDistancePixelsRef());
-	//texture.draw(0, 0);
-	//m_blurHorizontal.draw(0, 0);
-	m_displacementTex.draw(0, 0);
-	//m_depthTex.draw(0, 0);
-	m_normalShader->end();
-	//ofClearAlpha();
-	m_fbo.end();
-
+	// load blur kernel
 	ofImage blurKernel;
 	blurKernel.loadImage("images/kernel.png");
 
-	// load displacement map
 	// vertical blur pass
 	m_blurVertical.begin();
-	//ofEnableAlphaBlending();
 	m_blurShader->begin();
 	m_blurShader->setUniform1i("horizontalPass", 0);
 	m_blurShader->setUniform1i("blurSize", blurSize);
 	m_blurShader->setUniform1f("sigma", sigma);
 	m_blurShader->setUniform1f("pixelSize", 1.f/m_blurVertical.getHeight());
-	//m_blurShader->setUniformTexture("fboTex", m_fbo.getTextureReference(), 0);
 	m_blurShader->setUniformTexture("kernelTex", blurKernel.getTextureReference(), 1);
 	m_blurShader->setUniform1f("kernelRes", kernelRes);
 	m_blurShader->setUniform1f("invKernelRes", invKernelRes);
 	m_blurShader->setUniform2f("orientationVector", 0.f, 1.f/m_fbo.getHeight());
 	m_blurShader->setUniform1f("blurAmt", m_blurFactor);
-
-	//m_displacementTex.draw(0, 0);
 	m_fbo.draw(0, 0);
 	m_blurShader->end();
-	//ofClearAlpha();
 	m_blurVertical.end();
 
-	// horizontal pass
+	// horizontal blur pass
 	m_blurHorizontal.begin();
-	//ofEnableAlphaBlending();
-	//glPushAttrib(GL_ALL_ATTRIB_BITS);  
-    //glEnable(GL_BLEND);  
-	//glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA,GL_ONE,GL_ONE_MINUS_SRC_ALPHA);
 	m_blurShader->begin();
 	m_blurShader->setUniform1i("horizontalPass", 1);
 	m_blurShader->setUniform1i("blurSize", blurSize);
 	m_blurShader->setUniform1f("sigma", sigma);
 	m_blurShader->setUniform1f("pixelSize", 1.f/m_blurHorizontal.getWidth());
-	//m_blurShader->setUniformTexture("fboTex", m_blurVertical.getTextureReference(), 0);
 	m_blurShader->setUniformTexture("kernelTex", blurKernel.getTextureReference(), 1);
 	m_blurShader->setUniform1f("kernelRes",kernelRes);
 	m_blurShader->setUniform1f("invKernelRes", invKernelRes);
@@ -215,80 +195,21 @@ void TestEffect::draw()
 	m_blurShader->setUniform1f("blurAmt", m_blurFactor);
 	m_blurVertical.draw(0, 0);
 	m_blurShader->end();
-	//glDisable(GL_BLEND);
-	//glPopAttrib();
-	//ofClearAlpha();
 	m_blurHorizontal.end();
 
-	/*
-	ofEnableAlphaBlending();
-	m_blurHorizontal.draw(1024-200, 768-200, 200, 200);
-	ofDisableAlphaBlending();
-	*/
-	//m_blurHorizontal.draw(1024-200, 768-200, 200, 200);
-	//m_displacementTex.draw(0, 0);
-	//ofSaveScreen("images/test.png");
-	
-	//ofTexture texture;
-	//texture.allocate(m_width, m_height, GL_LUMINANCE32F_ARB);
-	// draw normal map first into FBO
-
-	//m_fbo.draw(1024-200, 768-200, 200, 200);
-
-	/*
-	blurColor1.allocate(m_width, m_height);
-	blurColor1.begin();
-	//ofEnableAlphaBlending();
-	m_blurShader->begin();
-	m_blurShader->setUniform1i("horizontalPass", 0);
-	m_blurShader->setUniform1i("blurSize", blurSize);
-	m_blurShader->setUniform1f("sigma", sigma);
-	m_blurShader->setUniform1f("pixelSize", 1.f/m_blurVertical.getHeight());
-	//m_displacementTex.draw(0, 0);
-	m_colorTex.loadData(m_parent->getKinectData().m_videoStream);
-	m_colorTex.draw(0, 0);
-	m_blurShader->end();
-	//ofClearAlpha();
-	blurColor1.end();
-
-	blurColor2.allocate(m_width, m_height);
-	// horizontal pass
-	blurColor2.begin();
-	//ofEnableAlphaBlending();
-	m_blurShader->begin();
-	m_blurShader->setUniform1i("horizontalPass", 1);
-	m_blurShader->setUniform1i("blurSize", blurSize);
-	m_blurShader->setUniform1f("sigma", sigma);
-	m_blurShader->setUniform1f("pixelSize", 1.f/m_blurHorizontal.getWidth());
-	blurColor1.draw(0, 0);
-	m_blurShader->end();
-	//ofClearAlpha();
-	blurColor2.end();
-	*/
-
+	// create merged color and depth texture
+	// (color is rgb and depth is a in new texture)
 	ofFbo depthFbo;
 	depthFbo.allocate(m_width, m_height);
 	depthFbo.begin();
-	//ofEnableAlphaBlending();
-	//glPushAttrib(GL_ALL_ATTRIB_BITS);
-	//glEnable(GL_BLEND);
-	//glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA,GL_ONE,GL_ONE_MINUS_SRC_ALPHA);
 	m_depthShader->begin();
 	m_depthShader->setUniform1f("scale", 1.f);
 	m_depthShader->setUniformTexture("video_tex", m_colorTex, 1);
 	m_depthShader->setUniformTexture("depth_tex", m_depthTex, 2);
 	m_colorTex.draw(0, 0);
-	//glDisable(GL_BLEND);
-	//glPopAttrib();
-	//ofClearAlpha();
 	m_depthShader->end();
 	depthFbo.end();
 
-	/*
-	ofEnableAlphaBlending();
-	depthFbo.draw(1024-400, 768-200, 200, 200);
-	ofDisableAlphaBlending();
-	*/
 	easyCam.begin();
 	easyCam.getPosition();
 	ofPushMatrix();
@@ -297,15 +218,6 @@ void TestEffect::draw()
 	glTranslatef(-m_width*.5, -m_height*.5, 0);
 
 	m_colorTex.loadData(m_parent->getKinectData().m_videoStream);
-
-	/*
-	cullShader->begin();
-	cullShader->setUniform1f("cullingValue", 1.f - m_cullingValue);
-	cullShader->setUniform1i("cullBg", 0);
-	cullShader->setUniformTexture("depth_tex", depthFbo.getTextureReference(), 1);
-	m_colorTex.draw(0, 0);
-	cullShader->end();
-	*/
 
 	ofBackground(0, 0, 0);
 	
@@ -321,11 +233,9 @@ void TestEffect::draw()
 	m_shader->setUniformTexture("normal_tex", m_blurHorizontal.getTextureReference(), 2);
 	m_shader->setUniformTexture("displacement_tex", m_depthTex, 3);
 	m_shader->setUniformTexture("depth_tex", depthFbo.getTextureReference(), 1);
-
 	//m_shader->setUniformTexture("color_tex", image3.getTextureReference(), 1);
 	//m_shader->setUniformTexture("normal_tex", image.getTextureReference(), 2);
 	//m_shader->setUniformTexture("displacement_tex", image2.getTextureReference(), 3);
-
 
 	if (!m_drawWireframe)
 	{
@@ -338,7 +248,7 @@ void TestEffect::draw()
 	
 	m_shader->end();
 	
-	
+	/*
 	drawNormalsShader->begin();
 	drawNormalsShader->setUniformTexture("normal_tex", m_blurHorizontal.getTextureReference(), 1);
 	drawNormalsShader->setUniformTexture("depth_tex", depthFbo.getTextureReference(), 2);
@@ -351,7 +261,6 @@ void TestEffect::draw()
 	drawNormalsShader->setUniform1f("near_depth", m_nearDepth);
 	drawNormalsShader->setUniform1f("far_depth", m_farDepth);
 	drawNormalsShader->setUniform1f("cullingValue", m_cullingValue);
-	//m_shader->setUniformTexture("color_tex", depthFbo.getTextureReference(), 1);
 	drawNormalsShader->setUniformTexture("normal_tex", m_blurHorizontal.getTextureReference(), 2);
 	drawNormalsShader->setUniformTexture("displacement_tex", m_depthTex, 3);
 	drawNormalsShader->setUniformTexture("depth_tex", depthFbo.getTextureReference(), 1);
@@ -382,7 +291,7 @@ void TestEffect::draw()
 	glVertex3f(0, -2, -100);
 	glVertex3f(0, -2, 10);
 	glEnd();
-
+	*/
 	easyCam.end();
 }
 
