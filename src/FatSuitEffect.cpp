@@ -6,27 +6,6 @@
 #include "KinectController.h"
 #include "KinectData.h"
 
-#include <gl/GLU.h>
-
-ofEasyCam easyCam;
-ofFbo blurColor1;
-ofFbo blurColor2;
-
-ofPtr<ofShader> cullShader;
-
-void CreateCullShader() 
-{
-	cullShader.reset(new ofShader());
-	cullShader->load("shaders/cull.vert", "shaders/default.frag", "shaders/default.geom");
-}
-
-ofPtr<ofShader> drawNormalsShader;
-void CreateDrawNormalShader()
-{
-	drawNormalsShader.reset(new ofShader());
-	drawNormalsShader->load("shaders/normal_draw.vert", "shaders/normal_draw.frag", "shaders/normal_draw.geom");
-}
-
 FatSuitEffect::FatSuitEffect(int width, int height, bool wireframe, bool useNormalColors)
 : VisualEffect("test_effect"), m_width(width), m_height(height),
 m_isDirty(false), m_chubFactor(1.0), m_shader(new ofShader()), m_normalShader(new ofShader()),
@@ -35,29 +14,25 @@ m_nearDepth(500.f), m_farDepth(4000.f), m_shaderSetup(false), m_drawWireframe(wi
 m_clipValue(1.f), m_blurFactor(0.f), m_cullingValue(0.1f), m_transX(0.0), m_transY(0.0), 
 m_transZ(0.0), m_meshStep(1.0), m_useNormalColor(useNormalColors)
 {
-	// disabled rectangle texture and fall back to tex_2d (pot textures)
-	ofDisableArbTex();
-	ofEnableNormalizedTexCoords();
-	
 	m_mesh->setMode(OF_PRIMITIVE_TRIANGLE_STRIP);
 	m_mesh->setUsage(GL_DYNAMIC_DRAW);
 	createMesh();
 
+	ofDisableArbTex();
+	ofEnableNormalizedTexCoords();
 	m_fbo.allocate(m_width, m_height);
 	m_blurHorizontal.allocate(m_width, m_height);
 	m_blurVertical.allocate(m_width, m_height);
 	m_colorTex.allocate(m_width, m_height, GL_RGBA);
 	m_displacementTex.allocate(m_width, m_height, GL_RGB32F_ARB);
 	m_depthTex.allocate(m_width, m_height, GL_RGBA);
-
-	CreateCullShader();
-	CreateDrawNormalShader();
+	ofEnableArbTex();
+	ofDisableNormalizedTexCoords();
 }
 
 FatSuitEffect::~FatSuitEffect() 
 {
-	// turn rectangle textures back on (npot textures)
-	ofEnableArbTex();
+
 }
 
 void FatSuitEffect::createMesh() 
@@ -117,6 +92,7 @@ void FatSuitEffect::preDraw()
 {
 	// disabled rectangle texture and fall back to tex_2d (pot textures)
 	ofDisableArbTex();
+	ofEnableNormalizedTexCoords();
 
 	if (!m_shaderSetup) 
 	{
@@ -128,23 +104,13 @@ void FatSuitEffect::postDraw()
 {
 	// turn rectangle textures back on (npot textures)
 	ofEnableArbTex();
+	ofDisableNormalizedTexCoords();
 }
 
 void FatSuitEffect::draw()
 {
 	KinectController::KinectInterfacePtr kinectInterface = m_parent->getKinectController()->getKinect();
 
-	/*
-	ofImage image;
-	image.loadImage("images/normal_map_1.jpg");
-	//image.draw(1024-200, 768-200, 200, 200);
-
-	ofImage image2;
-	image2.loadImage("images/height_map_1.jpg");
-
-	ofImage image3;
-	image3.loadImage("images/base_1.jpg");
-	*/
 	m_displacementTex.loadData(m_parent->getKinectController()->getKinect()->getDistancePixelsRef());
 	m_depthTex.loadData(m_parent->getKinectData().m_depthStream);
 
@@ -166,7 +132,7 @@ void FatSuitEffect::draw()
 
 	// load blur kernel
 	ofImage blurKernel;
-	blurKernel.loadImage("images/kernel.png");
+	blurKernel.loadImage("graphics/blur_kernel.png");
 
 	// vertical blur pass
 	m_blurVertical.begin();
@@ -213,16 +179,7 @@ void FatSuitEffect::draw()
 	m_depthShader->end();
 	depthFbo.end();
 
-	//easyCam.begin();
-	//easyCam.getPosition();
-	//ofPushMatrix();
-	//ofTranslate(0, 0, -100);
-	//ofScale(1, -1, 1);
-	//glTranslatef(-m_width*.5, -m_height*.5, 0);
-
 	m_colorTex.loadData(m_parent->getKinectData().m_videoStream);
-	
-	ofPushMatrix();
 	
 	//Flip image and re-adjust
 	ofScale(-1, 1, 1);
@@ -233,22 +190,16 @@ void FatSuitEffect::draw()
 	finalPass.begin();
 	ofTranslate(m_transX, m_transY, m_transZ);
 	m_shader->begin();
-	ofVec3f eyePos = easyCam.getPosition();
-	m_shader->setUniform3f("eyePos", eyePos.x, eyePos.y, eyePos.z);
+	m_shader->setUniform3f("eyePos", 0, 0 , 1);
 	m_shader->setUniform1f("clip", m_clipValue);
 	m_shader->setUniform1f("chub_factor", m_chubFactor);
 	m_shader->setUniform1f("near_depth", m_nearDepth);
 	m_shader->setUniform1f("far_depth", m_farDepth);
 	m_shader->setUniform1f("cullingValue", m_cullingValue);
 	m_shader->setUniform1i("useNormalColor", m_useNormalColor ? 1 : 0);
-
-	//m_shader->setUniformTexture("color_tex", depthFbo.getTextureReference(), 1);
 	m_shader->setUniformTexture("normal_tex", m_blurHorizontal.getTextureReference(), 2);
 	m_shader->setUniformTexture("displacement_tex", m_depthTex, 3);
 	m_shader->setUniformTexture("depth_tex", depthFbo.getTextureReference(), 1);
-	//m_shader->setUniformTexture("color_tex", image3.getTextureReference(), 1);
-	//m_shader->setUniformTexture("normal_tex", image.getTextureReference(), 2);
-	//m_shader->setUniformTexture("displacement_tex", image2.getTextureReference(), 3);
 
 	if (!m_drawWireframe)
 	{
@@ -263,52 +214,6 @@ void FatSuitEffect::draw()
 	finalPass.end();
 
 	finalPass.draw(0, 0, m_width, m_height);
-
-	/*
-	drawNormalsShader->begin();
-	drawNormalsShader->setUniformTexture("normal_tex", m_blurHorizontal.getTextureReference(), 1);
-	drawNormalsShader->setUniformTexture("depth_tex", depthFbo.getTextureReference(), 2);
-	drawNormalsShader->setUniform1f("normal_length", 5.0);
-	drawNormalsShader->setUniform1f("cullingValue", m_cullingValue);
-	drawNormalsShader->setUniform1f("time", m_chubFactor);
-	drawNormalsShader->setUniform3f("eyePos", eyePos.x, eyePos.y, eyePos.z);
-	drawNormalsShader->setUniform1f("clip", m_clipValue);
-	drawNormalsShader->setUniform1f("chub_factor", m_chubFactor);
-	drawNormalsShader->setUniform1f("near_depth", m_nearDepth);
-	drawNormalsShader->setUniform1f("far_depth", m_farDepth);
-	drawNormalsShader->setUniform1f("cullingValue", m_cullingValue);
-	drawNormalsShader->setUniformTexture("normal_tex", m_blurHorizontal.getTextureReference(), 2);
-	drawNormalsShader->setUniformTexture("displacement_tex", m_depthTex, 3);
-	drawNormalsShader->setUniformTexture("depth_tex", depthFbo.getTextureReference(), 1);
-
-	m_mesh->setMode(OF_PRIMITIVE_POINTS);
-	if (!m_drawWireframe)
-	{
-		m_mesh->draw();
-	}
-	else 
-	{
-		m_mesh->drawWireframe();
-	}
-
-	m_mesh->setMode(OF_PRIMITIVE_TRIANGLE_STRIP);
-	drawNormalsShader->end();
-	
-	glBegin(GL_LINES);
-	glColor3f(1, 0, 0);
-	glVertex3f(-50, -2, -20);
-	glVertex3f(50, -2, -20);
-
-	glColor3f(0, 1, 0);
-	glVertex3f(0, -50, -20);
-	glVertex3f(0, 50, -20);
-
-	glColor3f(0, 0, 1);
-	glVertex3f(0, -2, -100);
-	glVertex3f(0, -2, 10);
-	glEnd();
-	*/
-	//easyCam.end();
 }
 
 void FatSuitEffect::addUI(CanvasPtr canvas) 
