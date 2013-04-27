@@ -10,6 +10,7 @@ class Element
 protected:
 	bool m_isTransitioning;
 	bool m_isEnding;
+	bool m_active;
 	float m_transitionLapse;
 	float m_lapse;
 

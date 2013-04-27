@@ -35,6 +35,7 @@ public:
 	void printPhotoStrip();
 
 	bool shouldStart() const;
+	bool isPrintingFinished() const;
 	bool isEffectCountdownFinished() const;
 	bool isFlashFinished() const;
 	bool isTransitionHalfWay() const;
@@ -49,11 +50,13 @@ public:
 	void incrementView();
 private:
 	bool m_shouldStart;
+	bool m_isPrintingFinished;
 	bool m_isEffectCountdownFinished;
 	bool m_isFlashFinished;
 	bool m_isTransitionHalfWay;
 	bool m_isTransitionFinished;
 	bool m_lastView;
+	bool m_isPrinting;
 
 	static int VIEW_WIDTH;
 	static int VIEW_HEIGHT;

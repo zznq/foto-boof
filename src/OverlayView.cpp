@@ -3,45 +3,39 @@
 
 OverlayView::OverlayView(KinectControllerPtr kinectController, int width, int height, int indicatorCount) : 
 	View(kinectController, width, height, false),
-	m_indicatorCount(indicatorCount), m_restartedIndicators(false)
+	m_indicatorCount(indicatorCount), m_restartedIndicators(false), m_showIndicators(false)
 {
 	this->setOffset(0.0, 0.0, 0.0);
 
 	m_shader = ofPtr<ofShader>(new ofShader());
 	m_shader->load("shaders/default.vert", "shaders/indicator_blend.frag", "");
 
-	//m_fader = ofPtr<ofShader>(new ofShader());
-	//m_fader->load("shaders/default.vert", "shaders/fader.frag", "");
+	m_fader = ofPtr<ofShader>(new ofShader());
+	m_fader->load("shaders/default.vert", "shaders/fader.frag", "");
 
 	m_canvas->setColorBack(ofColor(0.0f, 0.0F, 0.0F, 175.0f));
 	
 	m_screen.allocate(933, 700, OF_IMAGE_COLOR_ALPHA);
 
-	m_background = BackgroundImageElement();
-	m_primarySidebar = PrimarySideBarImageElement("shaders/default.vert", "shaders/fader.frag", "");
-	m_startSidebar = StartSideBarImageElement("shaders/default.vert", "shaders/fader.frag", "");
+	m_background = ofPtr<BackgroundImageElement>(new BackgroundImageElement());
+	m_background->begin();
+
+	m_startSidebar = ofPtr<StartSideBarImageElement>(new StartSideBarImageElement("shaders/default.vert", "shaders/fader.frag", ""));
+	m_startSidebar->begin();
+
+	m_primarySidebar = ofPtr<PrimarySideBarImageElement>(new PrimarySideBarImageElement("shaders/default.vert", "shaders/fader.frag", ""));
+	m_printing = ofPtr<PrintingImageElement>(new PrintingImageElement("shaders/default.vert", "shaders/fader.frag", ""));
+	m_countDown = ofPtr<CountDownElement>(new CountDownElement("shaders/default.vert", "shaders/fader.frag", ""));
+
+	elements = std::vector<ofPtr<Element>>();
+	elements.push_back(m_background);
+	elements.push_back(m_startSidebar);
+	elements.push_back(m_primarySidebar);
+	elements.push_back(m_printing);
+	elements.push_back(m_countDown);
 
 	m_transition = ofImage("graphics/transition.png");
 	m_transition.allocate(933, 700, OF_IMAGE_COLOR);
-
-
-	/****************************
-	Counter Images
-	****************************/
-	m_counter_background = ofImage("graphics/counter_background.png");
-	m_counter_background.allocate(24, 430, OF_IMAGE_COLOR_ALPHA);
-	
-	m_counter_top_cap = ofImage("graphics/counter_top_cap.png");
-	m_counter_top_cap.allocate(18, 3, OF_IMAGE_COLOR_ALPHA);
-
-	m_counter_bottom_cap = ofImage("graphics/counter_bottom_cap.png");
-	m_counter_bottom_cap.allocate(18, 3, OF_IMAGE_COLOR_ALPHA);
-
-	m_counter_fill = ofImage("graphics/counter_fill.png");
-	m_counter_fill.allocate(18, 1, OF_IMAGE_COLOR_ALPHA);
-
-	m_counter_label = ofImage("graphics/counter_label.png");
-	m_counter_label.allocate(84, 7, OF_IMAGE_COLOR_ALPHA);
 
 	/**************************
 	Indicator Images
@@ -76,23 +70,28 @@ OverlayView::OverlayView(KinectControllerPtr kinectController, int width, int he
 	m_transRunningTime = 0;
 	m_transProgress = 0;
 
-	m_isCountingDown = false;
-	m_countDownDuration = 0;
-	m_countDownRunningTime = 0;
-
 	m_isFlashing = false;
 	m_flashDuration = 1000.f;
 	m_flashRunningTime = 0;
 
-	m_countDownTimerThresehold = 3;
-	m_countDownColor = ofColor(2,166,79);
-	m_countDownColorSecondary = ofColor(144,15,15);
-	m_codeFont.loadFont("GUI/CODEBold.otf", 50);
+	m_isPrinting = false;
+	m_printDuration = 20000;
+	m_printLapse = 0;
 }
 
 void OverlayView::update(float delta)
 {
 	View::update(delta);
+
+	if(m_isPrinting)
+	{
+		m_printLapse += delta;
+		if(m_printLapse >= m_printDuration)
+		{
+			m_isPrinting = false;
+			printFinishedFired();
+		}
+	}
 
 	if(m_isTransitioning)
 	{
@@ -103,23 +102,17 @@ void OverlayView::update(float delta)
 		{
 			if(!m_isTransitionHalfWay)
 			{
-				std::cout << "TRANSITION HalfWay: " << m_transProgress << endl;
 				transitionHalfWayFired();
 			}
 
 			if(m_transProgress == 1)
 			{
-				std::cout << "TRANSITION FINISHED: " << m_transProgress << endl;
 				m_isTransitioning = false;
 				m_transRunningTime = 0;
 
 				transitionFinishedFired();
 			}
 		}
-	}
-
-	if(m_isCountingDown) {
-		m_countDownRunningTime += delta;
 	}
 
 	if(m_isFlashing) {
@@ -133,25 +126,22 @@ void OverlayView::update(float delta)
 		}
 	}
 
-	m_background.update(delta);
-	//m_primarySidebar.update(delta);
-	m_startSidebar.update(delta);
+	for (std::vector<ofPtr<Element>>::iterator iter = elements.begin(); iter != elements.end(); ++iter)
+	{
+		(*iter)->update(delta);
+	}
 }
 
 void OverlayView::doViewDraw()
 {
-	m_background.draw(0, 0);
-	//m_primarySidebar.draw(0, 0);
-	m_startSidebar.draw(0, 0);
+	for (std::vector<ofPtr<Element>>::iterator iter = elements.begin(); iter != elements.end(); ++iter)
+	{
+		(*iter)->draw(0, 0);
+	}
 }
 
 void OverlayView::drawForeground()
 {
-	if(m_isCountingDown)
-	{
-		drawCountdown();
-	}
-
 	if(m_showScreen)
 	{
 		drawScreen();
@@ -162,15 +152,18 @@ void OverlayView::drawForeground()
 		drawTransition();
 	}
 
-	ofPushMatrix();
+	if(m_showIndicators)
+	{
+		ofPushMatrix();
 
-	ofTranslate(115, 608, 0);
-	for (std::vector<OverlayIndicator>::iterator iter = m_indicators.begin(); iter != m_indicators.end(); ++iter) {
-		ofTranslate((iter)->offset);
-		drawIndicator((iter)->state);
+		ofTranslate(115, 608, 0);
+		for (std::vector<OverlayIndicator>::iterator iter = m_indicators.begin(); iter != m_indicators.end(); ++iter) {
+			ofTranslate((iter)->offset);
+			drawIndicator((iter)->state);
+		}
+
+		ofPopMatrix();
 	}
-
-	ofPopMatrix();
 }
 
 void OverlayView::drawScreen()
@@ -184,7 +177,7 @@ void OverlayView::drawScreen()
 void OverlayView::drawTransition()
 {
 	ofPushMatrix();
-	/*m_fader->begin();
+	m_fader->begin();
 	
 	m_fader->setUniformTexture("tex", m_transition, 1);
 
@@ -201,50 +194,14 @@ void OverlayView::drawTransition()
 
 	m_transition.draw(338.0, 10.0);
 
-	m_fader->end();*/
+	m_fader->end();
 
 	ofPopMatrix();
 }
 
 void OverlayView::drawCountdown()
 {
-	int timeLeftMS = (m_countDownDuration - m_countDownRunningTime);
-	int timeLeft = timeLeftMS / 1000;
-
-	float countdown_height_max = 420;
 	
-	float countdown_height = m_countDownDuration == 0 ? 0 : countdown_height_max * (timeLeftMS / m_countDownDuration);
-
-	countdown_height = ofClamp(countdown_height, 0, countdown_height_max);
-	
-	ofPushMatrix();
-
-	m_counter_background.draw(115, 155);
-	m_counter_label.draw(153, 512);
-
-	ofTranslate(118, 155, 0);
-
-	if(timeLeft <= m_countDownTimerThresehold) {
-		ofSetColor(m_countDownColorSecondary);
-	} else {
-		ofSetColor(m_countDownColor);
-	}
-
-	m_counter_top_cap.draw(0, countdown_height_max - countdown_height);
-	m_counter_fill.draw(0, countdown_height_max - countdown_height + 3, 18, countdown_height);
-	m_counter_bottom_cap.draw(0, countdown_height_max + 3);
-
-	ofTranslate(31, 426, 0);
-
-	ostringstream convert;
-	convert << timeLeft;
-
-	m_codeFont.drawString(":", 0, 0);
-	m_codeFont.drawString(convert.str(), 22, 0);
-
-	ofSetColor(255,255,255);
-
-	ofPopMatrix();
 }
 
 void OverlayView::drawIndicator(IndicatorState indicatorState)
@@ -330,6 +287,14 @@ void OverlayView::transitionFinishedFired()
 	}
 }
 
+void OverlayView::printFinishedFired()
+{
+	if(this->m_delegate)
+	{
+		this->m_delegate->handleViewAction(ViewAction::PRINT_FINISHED);
+	}
+}
+
 void OverlayView::startEffectTransition()
 {
 	if(m_indicatorIndex == (m_indicators.size() - 1))
@@ -342,6 +307,8 @@ void OverlayView::startEffectTransition()
 	}
 
 	m_isTransitioning = true;
+
+	starting();
 }
 
 void OverlayView::stopEffectTransition()
@@ -349,17 +316,20 @@ void OverlayView::stopEffectTransition()
 	m_screen.clear();
 }
 
-void OverlayView::startTimer(float duration)
+void OverlayView::setTimer(float duration)
 {
-	m_isCountingDown = true;
-	m_countDownDuration = duration;
+	m_countDown->setDuration(duration);
+	//m_countDown->begin();
+}
+
+void OverlayView::startTimer()
+{
+	std::cout << "OverlayView Start Timer\n";
+	m_countDown->startCountDown();
 }
 
 void OverlayView::stopTimer()
 {
-	m_isCountingDown = false;
-	m_countDownDuration = 0;
-	m_countDownRunningTime = 0;
 }
 
 void OverlayView::startFlash()
@@ -394,4 +364,32 @@ void OverlayView::setIndicatorsState(OverlayView::IndicatorState state)
 ofImage OverlayView::getScreen()
 {
 	return m_screen;
+}
+
+void OverlayView::starting()
+{
+	m_startSidebar->end();
+}
+
+void OverlayView::started()
+{
+	m_showIndicators = true;
+	m_primarySidebar->begin();
+	m_countDown->begin();
+}
+
+void OverlayView::printing()
+{
+	m_isPrinting = true;
+	m_showIndicators = false;
+	m_countDown->end();
+	m_primarySidebar->end();
+	m_printing->begin();
+}
+
+void OverlayView::printed()
+{
+	m_printing->end();
+	m_startSidebar->begin();
+	m_printLapse = 0;
 }

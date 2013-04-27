@@ -14,7 +14,7 @@ std::string ViewController::IMAGE_PATH = "data/images/";
 ViewController::ViewController() :
 	m_currentState(ViewControllerStateIdle::Instance()), m_viewGroupId(0), m_shouldStart(false),
 	m_isEffectCountdownFinished(false), m_isFlashFinished(false), m_isTransitionHalfWay(false),
-	m_isTransitionFinished(false), m_lastView(false)
+	m_isTransitionFinished(false), m_lastView(false), m_isPrinting(false)
 { 
 	m_currentState->enter(this);
 
@@ -63,14 +63,23 @@ void ViewController::update(float delta)
 {
 	m_currentState->execute();
 
-	this->getCurrentView()->update(delta);
+	if(!m_isPrinting)
+	{
+		this->getCurrentView()->update(delta);
+	}
+
 	this->getOverlayView()->update(delta);
 }
 
 void ViewController::draw()
 {
 	this->getOverlayView()->draw();
-	this->getCurrentView()->draw();
+
+	if(!m_isPrinting)
+	{
+		this->getCurrentView()->draw();
+	}
+
 	this->getOverlayView()->drawForeground();
 }
 
@@ -129,53 +138,56 @@ void ViewController::printPhotoStrip()
 
 	ofDirectory dir = ofDirectory(path);
 
-	if(dir.exists()){
-		dir.listDir();
-
-		oss << "/strip.jpg";
-		std::string filePath = oss.str();
-
-		std::vector<ofFile, allocator<ofFile>> files = dir.getFiles();
-
-		ofImage tex = ofImage();
-		tex.allocate(print_size.getWidth(), print_size.getHeight(), ofImageType::OF_IMAGE_COLOR);
-
-		ofImage background = ofImage("graphics/print_background.png");
-		background.allocate(print_size.getWidth(), print_size.getHeight(), ofImageType::OF_IMAGE_COLOR);
-
-		ofFbo fbo;
-		ofCamera cam;
-		fbo.allocate(print_size.getWidth(), print_size.getHeight(), GL_RGB);
-		cam.begin();
-		cam.setupPerspective();
-
-		
-		fbo.begin();
-		ofPushMatrix();
-
-		ofScale(1, -1, 1);
-		ofTranslate(0, -print_size.getHeight());
-
-		int x = 10;
-		int y = 10;
-		
-		background.draw(0, 0, print_size.getWidth(), print_size.getHeight());
-		for (std::vector<ofFile, allocator<ofFile>>::iterator iter = files.begin(); iter != files.end(); ++iter) {
-			std::string path = (*iter).getAbsolutePath();
-			ofImage image(path);
-
-			image.draw(x, y, 175, 131);
-			y += 141;
-		}
-		ofPopMatrix();
-
-		tex.grabScreen(0, 0, print_size.getWidth(), print_size.getHeight());
-
-		fbo.end();
-		cam.end();
-
-		tex.saveImage(filePath);
+	if(!dir.exists())
+	{
+		return;
 	}
+
+	dir.listDir();
+
+	oss << "/strip.jpg";
+	std::string filePath = oss.str();
+
+	std::vector<ofFile, allocator<ofFile>> files = dir.getFiles();
+
+	ofImage tex = ofImage();
+	tex.allocate(print_size.getWidth(), print_size.getHeight(), ofImageType::OF_IMAGE_COLOR);
+
+	ofImage background = ofImage("graphics/print_background.png");
+	background.allocate(print_size.getWidth(), print_size.getHeight(), ofImageType::OF_IMAGE_COLOR);
+
+	ofFbo fbo;
+	ofCamera cam;
+	fbo.allocate(print_size.getWidth(), print_size.getHeight(), GL_RGB);
+	cam.begin();
+	cam.setupPerspective();
+
+		
+	fbo.begin();
+	ofPushMatrix();
+
+	ofScale(1, -1, 1);
+	ofTranslate(0, -print_size.getHeight());
+
+	int x = 10;
+	int y = 10;
+		
+	background.draw(0, 0, print_size.getWidth(), print_size.getHeight());
+	for (std::vector<ofFile, allocator<ofFile>>::iterator iter = files.begin(); iter != files.end(); ++iter) {
+		std::string path = (*iter).getAbsolutePath();
+		ofImage image(path);
+
+		image.draw(x, y, 175, 131);
+		y += 141;
+	}
+	ofPopMatrix();
+
+	tex.grabScreen(0, 0, print_size.getWidth(), print_size.getHeight());
+
+	fbo.end();
+	cam.end();
+
+	tex.saveImage(filePath);
 }
 
 void ViewController::changeState(const ViewControllerStatePtr state)
@@ -190,6 +202,11 @@ void ViewController::changeState(const ViewControllerStatePtr state)
 bool ViewController::shouldStart() const
 {
 	return m_shouldStart;
+}
+
+bool ViewController::isPrintingFinished() const
+{
+	return m_isPrintingFinished;
 }
 
 bool ViewController::isEffectCountdownFinished() const
@@ -219,29 +236,40 @@ bool ViewController::isLastEffect() const
 
 void ViewController::handleViewAction(const ViewAction::Enum& action)
 {
-	std::cout << "ViewAction Triggered: ";
+	//std::cout << "ViewAction Triggered: ";
 
 	switch(action) {
 	case ViewAction::STARTING:
-		std::cout << "STARTING" << std::endl;
+		//std::cout << "STARTING" << std::endl;
 		m_isTransitionFinished = false;
 		m_shouldStart = true;
+		m_overlayView->starting();
+		break;
+	case ViewAction::STARTED:
+		//std::cout << "STARTING" << std::endl;
+		m_overlayView->started();
 		break;
 	case ViewAction::EFFECT_COUNTDOWN_FINISHED:
-		std::cout << "EFFECT_COUNTDOWN_FINISHED" << std::endl;
+		//std::cout << "EFFECT_COUNTDOWN_FINISHED" << std::endl;
 		m_isTransitionFinished = false;
 		m_isEffectCountdownFinished = true;
 		break;
 	case ViewAction::FLASH_FINISHED:
-		std::cout << "FLASH_FINISHED" << std::endl;
+		//std::cout << "FLASH_FINISHED" << std::endl;
 		m_isFlashFinished = true;
 		break;
+	case ViewAction::TRANSITION_STARTED:
+		//std::cout << "TRANSITION_STARTED" << std::endl;
+		m_isTransitionFinished = false;
+		m_isTransitionHalfWay = false;
+		m_overlayView->startEffectTransition();
+		break;
 	case ViewAction::TRANSITION_HALF_WAY:
-		std::cout << "TRANSITION_HALF_WAY" << std::endl;
+		//std::cout << "TRANSITION_HALF_WAY" << std::endl;
 		m_isTransitionHalfWay = true;
 		break;
 	case ViewAction::TRANSITION_FINISHED:
-		std::cout << "TRANSITION_FINISHED" << std::endl;
+		//std::cout << "TRANSITION_FINISHED" << std::endl;
 		if(m_shouldStart) {
 			m_shouldStart = false;
 		}
@@ -250,8 +278,19 @@ void ViewController::handleViewAction(const ViewAction::Enum& action)
 		m_isFlashFinished = false;
 		m_isTransitionFinished = true;
 		break;
+	case ViewAction::PRINTING:
+		m_isPrinting = true;
+		m_isPrintingFinished = false;
+		m_overlayView->printing();
+		break;
+	case ViewAction::PRINT_FINISHED:
+		//std::cout << "PRINT_FINISHED" << std::endl;
+		m_isPrintingFinished = true;
+		m_isPrinting = false;
+		m_overlayView->printed();
+		break;
 	default:
-		std::cout << "NONE -> " << action << std::endl;
+		//std::cout << "NONE -> " << action << std::endl;
 		break;
 	}
 }

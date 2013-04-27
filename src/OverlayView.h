@@ -7,6 +7,8 @@
 #include "BackgroundImageElement.h"
 #include "PrimarySidebarImageElement.h"
 #include "StartSideBarImageElement.h"
+#include "PrintingImageElement.h"
+#include "CountDownElement.h"
 
 struct OverlayIndicator;
 
@@ -21,6 +23,10 @@ public:
 		TowardsInActive
 	};
 private:
+	bool m_isPrinting;
+	float m_printDuration;
+	float m_printLapse;
+
 	bool m_isFlashing;
 	float m_flashDuration;
 	float m_flashRunningTime;
@@ -32,33 +38,24 @@ private:
 	float m_transRunningTime;
 	float m_transProgress;
 
-	bool m_isCountingDown;
-	int m_countDownTimerThresehold;
-	float m_countDownDuration;
-	float m_countDownRunningTime;
+	bool m_showIndicators;
 
 	ofImage m_screen;
 
-	BackgroundImageElement m_background;
-	PrimarySideBarImageElement m_primarySidebar;
-	StartSideBarImageElement m_startSidebar;
+	std::vector<ofPtr<Element>> elements;
+
+	ofPtr<BackgroundImageElement> m_background;
+	ofPtr<PrimarySideBarImageElement> m_primarySidebar;
+	ofPtr<StartSideBarImageElement> m_startSidebar;
+	ofPtr<PrintingImageElement> m_printing;
+	ofPtr<CountDownElement> m_countDown;
 
 	//ofImage m_background;
 	ofImage m_transition;
-
-	ofImage m_counter_background;
-	ofImage m_counter_top_cap;
-	ofImage m_counter_bottom_cap;
-	ofImage m_counter_fill;
-	ofImage m_counter_label;
 	
 	ofImage m_indicatorActive;
 	ofImage m_indicatorInActive;
-
-	ofColor m_countDownColor;
-	ofColor m_countDownColorSecondary;
-	ofTrueTypeFont m_codeFont;
-
+	
 	bool m_restartedIndicators;
 	int m_indicatorCount; // Includes Idle View
 	int m_indicatorIndex;
@@ -69,6 +66,7 @@ private:
 	void transitionHalfWayFired();
 	void transitionFinishedFired();
 	void flashFinishedFired();
+	void printFinishedFired();
 
 	void drawCountdown();
 	void drawIndicator(IndicatorState indicatorState);
@@ -92,12 +90,18 @@ public:
 	void startEffectTransition();
 	void stopEffectTransition();
 
-	void startTimer(float duration);
+	void setTimer(float duration);
+	void startTimer();
 	void stopTimer();
 
 	void restart();
 
 	ofImage getScreen();
+
+	void starting();
+	void started();
+	void printing();
+	void printed();
 };
 
 struct OverlayIndicator {

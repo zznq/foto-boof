@@ -104,6 +104,7 @@ xcopy /e /i /y "$(ProjectDir)..\..\..\addons\ofxKinect\libs\libfreenect\lib\vs20
   <ItemGroup>
     <ClCompile Include="src\BwEffect.cpp" />
     <ClCompile Include="src\ColorDepthShaderEffect.cpp" />
+    <ClCompile Include="src\CountDownElement.cpp" />
     <ClCompile Include="src\Element.cpp" />
     <ClCompile Include="src\FatSuitEffect.cpp" />
     <ClCompile Include="src\FatSuitView.cpp" />
@@ -208,6 +209,7 @@ xcopy /e /i /y "$(ProjectDir)..\..\..\addons\ofxKinect\libs\libfreenect\lib\vs20
     <ClInclude Include="src\BwEffect.h" />
     <ClInclude Include="src\ColorDepthShaderEffect.h" />
     <ClInclude Include="src\ColorDepthShaderView.h" />
+    <ClInclude Include="src\CountDownElement.h" />
     <ClInclude Include="src\Element.h" />
     <ClInclude Include="src\FatSuitEffect.h" />
     <ClInclude Include="src\FatSuitView.h" />
@@ -222,6 +224,7 @@ xcopy /e /i /y "$(ProjectDir)..\..\..\addons\ofxKinect\libs\libfreenect\lib\vs20
     <ClInclude Include="src\OverlayView.h" />
     <ClInclude Include="src\PointCloudEffect.h" />
     <ClInclude Include="src\PrimarySideBarImageElement.h" />
+    <ClInclude Include="src\PrintingImageElement.h" />
     <ClInclude Include="src\StartSideBarImageElement.h" />
     <ClInclude Include="src\ViewControllerState.h" />
     <ClInclude Include="src\ViewController.h" />

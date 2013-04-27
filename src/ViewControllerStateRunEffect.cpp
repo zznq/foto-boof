@@ -16,8 +16,7 @@ void ViewControllerStateRunEffect::enter(ViewController* viewController)
 	
 	// Start playtime countdown on current effect
 	m_viewController->getCurrentView()->startCountDown();
-	// display countdown on overlay?
-	m_viewController->getOverlayView()->startTimer(m_viewController->getCurrentView()->getViewInterval());
+	m_viewController->getOverlayView()->startTimer();
 }
 
 void ViewControllerStateRunEffect::execute()

@@ -15,13 +15,15 @@ void ViewControllerStatePrint::enter(ViewController* viewController)
 	ViewControllerState::enter(viewController);
 
 	m_viewController->printPhotoStrip();
-
-	// Go Back to IDLE state
-	m_viewController->changeState(ViewControllerStateIdle::Instance());
 }
 
 void ViewControllerStatePrint::execute()
 {
+	// Go Back to IDLE state
+	if(m_viewController->isPrintingFinished())
+	{
+		m_viewController->changeState(ViewControllerStateIdle::Instance());
+	}
 }
 
 void ViewControllerStatePrint::exit()

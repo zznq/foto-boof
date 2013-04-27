@@ -3,7 +3,7 @@
 #include "ofShader.h"
 #include "ofGraphics.h"
 
-Element::Element(float transitionLapse) : m_transitionLapse(transitionLapse), m_lapse(0)
+Element::Element(float transitionLapse) : m_transitionLapse(transitionLapse), m_lapse(0), m_active(false), m_isTransitioning(false), m_isEnding(false)
 {
 
 }
@@ -11,7 +11,7 @@ Element::Element(float transitionLapse) : m_transitionLapse(transitionLapse), m_
 Element::Element(float transitionLapse,
 				 const std::string& vertexShader, 
 				 const std::string& fragmentShader, 
-				 const std::string& geometryShader) : m_transitionLapse(transitionLapse), m_lapse(0), m_shader(new ofShader())
+				 const std::string& geometryShader) : m_transitionLapse(transitionLapse), m_lapse(0), m_shader(new ofShader()), m_active(false), m_isTransitioning(false), m_isEnding(false)
 {
 	// load our shader files
 	// shaders are located in data/shaders
@@ -25,9 +25,12 @@ Element::~Element()
 
 void Element::begin()
 {
-	m_lapse = 0;
-	m_isTransitioning = true;
-	m_isEnding = false;
+	if(!m_active) {
+		m_lapse = 0;
+		m_active = true;
+		m_isTransitioning = true;
+		m_isEnding = false;
+	}
 }
 
 void Element::end()
@@ -47,11 +50,11 @@ float Element::progress() const
 	float start = 0.0f;
 	float stop = 1.f;
 
-	if(!m_isEnding) {
+	if(m_isEnding) {
 		start = 1.f;
 		stop = 0.0f;
 	}
-	
+
 	return ofLerp(start, stop, ofClamp(m_lapse / m_transitionLapse, 0, 1));
 }
 
@@ -64,31 +67,39 @@ void Element::update(float delta)
 
 		if(m_lapse > m_transitionLapse)
 		{
-			//m_isTransitioning = false;
+			m_isTransitioning = false;
+
+			if(m_isEnding) {
+				m_isEnding = false;
+				m_active = false;
+			}
 		}
 	}
 }
 
 void Element::draw(int x, int y)
 {
-	ofPushMatrix();
-
-	ofTranslate(x, y);
-
-	if(m_isTransitioning)
+	if(m_active)
 	{
-		preDraw();
+		ofPushMatrix();
 
-		onDraw();
+		ofTranslate(x, y);
 
-		postDraw();
+		if(m_isTransitioning)
+		{
+			preDraw();
+
+			onDraw();
+
+			postDraw();
+		}
+		else
+		{
+			onDraw();
+		}
+
+		ofPopMatrix();
 	}
-	else
-	{
-		onDraw();
-	}
-
-	ofPopMatrix();
 }
 
 void Element::onDraw()
