@@ -30,8 +30,6 @@ private:
 
 	float m_nearClipping;
 	float m_farClipping;
-
-	ofCamera m_cam;
 protected:
 	bool m_useDepth;
 	bool m_countDownRunning;

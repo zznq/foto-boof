@@ -31,8 +31,9 @@ void ViewController::setup(KinectControllerPtr kinectController)
 	ViewType::Enum views[] = 
 	{
 		ViewType::Enum::Idle,
-		ViewType::Enum::FatSuitView,
 		ViewType::Enum::ColorDepthShaderView,
+		ViewType::Enum::FatSuitView,
+		
 		ViewType::Enum::FatSuitWireView
 	};
 
@@ -235,40 +236,40 @@ bool ViewController::isLastEffect() const
 
 void ViewController::handleViewAction(const ViewAction::Enum& action)
 {
-	//std::cout << "ViewAction Triggered: ";
+	std::cout << "ViewAction Triggered: ";
 
 	switch(action) {
 	case ViewAction::STARTING:
-		//std::cout << "STARTING" << std::endl;
+		std::cout << "STARTING" << std::endl;
 		m_isTransitionFinished = false;
 		m_shouldStart = true;
 		m_overlayView->starting();
 		break;
 	case ViewAction::STARTED:
-		//std::cout << "STARTING" << std::endl;
+		std::cout << "STARTING" << std::endl;
 		m_overlayView->started();
 		break;
 	case ViewAction::EFFECT_COUNTDOWN_FINISHED:
-		//std::cout << "EFFECT_COUNTDOWN_FINISHED" << std::endl;
+		std::cout << "EFFECT_COUNTDOWN_FINISHED" << std::endl;
 		m_isTransitionFinished = false;
 		m_isEffectCountdownFinished = true;
 		break;
 	case ViewAction::FLASH_FINISHED:
-		//std::cout << "FLASH_FINISHED" << std::endl;
+		std::cout << "FLASH_FINISHED" << std::endl;
 		m_isFlashFinished = true;
 		break;
 	case ViewAction::TRANSITION_STARTED:
-		//std::cout << "TRANSITION_STARTED" << std::endl;
+		std::cout << "TRANSITION_STARTED" << std::endl;
 		m_isTransitionFinished = false;
 		m_isTransitionHalfWay = false;
 		m_overlayView->startEffectTransition();
 		break;
 	case ViewAction::TRANSITION_HALF_WAY:
-		//std::cout << "TRANSITION_HALF_WAY" << std::endl;
+		std::cout << "TRANSITION_HALF_WAY" << std::endl;
 		m_isTransitionHalfWay = true;
 		break;
 	case ViewAction::TRANSITION_FINISHED:
-		//std::cout << "TRANSITION_FINISHED" << std::endl;
+		std::cout << "TRANSITION_FINISHED" << std::endl;
 		if(m_shouldStart) {
 			m_shouldStart = false;
 		}
@@ -278,18 +279,19 @@ void ViewController::handleViewAction(const ViewAction::Enum& action)
 		m_isTransitionFinished = true;
 		break;
 	case ViewAction::PRINTING:
+		std::cout << "PRINTING" << std::endl;
 		m_isPrinting = true;
 		m_isPrintingFinished = false;
 		m_overlayView->printing();
 		break;
 	case ViewAction::PRINT_FINISHED:
-		//std::cout << "PRINT_FINISHED" << std::endl;
+		std::cout << "PRINT_FINISHED" << std::endl;
 		m_isPrintingFinished = true;
 		m_isPrinting = false;
 		m_overlayView->printed();
 		break;
 	default:
-		//std::cout << "NONE -> " << action << std::endl;
+		std::cout << "NONE -> " << action << std::endl;
 		break;
 	}
 }

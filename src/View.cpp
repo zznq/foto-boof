@@ -29,8 +29,6 @@ View::~View()
 void View::setup()
 {
 	m_canvas->setVisible(true);
-
-	m_cam.setupPerspective(true);
 }
 
 void View::close()
@@ -71,8 +69,6 @@ void View::draw()
 		return;
 	}
 
-	m_cam.begin();
-	
 	ofPushMatrix();
 	ofTranslate(m_offset.x, m_offset.y, m_offset.z);
 
@@ -89,8 +85,6 @@ void View::draw()
 	doEffectsPostDraw();
 
 	ofPopMatrix();
-
-	m_cam.end();
 }
 
 void View::doEffectsPreDraw() 
