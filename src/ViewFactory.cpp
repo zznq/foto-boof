@@ -47,11 +47,9 @@ ViewPtr CreateView(const ViewType::Enum& type, const KinectControllerPtr& kinect
 		case ViewType::OutlineView:
 			ptr.reset(new OutlineView(kinectController, width, height));
 			break;
-			/*
 		case ViewType::Idle:
 			ptr.reset(new IdleView(kinectController, width, height));
 			break;
-			*/
 		case ViewType::TestView:
 			ptr.reset(new TestView(kinectController, width, height));
 			break;

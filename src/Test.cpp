@@ -133,18 +133,17 @@ void TestEffect::draw()
 {
 	KinectController::KinectInterfacePtr kinectInterface = m_parent->getKinectController()->getKinect();
 
-	
+	/*
 	ofImage image;
 	image.loadImage("images/normal_map_1.jpg");
-	image.draw(1024-200, 768-200, 200, 200);
-	/*
+	//image.draw(1024-200, 768-200, 200, 200);
+
 	ofImage image2;
 	image2.loadImage("images/height_map_1.jpg");
 
 	ofImage image3;
 	image3.loadImage("images/base_1.jpg");
 	*/
-#if 0
 	m_displacementTex.loadData(m_parent->getKinectController()->getKinect()->getDistancePixelsRef());
 	m_depthTex.loadData(m_parent->getKinectData().m_depthStream);
 
@@ -294,7 +293,6 @@ void TestEffect::draw()
 	glEnd();
 	*/
 	//easyCam.end();
-#endif
 }
 
 void TestEffect::addUI(CanvasPtr canvas) 
