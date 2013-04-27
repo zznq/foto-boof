@@ -11,7 +11,7 @@
 #include "FatSuitView.h"
 #include "OutlineView.h"
 #include "IdleView.h"
-
+#include "FatSuitWireView.h"
 #include "TestView.h"
 
 ViewPtr CreateView(const ViewType::Enum& type, const KinectControllerPtr& kinectController, int width, int height) {
@@ -52,6 +52,9 @@ ViewPtr CreateView(const ViewType::Enum& type, const KinectControllerPtr& kinect
 			break;
 		case ViewType::TestView:
 			ptr.reset(new TestView(kinectController, width, height));
+			break;
+		case ViewType::FatSuitWireView:
+			ptr.reset(new FatSuitWireView(kinectController, width, height));
 			break;
 		default:
 			ptr.reset(new View(kinectController, width, height));

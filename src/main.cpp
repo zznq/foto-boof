@@ -3,8 +3,8 @@
 #include "boof.h"
 
 int main() {
-	// create foto-boof applicatoin
-	ofPtr<Boof> boofApp(new Boof());
+	// create foto-boof application
+	ofPtr<Boof> boofApp(new Boof(1280, 720));
 
 	// run the app
 	ofRunApp(boofApp);

@@ -1,58 +1,55 @@
-#ifndef FAT_SUIT_EFFECT_H
-#define FAT_SUIT_EFFECT_H
+#ifndef FATSUITEFFECT_H
+#define FATSUITEFFECT_H
 
 #include "ofTypes.h"
 #include "ofTexture.h"
-
-#include "ShaderEffect.h"
+#include "ofFbo.h"
+#include "VisualEffect.h"
 
 class ofShader;
 class ofVboMesh;
 
-struct Vertex
-{
-	float x, y, z;
-};
-
-struct ColorValue
-{
-	ColorValue(float _r, float _g, float _b, float _a) : r(_r), g(_g), b(_b), a(_a) { }
-	float r, g, b, a;
-};
-
-struct TexCoord
-{
-	TexCoord(float _s, float _t) : s(_s), t(_t) { }
-	float s, t;
-};
-
-class FatSuitEffect: public ShaderEffect {
+class FatSuitEffect: public VisualEffect {
 public:
-	FatSuitEffect(int width, int height);
+	FatSuitEffect(int width, int height, bool wireframe = false, bool useNormalColors = false);
 	virtual ~FatSuitEffect();
 	virtual void addUI(CanvasPtr canvas);
 	virtual void preDraw();
 	virtual void draw();
+	virtual void postDraw();
 protected:
 	virtual void guiEvent(ofxUIEventArgs &e);
 	void createMesh();
+	void setupShader();
 protected:
 	int m_width;
 	int m_height;
 	bool m_isDirty;
 	float m_chubFactor;
+	ofTexture m_colorTex;
+	ofTexture m_displacementTex;
+	ofTexture m_depthTex;
+	ofPtr<ofShader> m_shader;
+	ofPtr<ofShader> m_normalShader;
+	ofPtr<ofShader> m_blurShader;
+	ofPtr<ofShader> m_depthShader;
 	ofPtr<ofVboMesh> m_mesh;
+	ofFbo m_fbo;
+	ofFbo m_blurHorizontal;
+	ofFbo m_blurVertical;
 	float m_nearDepth;
 	float m_farDepth;
-
-	std::vector<Vertex> m_vertices;
-	std::vector<ColorValue> m_colors;
-	std::vector<TexCoord> m_texCoords;
-	std::vector<ofIndexType> m_indices;
-	GLuint m_vboId;
-	GLuint m_colorId;
-	GLuint m_texCoordId;
-	GLuint m_iboId;
+	bool m_shaderSetup;
+	bool m_drawWireframe;
+	ofLight light;
+	float m_clipValue;
+	float m_blurFactor;
+	float m_cullingValue;
+	float m_transX;
+	float m_transY;
+	float m_transZ;
+	float m_meshStep;
+	bool m_useNormalColor;
 };
 
 #endif
