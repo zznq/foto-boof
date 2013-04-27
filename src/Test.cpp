@@ -221,6 +221,12 @@ void TestEffect::draw()
 
 	m_colorTex.loadData(m_parent->getKinectData().m_videoStream);
 	
+	ofPushMatrix();
+	
+	//Flip image and re-adjust
+	ofScale(-1, 1, 1);
+	ofTranslate(-this->m_width, 0, 0);
+
 	m_shader->begin();
 	ofVec3f eyePos = easyCam.getPosition();
 	m_shader->setUniform3f("eyePos", eyePos.x, eyePos.y, eyePos.z);
@@ -248,6 +254,8 @@ void TestEffect::draw()
 	
 	m_shader->end();
 	
+	ofPopMatrix();
+
 	/*
 	drawNormalsShader->begin();
 	drawNormalsShader->setUniformTexture("normal_tex", m_blurHorizontal.getTextureReference(), 1);
