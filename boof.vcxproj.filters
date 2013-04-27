@@ -79,12 +79,6 @@
     <ClCompile Include="src\NormalMapEffect.cpp">
       <Filter>src\effects</Filter>
     </ClCompile>
-    <ClCompile Include="src\FatSuitEffect.cpp">
-      <Filter>src\effects</Filter>
-    </ClCompile>
-    <ClCompile Include="src\FatSuitView.cpp">
-      <Filter>src\views</Filter>
-    </ClCompile>
     <ClCompile Include="src\ViewController.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -130,7 +124,7 @@
     <ClCompile Include="src\CloudTest.cpp">
       <Filter>src\effects</Filter>
     </ClCompile>
-    <ClCompile Include="src\Test.cpp">
+    <ClCompile Include="src\FatSuitEffect.cpp">
       <Filter>src\effects</Filter>
     </ClCompile>
   </ItemGroup>
@@ -416,12 +410,6 @@
     <ClInclude Include="src\NormalMapView.h">
       <Filter>src\views</Filter>
     </ClInclude>
-    <ClInclude Include="src\FatSuitView.h">
-      <Filter>src\views</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FatSuitEffect.h">
-      <Filter>src\effects</Filter>
-    </ClInclude>
     <ClInclude Include="src\ViewController.h">
       <Filter>src</Filter>
     </ClInclude>
@@ -491,7 +479,13 @@
     <ClInclude Include="src\MeshTest.h">
       <Filter>src\effects</Filter>
     </ClInclude>
-    <ClInclude Include="src\Test.h">
+    <ClInclude Include="src\FatSuitWireView.h">
+      <Filter>src\views</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FatSuitView.h">
+      <Filter>src\views</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FatSuitEffect.h">
       <Filter>src\effects</Filter>
     </ClInclude>
   </ItemGroup>

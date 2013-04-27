@@ -22,7 +22,7 @@ struct ViewType {
 		FatSuitView,
 		PointCloudView,
 		OutlineView,
-
+		FatSuitWireView,
 		TestView,
 
 		// add any new view types above here
