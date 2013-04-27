@@ -13,6 +13,8 @@ m_kinectController(new KinectController(false, true, false)), m_viewController(n
 {
 	// setup opengl context and window
 	ofSetupOpenGL(m_window, windowWidth, windowHeight, OF_WINDOW);
+
+	ofSetFullscreen(true);
 }
 
 Boof::~Boof() {

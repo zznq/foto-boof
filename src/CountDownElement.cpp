@@ -29,7 +29,7 @@ void CountDownElement::initialize()
 	m_counter_bottom_cap.allocate(18, 3, OF_IMAGE_COLOR_ALPHA);
 
 	m_counter_fill = ofImage("graphics/counter_fill.png");
-	m_counter_fill.allocate(18, 1, OF_IMAGE_COLOR_ALPHA);
+	m_counter_fill.allocate(18, 1, OF_IMAGE_COLOR);
 
 	m_counter_label = ofImage("graphics/counter_label.png");
 	m_counter_label.allocate(84, 7, OF_IMAGE_COLOR_ALPHA);
