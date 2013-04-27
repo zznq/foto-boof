@@ -24,8 +24,8 @@ void main()
 	
 	vec3 a = vec3(1, 0, xAxis);
 	vec3 b = vec3(0, 1, yAxis);
-	vec3 normal = cross(a, b) * 0.5 * 255.0;
-	//vec3 normal = (vec3(b.z, a.z, 1.0) * 0.5) * 255.0;
+	vec3 normal = cross(a, b) * 0.5 + 0.5;
+	//vec3 normal = (vec3(b.z, a.z, 1.0) * 0.5) + 0.5;
 	
 	gl_FragColor.rgb = normal;
 	gl_FragColor.a = 1.0;

@@ -63,8 +63,8 @@ void TestEffect::createMesh()
 {
 	m_mesh->clear();
 
-	float m_numRows = m_width;
-	float m_numCols = m_height;
+	float m_numRows = m_width/8;
+	float m_numCols = m_height/8;
 	std::vector<ofVec3f> vertices;
 	for(int row=0; row < m_numRows; row++) {
 		for (int col=0; col < m_numCols; col++) {
@@ -338,7 +338,7 @@ void TestEffect::draw()
 	
 	m_shader->end();
 	
-	/*
+	
 	drawNormalsShader->begin();
 	drawNormalsShader->setUniformTexture("normal_tex", m_blurHorizontal.getTextureReference(), 1);
 	drawNormalsShader->setUniformTexture("depth_tex", depthFbo.getTextureReference(), 2);
@@ -368,7 +368,20 @@ void TestEffect::draw()
 
 	m_mesh->setMode(OF_PRIMITIVE_TRIANGLE_STRIP);
 	drawNormalsShader->end();
-	*/
+	
+	glBegin(GL_LINES);
+	glColor3f(1, 0, 0);
+	glVertex3f(-50, -2, -20);
+	glVertex3f(50, -2, -20);
+
+	glColor3f(0, 1, 0);
+	glVertex3f(0, -50, -20);
+	glVertex3f(0, 50, -20);
+
+	glColor3f(0, 0, 1);
+	glVertex3f(0, -2, -100);
+	glVertex3f(0, -2, 10);
+	glEnd();
 
 	easyCam.end();
 }

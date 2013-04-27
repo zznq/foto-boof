@@ -14,12 +14,12 @@ void main()
 	vec4 vVertex = vec4( gl_Vertex );
 
 	depth = texture2D( depth_tex, gl_TexCoord[0].st ).a;
-	vec3 vNormal = 2.0 * texture2D( normal_tex, gl_TexCoord[0].st ).rgb - 1.0;
+	vec3 vNormal = texture2D( normal_tex, gl_TexCoord[0].st ).rgb * 2.0 - 1.0;
 
 	vec3 dirToVertex = normalize( eyePos - vVertex.xyz );
 	
 	//vVertex.xy *= 2.5;
-	//vVertex.xyz	+= depth * 500.0 * dirToVertex;
+	vVertex.xyz	+= depth * dirToVertex;
 	vVertex.xyz += vNormal * chub_factor * 3.0 * depth;
 
 	gl_Position = gl_ModelViewProjectionMatrix * vVertex;
