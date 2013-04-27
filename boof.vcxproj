@@ -105,10 +105,13 @@ xcopy /e /i /y "$(ProjectDir)..\..\..\addons\ofxKinect\libs\libfreenect\lib\vs20
     <ClCompile Include="src\BwEffect.cpp" />
     <ClCompile Include="src\CloudTest.cpp" />
     <ClCompile Include="src\ColorDepthShaderEffect.cpp" />
+    <ClCompile Include="src\CountDownElement.cpp" />
+    <ClCompile Include="src\Element.cpp" />
     <ClCompile Include="src\FatSuitEffect.cpp" />
     <ClCompile Include="src\FatSuitView.cpp" />
+    <ClCompile Include="src\IdleView.cpp" />
+    <ClCompile Include="src\ImageElement.cpp" />
     <ClCompile Include="src\MeshEffect.cpp" />
-    <ClCompile Include="src\MeshTest.cpp" />
     <ClCompile Include="src\MeshView.cpp" />
     <ClCompile Include="src\NormalMapEffect.cpp" />
     <ClCompile Include="src\OutlineEffect.cpp" />
@@ -144,6 +147,7 @@ xcopy /e /i /y "$(ProjectDir)..\..\..\addons\ofxKinect\libs\libfreenect\lib\vs20
     <ClCompile Include="src\VisualEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\BackgroundImageElement.h" />
     <ClInclude Include="src\boof.h" />
     <ClInclude Include="..\..\..\addons\ofxOpenCv\src\ofxCvBlob.h" />
     <ClInclude Include="..\..\..\addons\ofxOpenCv\src\ofxCvColorImage.h" />
@@ -208,17 +212,24 @@ xcopy /e /i /y "$(ProjectDir)..\..\..\addons\ofxKinect\libs\libfreenect\lib\vs20
     <ClInclude Include="src\CloudTest.h" />
     <ClInclude Include="src\ColorDepthShaderEffect.h" />
     <ClInclude Include="src\ColorDepthShaderView.h" />
+    <ClInclude Include="src\CountDownElement.h" />
+    <ClInclude Include="src\Element.h" />
     <ClInclude Include="src\FatSuitEffect.h" />
     <ClInclude Include="src\FatSuitView.h" />
     <ClInclude Include="src\IdleView.h" />
+    <ClInclude Include="src\ImageElement.h" />
     <ClInclude Include="src\MeshEffect.h" />
     <ClInclude Include="src\MeshTest.h" />
     <ClInclude Include="src\MeshView.h" />
     <ClInclude Include="src\NormalMapEffect.h" />
     <ClInclude Include="src\NormalMapView.h" />
     <ClInclude Include="src\OutlineEffect.h" />
+    <ClInclude Include="src\OutlineView.h" />
     <ClInclude Include="src\OverlayView.h" />
     <ClInclude Include="src\PointCloudEffect.h" />
+    <ClInclude Include="src\PrimarySideBarImageElement.h" />
+    <ClInclude Include="src\PrintingImageElement.h" />
+    <ClInclude Include="src\StartSideBarImageElement.h" />
     <ClInclude Include="src\Test.h" />
     <ClInclude Include="src\TestView.h" />
     <ClInclude Include="src\ViewControllerState.h" />

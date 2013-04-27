@@ -114,6 +114,9 @@ void TestEffect::setupShader()
 
 void TestEffect::preDraw() 
 {
+	// disabled rectangle texture and fall back to tex_2d (pot textures)
+	ofDisableArbTex();
+
 	if (!m_shaderSetup) 
 	{
 		setupShader();
@@ -122,26 +125,26 @@ void TestEffect::preDraw()
 
 void TestEffect::postDraw()
 {
-
+	// turn rectangle textures back on (npot textures)
+	ofEnableArbTex();
 }
 
 void TestEffect::draw()
 {
 	KinectController::KinectInterfacePtr kinectInterface = m_parent->getKinectController()->getKinect();
 
-	/*
+	
 	ofImage image;
 	image.loadImage("images/normal_map_1.jpg");
-	//image.draw(1024-200, 768-200, 200, 200);
-	//image.loadImage("images/lines.jpg");
-
+	image.draw(1024-200, 768-200, 200, 200);
+	/*
 	ofImage image2;
 	image2.loadImage("images/height_map_1.jpg");
 
 	ofImage image3;
 	image3.loadImage("images/base_1.jpg");
 	*/
-
+#if 0
 	m_displacementTex.loadData(m_parent->getKinectController()->getKinect()->getDistancePixelsRef());
 	m_depthTex.loadData(m_parent->getKinectData().m_depthStream);
 
@@ -210,16 +213,14 @@ void TestEffect::draw()
 	m_depthShader->end();
 	depthFbo.end();
 
-	easyCam.begin();
-	easyCam.getPosition();
-	ofPushMatrix();
-	ofTranslate(0, 0, -100);
-	ofScale(1, -1, 1);
-	glTranslatef(-m_width*.5, -m_height*.5, 0);
+	//easyCam.begin();
+	//easyCam.getPosition();
+	//ofPushMatrix();
+	//ofTranslate(0, 0, -100);
+	//ofScale(1, -1, 1);
+	//glTranslatef(-m_width*.5, -m_height*.5, 0);
 
 	m_colorTex.loadData(m_parent->getKinectData().m_videoStream);
-
-	ofBackground(0, 0, 0);
 	
 	m_shader->begin();
 	ofVec3f eyePos = easyCam.getPosition();
@@ -292,7 +293,8 @@ void TestEffect::draw()
 	glVertex3f(0, -2, 10);
 	glEnd();
 	*/
-	easyCam.end();
+	//easyCam.end();
+#endif
 }
 
 void TestEffect::addUI(CanvasPtr canvas) 

@@ -24,16 +24,14 @@ private:
 	int m_haarReadMax;
 	int m_haarReadResultsIndex;
 	int m_k;
-	int 				m_threshold;
+	int m_threshold;
 
-	HaarReadResults m_haarReadResults;
-
-	ofRectangle m_handbox;
+	ofImage m_handbox;
+	ofRectangle m_handboxRect;
 	ofxCvGrayscaleImage m_grayscale;
-	ofxCvColorImage m_color;
 
-	ofxCvContourFinder 	contourFinder;
 	ofxCvHaarFinder finder;
+	HaarReadResults m_haarReadResults;
 };
 
 #endif
