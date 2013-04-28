@@ -90,6 +90,8 @@ void FatSuitEffect::setupShader()
 
 void FatSuitEffect::preDraw() 
 {
+	m_parent->setKinectDepthClipping(m_nearDepth, m_farDepth);
+
 	// disabled rectangle texture and fall back to tex_2d (pot textures)
 	ofDisableArbTex();
 	ofEnableNormalizedTexCoords();

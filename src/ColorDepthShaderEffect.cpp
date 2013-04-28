@@ -44,6 +44,8 @@ void ColorDepthShaderEffect::preDraw()
 {
 	ShaderEffect::preDraw();
 
+	m_parent->setKinectDepthClipping(m_nearClip, m_farClip);
+
 	m_lookupTexture.loadData(m_lookup);
 	m_shader->setUniformTexture("color_lookup", m_lookupTexture, 5);
 }

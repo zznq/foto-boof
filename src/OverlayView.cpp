@@ -75,7 +75,7 @@ OverlayView::OverlayView(KinectControllerPtr kinectController, int width, int he
 	m_flashRunningTime = 0;
 
 	m_isPrinting = false;
-	m_printDuration = 20000;
+	m_printDuration = 45000;
 	m_printLapse = 0;
 }
 

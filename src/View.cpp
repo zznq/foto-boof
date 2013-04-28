@@ -8,7 +8,7 @@ const float View::DEFAULT_Y_OFFSET = 10.0;
 const float View::DEFAULT_Z_OFFSET = 0.0;
 
 View::View(KinectControllerPtr kinectController, int width, int height, bool useDepth) 
-: m_kinectController(kinectController),  m_width(width), m_height(height), m_timeInterval(5000), 
+: m_kinectController(kinectController),  m_width(width), m_height(height), m_timeInterval(15000), 
 m_runningTime(0), m_useDepth(useDepth), m_countDownRunning(false), m_offset(ofVec3f(DEFAULT_X_OFFSET, DEFAULT_Y_OFFSET, DEFAULT_Z_OFFSET))
 {
 	m_canvas = View::CanvasPtr(new ofxUICanvas());
