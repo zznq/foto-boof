@@ -9,11 +9,18 @@
 FatSuitEffect::FatSuitEffect(int width, int height, bool wireframe, bool useNormalColors)
 : VisualEffect("test_effect"), m_width(width), m_height(height),
 m_isDirty(false), m_chubFactor(1.0), m_shader(new ofShader()), m_normalShader(new ofShader()),
-m_blurShader(new ofShader()), m_depthShader(new ofShader()), m_mesh(new ofVboMesh()), 
-m_nearDepth(500.f), m_farDepth(4000.f), m_shaderSetup(false), m_drawWireframe(wireframe), 
-m_clipValue(1.f), m_blurFactor(0.f), m_cullingValue(0.1f), m_transX(0.0), m_transY(0.0), 
-m_transZ(0.0), m_meshStep(1.0), m_useNormalColor(useNormalColors)
+m_blurShader(new ofShader()), m_depthShader(new ofShader()),
+m_mesh(new ofVboMesh()), m_nearDepth(500.f), m_farDepth(4000.f), m_shaderSetup(false), 
+m_drawWireframe(wireframe), m_clipValue(1.f), m_blurFactor(0.f), m_cullingValue(0.1f),
+m_transX(0.0), m_transY(0.0), m_transZ(0.0), m_meshStep(1.0), m_useNormalColor(useNormalColors)
 {
+	ofSetSmoothLighting(true);
+	m_light.setPosition(0, 0, 1);
+	m_light.setDiffuseColor(ofFloatColor(1, 1, 1));
+	m_light.setAmbientColor(ofFloatColor(0, 0, 0));
+	m_light.setSpecularColor(ofFloatColor(1, 1, 1));
+	m_light.setPointLight();
+
 	m_mesh->setMode(OF_PRIMITIVE_TRIANGLE_STRIP);
 	m_mesh->setUsage(GL_DYNAMIC_DRAW);
 	createMesh();
@@ -91,6 +98,14 @@ void FatSuitEffect::setupShader()
 void FatSuitEffect::preDraw() 
 {
 	m_parent->setKinectDepthClipping(m_nearDepth, m_farDepth);
+
+	// move light around dynamically
+	float radius = 180.f;
+	ofVec3f center;
+	center.set(ofGetWidth()*.5f, ofGetHeight()*.5f, 0);
+	m_light.setPosition(cos(ofGetElapsedTimef()*.6f) * radius * 2 + center.x, 
+		sin(ofGetElapsedTimef()*.8f) * radius * 2 + center.y, 
+		-cos(ofGetElapsedTimef()*.8f) * radius * 2 + center.z);
 
 	// disabled rectangle texture and fall back to tex_2d (pot textures)
 	ofDisableArbTex();
@@ -187,10 +202,15 @@ void FatSuitEffect::draw()
 	ofScale(-1, 1, 1);
 	ofTranslate(-this->m_width, 0, 0);
 
+	ofVec3f lightPos = m_light.getPosition();
+	ofFloatColor diffuseColor = m_light.getDiffuseColor();
+
 	ofFbo finalPass;
+	ofEnableLighting();
 	finalPass.allocate(m_width, m_height);
 	finalPass.begin();
 	ofTranslate(m_transX, m_transY, m_transZ);
+	m_light.enable();
 	m_shader->begin();
 	m_shader->setUniform3f("eyePos", 0, 0 , 1);
 	m_shader->setUniform1f("clip", m_clipValue);
@@ -202,6 +222,13 @@ void FatSuitEffect::draw()
 	m_shader->setUniformTexture("normal_tex", m_blurHorizontal.getTextureReference(), 2);
 	m_shader->setUniformTexture("displacement_tex", m_depthTex, 3);
 	m_shader->setUniformTexture("depth_tex", depthFbo.getTextureReference(), 1);
+	//m_shader->setUniformTexture("normal_tex", m_blurHorizontal.getTextureReference(), 1);
+	m_shader->setUniform4f("lightPosition", lightPos.x, lightPos.y, lightPos.z, 0);
+	//m_shader->setUniform4f("Ka", 1, 1, 1, 1);
+	//m_shader->setUniform4f("Kd", 1, 1, 1, 1);
+	//m_shader->setUniform4f("Ks", 1, 1, 1, 1);
+	//m_shader->setUniform1f("Ns", 4);
+	//m_shader->setUniform4f("Ld", diffuseColor.r, diffuseColor.g, diffuseColor.b, diffuseColor.a);
 
 	if (!m_drawWireframe)
 	{
@@ -213,6 +240,8 @@ void FatSuitEffect::draw()
 	}
 	
 	m_shader->end();
+	m_light.disable();
+	ofDisableLighting();
 	finalPass.end();
 
 	finalPass.draw(0, 0, m_width, m_height);

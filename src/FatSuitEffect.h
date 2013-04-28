@@ -41,7 +41,7 @@ protected:
 	float m_farDepth;
 	bool m_shaderSetup;
 	bool m_drawWireframe;
-	ofLight light;
+	ofLight m_light;
 	float m_clipValue;
 	float m_blurFactor;
 	float m_cullingValue;

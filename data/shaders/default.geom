@@ -7,8 +7,12 @@ uniform int cullBg = 1;
 uniform float cullingValue = 0.1;
 in float depth[];
 in vec2 texCoordVs[];
+in vec4 vpeyeVs[];
+in vec4 vneyeVs[];
 
 out vec2 texCoord;
+out vec4 vpeye;
+out vec4 vneye;
 
 bool cullVertex(float depth)
 {
@@ -24,6 +28,8 @@ void main()
 		{
 			gl_Position = gl_in[i].gl_Position;
 			texCoord = texCoordVs[i];
+			vpeye = vpeyeVs[i];
+			vneye = vneyeVs[i];
 			EmitVertex();
 		}
     }
