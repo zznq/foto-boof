@@ -13,7 +13,7 @@ OverlayView::OverlayView(KinectControllerPtr kinectController, int width, int he
 	m_fader = ofPtr<ofShader>(new ofShader());
 	m_fader->load("shaders/default.vert", "shaders/fader.frag", "");
 
-	m_canvas->setColorBack(ofColor(0.0f, 0.0F, 0.0F, 175.0f));
+	m_canvas->setColorBack(ofColor(0.0f, 0.0F, 0.0F, 0.0f));
 	
 	m_screen.allocate(933, 700, OF_IMAGE_COLOR_ALPHA);
 

@@ -25,6 +25,8 @@ IdleView::IdleView(KinectControllerPtr kinectController, int width, int height) 
 void IdleView::setup() {
 	View::setup();
 
+	m_canvas->setVisible(false);
+
 	this->setKinectDepthClipping(500, 1500);
 }
 

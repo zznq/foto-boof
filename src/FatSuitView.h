@@ -16,6 +16,10 @@ public:
 		addEffect(View::VisualEffectPtr(new FatSuitEffect(width, height, false, false)));
 	}
 
+	void setup()
+	{
+		m_canvas->setVisible(false);
+	}
 protected:
 	virtual void doViewDraw() { }
 };

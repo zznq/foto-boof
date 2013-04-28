@@ -14,6 +14,11 @@ m_nearDepth(500.f), m_farDepth(4000.f), m_shaderSetup(false), m_drawWireframe(wi
 m_clipValue(1.f), m_blurFactor(0.f), m_cullingValue(0.1f), m_transX(0.0), m_transY(0.0), 
 m_transZ(0.0), m_meshStep(1.0), m_useNormalColor(useNormalColors)
 {
+	if (m_useNormalColor) 
+	{
+		m_meshStep = 4.0;
+	}
+
 	m_mesh->setMode(OF_PRIMITIVE_TRIANGLE_STRIP);
 	m_mesh->setUsage(GL_DYNAMIC_DRAW);
 	createMesh();
@@ -39,11 +44,11 @@ void FatSuitEffect::createMesh()
 {
 	m_mesh->clear();
 
-	float m_numRows = m_width;
-	float m_numCols = m_height;
+	float m_numRows = m_width / m_meshStep;
+	float m_numCols = m_height / m_meshStep;
 	std::vector<ofVec3f> vertices;
-	for(int row=0; row < m_numRows; row += m_meshStep) {
-		for (int col=0; col < m_numCols; col += m_meshStep) {
+	for(int row=0; row < m_numRows; row++) {
+		for (int col=0; col < m_numCols; col++) {
 			// set current x y z
 			int x = m_width * (col/(m_numCols-1));
 			int y = m_height * (row/(m_numRows-1));

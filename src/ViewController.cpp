@@ -31,9 +31,8 @@ void ViewController::setup(KinectControllerPtr kinectController)
 	ViewType::Enum views[] = 
 	{
 		ViewType::Enum::Idle,
-		ViewType::Enum::ColorDepthShaderView,
 		ViewType::Enum::FatSuitView,
-		
+		ViewType::Enum::ColorDepthShaderView,
 		ViewType::Enum::FatSuitWireView
 	};
 
